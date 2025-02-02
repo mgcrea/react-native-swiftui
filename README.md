@@ -1,8 +1,8 @@
-# React Native Turbo Module Library Example
+# React Native Fabric Component Library Example
 
-This is an example project demonstrating the usage of Turbo Modules in React Native inside libraries. Turbo Modules enable faster and more efficient communication between JavaScript and native code.
+This is an example project demonstrating the usage of Fabric Components in React Native inside libraries. Fabric Components enable faster and more efficient communication between JavaScript and native code.
 
-This repository contains the bare minimum code to build & test your Turbo Module.
+This repository contains the bare minimum code to build & test your Fabric Component.
 
 ## Table of Contents
 
@@ -16,8 +16,8 @@ This repository contains the bare minimum code to build & test your Turbo Module
 To get started, clone the repository and install the dependencies:
 
 ```bash
-git clone https://github.com/mgcrea/react-native-turbo-module-library-example.git
-cd react-native-turbo-module-library-example
+git clone https://github.com/mgcrea/react-native-fabric-component-library-example.git
+cd react-native-fabric-component-library-example
 corepack install
 pnpm install
 
