@@ -3,20 +3,25 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "start": "react-native start",
+    "dev": "watchman watch-del-all; react-native start --reset-cache",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "install:ios": "cd ios && bundle exec pod install && cd -",
+    "open:ios": "xed ios",
     "lint": "eslint .",
-    "start": "react-native start",
     "test": "jest"
   },
   "dependencies": {
     "react": "18.3.1",
-    "react-native": "0.77.0"
+    "react-native": "0.77.0",
+    "react-native-color-view": "link:.."
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
     "@babel/runtime": "^7.25.0",
+    "@mgcrea/metro-plugin-linked-packages": "^1.2.0",
     "@react-native-community/cli": "15.0.1",
     "@react-native-community/cli-platform-android": "15.0.1",
     "@react-native-community/cli-platform-ios": "15.0.1",
