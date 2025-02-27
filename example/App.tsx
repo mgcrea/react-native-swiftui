@@ -1,11 +1,18 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Button, StyleSheet, View} from 'react-native';
 import {NativeColorView} from 'react-native-color-view';
 
+const COLORS = ['#32a852', '#a83232', '#32a8a8', '#a832a8'];
+
 function App(): React.JSX.Element {
+  const [colorIndex, setColorIndex] = React.useState(0);
+  const onClick = () => {
+    setColorIndex((colorIndex + 1) % COLORS.length);
+  };
   return (
     <View style={styles.container}>
-      <NativeColorView color="#32a852" style={styles.box} />
+      <NativeColorView color={COLORS[colorIndex]} style={styles.box} />
+      <Button title="Change Color" onPress={onClick} />
     </View>
   );
 }

@@ -1,9 +1,9 @@
 #import "RCTColorView.h"
 
-#import "generated/NativeColorViewSpec/ComponentDescriptors.h"
-#import "generated/NativeColorViewSpec/EventEmitters.h"
-#import "generated/NativeColorViewSpec/Props.h"
-#import "generated/NativeColorViewSpec/RCTComponentViewHelpers.h"
+#import "generated/LibraryExampleSpec/ComponentDescriptors.h"
+#import "generated/LibraryExampleSpec/EventEmitters.h"
+#import "generated/LibraryExampleSpec/Props.h"
+#import "generated/LibraryExampleSpec/RCTComponentViewHelpers.h"
 
 // #import "RCTFabricComponentsPlugins.h"
 // #import "FabricComponentExample-Swift.h"
