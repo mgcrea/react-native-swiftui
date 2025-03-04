@@ -1,9 +1,9 @@
 {
-  "name": "react-native-color-view",
+  "name": "@mgcrea/react-native-swiftui",
   "version": "0.0.1",
-  "description": "Example ReactNative Library with a TurboModule",
+  "description": "SwiftUI components for React Native",
   "author": "Olivier Louvignes <olivier@mgcrea.io> (https://github.com/mgcrea)",
-  "homepage": "https://github.com/mgcrea/react-native-color-view#readme",
+  "homepage": "https://github.com/mgcrea/react-native-swiftui#readme",
   "private": true,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -30,10 +30,11 @@
     "@react-native/babel-preset": "0.78.0",
     "@react-native/typescript-config": "0.78.0",
     "@tsconfig/react-native": "^3.0.5",
+    "@types/react": "^19.0.10",
     "eslint": "^9.19.0",
     "jest": "^29.7.0",
     "prettier": "^3.4.2",
-    "react": "18.3.1",
+    "react": "^19.0.0",
     "react-native": "0.78.0",
     "typescript": "^5.7.3"
   },
@@ -41,7 +42,7 @@
     "node": ">=18"
   },
   "codegenConfig": {
-    "name": "LibraryExampleSpec",
+    "name": "RNSwiftUISpec",
     "type": "components",
     "jsSrcsDir": "src",
     "outputDir": {
@@ -50,7 +51,11 @@
     },
     "ios": {
       "componentProvider": {
-        "NativeColorView": "RCTColorView"
+        "NativePickerView": "RCTPickerView",
+        "NativeMenuView": "RCTMenuView",
+        "NativePopoverView": "RCTPopoverView",
+        "NativeSectionView": "RCTSectionView",
+        "NativeContainerView": "RCTContainerView"
       }
     },
     "includesGeneratedCode": true

@@ -6,3 +6,4 @@ ios/generated/
 android/generated/
 dist/
 .idea/
+.vscode/

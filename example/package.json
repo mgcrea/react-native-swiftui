@@ -1,5 +1,5 @@
 {
-  "name": "FabricComponentExample",
+  "name": "RNSwiftUIExample",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
   "dependencies": {
     "react": "19.0.0",
     "react-native": "0.78.0",
-    "react-native-color-view": "link:.."
+    "@mgcrea/react-native-swiftui": "link:.."
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
