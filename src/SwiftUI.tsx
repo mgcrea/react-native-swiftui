@@ -4,11 +4,16 @@ import {
   isValidElement,
   PropsWithChildren,
   ReactNode,
+  useId,
   type FunctionComponent,
 } from "react";
 import { NativeContainerView } from ".";
 import { convertJsxToViewTree } from "./utils/viewTree";
-import { NativeTextFieldProps } from "./TextFieldViewNativeComponent";
+import type {
+  NativeTextFieldProps,
+  NativeStepperProps,
+  NativeSectionProps,
+} from "./props";
 
 export type SwiftUIProps = {
   style?: StyleProp<ViewStyle>;
@@ -24,7 +29,10 @@ export const SwiftUI = ({
     children: convertJsxToViewTree(children),
   };
   console.log({ viewTree });
-  const onChange = ({ nativeEvent }: { nativeEvent: { value: string } }) => {
+  const id = useId();
+  const id2 = useId();
+  console.log({ id, id2 });
+  const onEvent = ({ nativeEvent }: { nativeEvent: { value: string } }) => {
     const title = "Result";
     const message = JSON.stringify(nativeEvent);
     Alert.alert(title, message);
@@ -32,9 +40,11 @@ export const SwiftUI = ({
   return (
     <NativeContainerView
       viewTree={JSON.stringify(viewTree)}
-      onChange={onChange}
+      onEvent={onEvent}
       style={style}
-    />
+    >
+      {children}
+    </NativeContainerView>
   );
 };
 
@@ -43,16 +53,6 @@ SwiftUI.Form = function SwiftUIForm({
   children,
   ...props
 }: {
-  children?: React.ReactNode;
-}) {
-  return <>{children}</>;
-};
-SwiftUI.Section = function SwiftUISection({
-  header,
-  children,
-  ...props
-}: {
-  header?: string;
   children?: React.ReactNode;
 }) {
   return <>{children}</>;
@@ -84,6 +84,27 @@ SwiftUI.DatePicker = function SwiftUIDatePicker({
   return null;
 };
 
-const TextField: FunctionComponent<NativeTextFieldProps> = () => null;
+const Section: FunctionComponent<PropsWithChildren<NativeSectionProps>> = ({
+  children,
+}) => {
+  console.warn("Section");
+  return <>{children}</>;
+};
+Section.displayName = "Section";
+SwiftUI.Section = Section;
+
+const TextField: FunctionComponent<NativeTextFieldProps> = () => {
+  console.warn("TextField");
+  return null;
+};
 TextField.displayName = "TextField";
 SwiftUI.TextField = TextField;
+
+const Stepper: FunctionComponent<Identifiable<NativeStepperProps>> = () => {
+  console.warn("Stepper");
+  return null;
+};
+Stepper.displayName = "Stepper";
+SwiftUI.Stepper = Stepper;
+
+type Identifiable<T> = T & { id?: string };

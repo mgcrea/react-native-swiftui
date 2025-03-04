@@ -31,6 +31,12 @@ import {
   SwiftUI,
 } from '@mgcrea/react-native-swiftui/src';
 
+const CATEGORIES = ['Strength', 'Gymnastics', 'Cardio', 'Mixed'];
+const STRENGTH = ['Deadlift', 'Squat', 'Bench Press', 'Shoulder Press'];
+const GYMNASTICS = ['Pull-up', 'Push-up', 'Sit-up', 'Handstand'];
+const CARDIO = ['Run', 'Row', 'Bike', 'Swim'];
+const MIXED = ['Murph', 'Fran', 'Helen', 'Grace'];
+
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -73,11 +79,20 @@ function App(): React.JSX.Element {
           // backgroundColor: 'red',
         }}>
         <SwiftUI.Form>
-          <SwiftUI.Section header="Section 1">
+          <SwiftUI.Section
+            header="Section 1"
+            footer="Adjust settings below"
+            isCollapsed={false}>
             <SwiftUI.Picker
-              label="Workout Type"
-              selection="option2"
-              options={['option1', 'option2', 'option3']}
+              label="Workout Category"
+              selection="Strength"
+              options={CATEGORIES}
+              pickerStyle="menu"
+            />
+            <SwiftUI.Picker
+              label="Movement Name"
+              selection="Deadlift"
+              options={STRENGTH}
               pickerStyle="menu"
             />
           </SwiftUI.Section>
@@ -87,9 +102,28 @@ function App(): React.JSX.Element {
               selection={new Date('2024-03-03T00:00:00Z')}
               displayedComponents="date"
             />
+            <SwiftUI.Stepper
+              id="stepperX"
+              value={5}
+              label="Quantity:"
+              minimum={1}
+              maximum={10}
+              step={1}
+              // onChange={value =>
+              //   Alert.alert('Stepper Changed', `New value: ${value}`)
+              // }
+            />
           </SwiftUI.Section>
           <SwiftUI.Section header="Section 3">
-            <SwiftUI.TextField placeholder="Enter duration" text="60" />
+            <SwiftUI.TextField
+              placeholder="Enter duration"
+              text="60"
+              keyboardType="numberPad"
+              returnKeyType="next"
+              // onChange={() => {
+              //   Alert.alert('Result', 'Duration changed');
+              // }}
+            />
           </SwiftUI.Section>
         </SwiftUI.Form>
       </SwiftUI>

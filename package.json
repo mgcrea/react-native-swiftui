@@ -52,10 +52,7 @@
     "ios": {
       "componentProvider": {
         "NativePickerView": "RCTPickerView",
-        "NativeMenuView": "RCTMenuView",
-        "NativePopoverView": "RCTPopoverView",
-        "NativeSectionView": "RCTSectionView",
-        "NativeContainerView": "RCTContainerView"
+        "NativeSwiftUIRootView": "RCTSwiftUIRootView"
       }
     },
     "includesGeneratedCode": true
