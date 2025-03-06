@@ -35,6 +35,7 @@ private struct NodeWrapper: Decodable {
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: BaseCodingKeys.self)
     let type = try container.decode(String.self, forKey: .type)
+    print("type = \(type)")
 
     switch type {
     case "Group":
@@ -51,6 +52,8 @@ private struct NodeWrapper: Decodable {
       node = try DatePickerNode(from: decoder)
     case "Stepper":
       node = try StepperNode(from: decoder)
+    case "Button":
+      node = try ButtonNode(from: decoder)
     default:
       throw Swift.DecodingError.typeMismatch(
         (any SwiftUINode).self,

@@ -1,25 +1,13 @@
 import { useId, useEffect, cloneElement } from "react";
-import { useSwiftUIContext } from "../contexts/SwiftUIContext";
 import type { IdentifiableFunctionComponent } from "src/types";
+import { useSwiftUIParentContext, useSwiftUIContext } from "../contexts";
 
-export type NativeKeyboardType =
-  | "default"
-  | "numberPad"
-  | "emailAddress"
-  | "decimalPad";
+export type NativeKeyboardType = "default" | "numberPad" | "emailAddress" | "decimalPad";
 
-export type NativeTextContentType =
-  | "username"
-  | "password"
-  | "emailAddress"
-  | null;
+export type NativeTextContentType = "username" | "password" | "emailAddress" | null;
 export type NativeReturnKeyType = "default" | "done" | "next" | "search";
 
-export type NativeAutocapitalizationType =
-  | "none"
-  | "words"
-  | "sentences"
-  | "allCharacters";
+export type NativeAutocapitalizationType = "none" | "words" | "sentences" | "allCharacters";
 
 export type NativeTextFieldProps = {
   text: string;
@@ -40,13 +28,14 @@ export type NativeTextFieldProps = {
 
 export const TextField: IdentifiableFunctionComponent<NativeTextFieldProps> = ({
   id,
-  text,
   onChange,
   onFocus,
   onBlur,
+  ...otherProps
 }) => {
-  const { registerEventHandler } = useSwiftUIContext();
-  const effectiveId = id || `auto-textfield-${useId()}`;
+  const { registerEventHandler, registerNode } = useSwiftUIContext();
+  const { parentId } = useSwiftUIParentContext();
+  const effectiveId = id || `textfield:${useId()}`;
 
   useEffect(() => {
     if (onChange) registerEventHandler(effectiveId, "change", onChange);
@@ -54,7 +43,15 @@ export const TextField: IdentifiableFunctionComponent<NativeTextFieldProps> = ({
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
 
-  // Pass updated text to viewTree
+  registerNode(
+    {
+      type: "TextField",
+      id: effectiveId,
+      props: otherProps,
+    },
+    parentId,
+  );
+
   return null;
 };
 TextField.displayName = "TextField";

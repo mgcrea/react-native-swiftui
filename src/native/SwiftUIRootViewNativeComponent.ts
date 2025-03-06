@@ -1,8 +1,5 @@
 import type { HostComponent, ViewProps } from "react-native";
-import type {
-  BubblingEventHandler,
-  WithDefault,
-} from "react-native/Libraries/Types/CodegenTypes";
+import type { BubblingEventHandler, WithDefault } from "react-native/Libraries/Types/CodegenTypes";
 import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
 
 export type NativeSwiftUIEvent = {
@@ -18,5 +15,5 @@ export interface NativeSwiftUIRootViewProps extends ViewProps {
 }
 
 export default codegenNativeComponent<NativeSwiftUIRootViewProps>(
-  "NativeSwiftUIRootView"
+  "NativeSwiftUIRootView",
 ) as HostComponent<NativeSwiftUIRootViewProps>;

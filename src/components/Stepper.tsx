@@ -1,5 +1,5 @@
 import { useId, useEffect, cloneElement } from "react";
-import { useSwiftUIContext } from "../contexts/SwiftUIContext";
+import { useSwiftUIParentContext, useSwiftUIContext } from "../contexts";
 import type { IdentifiableFunctionComponent } from "src/types";
 
 // https://developer.apple.com/documentation/swiftui/stepper
@@ -20,9 +20,11 @@ export const Stepper: IdentifiableFunctionComponent<NativeStepperProps> = ({
   onChange,
   onFocus,
   onBlur,
+  ...otherProps
 }) => {
-  const { registerEventHandler } = useSwiftUIContext();
-  const effectiveId = id || `auto-date-picker-${useId()}`;
+  const { registerEventHandler, registerNode } = useSwiftUIContext();
+  const { parentId } = useSwiftUIParentContext();
+  const effectiveId = id || `stepper:${useId()}`;
 
   useEffect(() => {
     if (onChange) registerEventHandler(effectiveId, "change", onChange);
@@ -30,7 +32,15 @@ export const Stepper: IdentifiableFunctionComponent<NativeStepperProps> = ({
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
 
-  // Pass updated text to viewTree
+  registerNode(
+    {
+      type: "Stepper",
+      id: effectiveId,
+      props: otherProps,
+    },
+    parentId,
+  );
+
   return null;
 };
 Stepper.displayName = "Stepper";

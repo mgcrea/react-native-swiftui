@@ -10,7 +10,7 @@ TEMP_PATHS=$(mktemp)
 
 # Blacklist and whitelist patterns
 BLACKLIST=("pnpm-lock.yaml" "example" "scripts")
-WHITELIST=("example/App.tsx")
+WHITELIST=("example/src")
 
 # Check for --gist flag
 PUBLISH_GIST=false

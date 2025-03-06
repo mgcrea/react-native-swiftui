@@ -1,8 +1,5 @@
 import type { HostComponent, ViewProps } from "react-native";
-import type {
-  BubblingEventHandler,
-  WithDefault,
-} from "react-native/Libraries/Types/CodegenTypes";
+import type { BubblingEventHandler, WithDefault } from "react-native/Libraries/Types/CodegenTypes";
 import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
 
 type NativePickerChangeEvent = {
@@ -20,5 +17,5 @@ export interface NativePickerProps extends ViewProps {
 }
 
 export default codegenNativeComponent<NativePickerProps>(
-  "NativePickerView"
+  "NativePickerView",
 ) as HostComponent<NativePickerProps>;

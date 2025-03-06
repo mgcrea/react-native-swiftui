@@ -13,9 +13,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "@mgcrea/react-native-swiftui": "link:..",
     "react": "19.0.0",
-    "react-native": "0.78.0",
-    "@mgcrea/react-native-swiftui": "link:.."
+    "react-hook-form": "^7.54.2",
+    "react-native": "0.78.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

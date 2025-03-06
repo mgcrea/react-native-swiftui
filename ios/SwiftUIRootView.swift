@@ -70,6 +70,10 @@ final class ContainerProps: ObservableObject {
       textField.props.onBlur = { [weak self] in
         self?.onEvent?("blur", "TextField", textField.id, nil)
       }
+    } else if let button = node as? ButtonNode {
+      button.props.onPress = { [weak self] in
+        self?.onEvent?("press", "Button", button.id, nil)
+      }
     }
     if let children = node.children {
       children.forEach { bindEventHandlers(from: $0) }
@@ -133,19 +137,19 @@ public class SwiftUIRootView: SwiftUIContainerView {
     case let form as FormNode:
       AnyView(FormView(props: form.props, content: {
         if let children = form.children {
-                 ForEach(children, id: \.id) { child in
-                   self.buildSwiftUIView(from: child)
-                 }
-               }
+          ForEach(children, id: \.id) { child in
+            self.buildSwiftUIView(from: child)
+          }
+        }
       }))
 
     case let section as SectionNode:
       AnyView(SectionView(props: section.props, content: {
         if let children = section.children {
-                 ForEach(children, id: \.id) { child in
-                   self.buildSwiftUIView(from: child)
-                 }
-               }
+          ForEach(children, id: \.id) { child in
+            self.buildSwiftUIView(from: child)
+          }
+        }
       }))
 
     case let textField as TextFieldNode:
@@ -159,6 +163,9 @@ public class SwiftUIRootView: SwiftUIContainerView {
 
     case let stepper as StepperNode:
       StepperView(props: stepper.props)
+
+    case let button as ButtonNode:
+      ButtonView(props: button.props)
 
     default:
       EmptyView()

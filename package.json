@@ -5,6 +5,7 @@
   "author": "Olivier Louvignes <olivier@mgcrea.io> (https://github.com/mgcrea)",
   "homepage": "https://github.com/mgcrea/react-native-swiftui#readme",
   "private": true,
+  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
