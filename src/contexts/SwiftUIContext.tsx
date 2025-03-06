@@ -1,5 +1,5 @@
 // src/contexts/SwiftUIContext.tsx
-import React, { createContext, useContext, useRef, useState, useEffect } from "react";
+import React, { createContext, useContext, useRef, useState, useEffect, useCallback } from "react";
 import type { ViewTreeNode } from "src/types";
 
 type EventHandler = (...props: any[]) => void;
@@ -19,23 +19,23 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const eventRegistry = useRef<EventRegistry>(new Map());
   const nodeRegistry = useRef<NodeRegistry>(new Map());
 
-  const registerEventHandler = (id: string, name: string, handler: EventHandler) => {
+  const registerEventHandler = useCallback((id: string, name: string, handler: EventHandler) => {
     let handlersForId = eventRegistry.current.get(id);
     if (!handlersForId) {
       handlersForId = new Map<string, EventHandler>();
       eventRegistry.current.set(id, handlersForId);
     }
     handlersForId.set(name, handler);
-  };
+  }, []);
 
   const getEventHandler = (id: string, name: string) => {
     return eventRegistry.current.get(id)?.get(name);
   };
 
-  const registerNode = (node: ViewTreeNode, parentId?: string) => {
+  const registerNode = useCallback((node: ViewTreeNode, parentId?: string) => {
     console.log("Registering node", { node, parentId });
-    nodeRegistry.current.set(node.id!, { node, parentId });
-  };
+    nodeRegistry.current.set(node.id, { node, parentId });
+  }, []);
 
   const getNodes = () => nodeRegistry.current;
 

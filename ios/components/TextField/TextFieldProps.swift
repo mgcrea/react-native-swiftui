@@ -2,63 +2,34 @@ import SwiftUI
 
 // MARK: - Props
 
-public final class TextFieldProps: ObservableObject {
-  @Published public var text: String
-  @Published public var label: String
-  @Published public var placeholder: String
-  @Published public var keyboardType: UIKeyboardType
-  @Published public var textContentType: UITextContentType?
-  @Published public var returnKeyType: UIReturnKeyType
-  @Published public var isEnabled: Bool
-  @Published public var isSecureTextEntry: Bool
-  @Published public var autocapitalizationType: UITextAutocapitalizationType
-  @Published public var maxLength: Int? // New: Optional max length
-  @Published public var multiline: Bool // New: Single vs. multi-line
+public final class TextFieldProps: ObservableObject, Decodable {
+  @Published public var text: String = ""
+  @Published public var label: String = ""
+  @Published public var placeholder: String = ""
+  @Published public var keyboardType: UIKeyboardType = .default
+  @Published public var textContentType: UITextContentType? = nil
+  @Published public var returnKeyType: UIReturnKeyType = .default
+  @Published public var autocapitalizationType: UITextAutocapitalizationType? = nil
+  @Published public var maxLength: Int? = nil
+  @Published public var secure: Bool = false
+  @Published public var multiline: Bool = false
+  @Published public var disabled: Bool = false
   // Events
   public var onChange: ((String) -> Void)?
   public var onFocus: (() -> Void)?
   public var onBlur: (() -> Void)?
 
-  public init(
-    text: String = "",
-    label: String = "",
-    placeholder: String = "",
-    keyboardType: UIKeyboardType = .default,
-    textContentType: UITextContentType? = nil,
-    returnKeyType: UIReturnKeyType = .default,
-    isEnabled: Bool = true,
-    isSecureTextEntry: Bool = false,
-    autocapitalizationType: UITextAutocapitalizationType = .sentences,
-    maxLength: Int? = nil,
-    multiline: Bool = false
-  ) {
-    self.text = text
-    self.label = label
-    self.placeholder = placeholder
-    self.keyboardType = keyboardType
-    self.textContentType = textContentType
-    self.returnKeyType = returnKeyType
-    self.isEnabled = isEnabled
-    self.isSecureTextEntry = isSecureTextEntry
-    self.autocapitalizationType = autocapitalizationType
-    self.maxLength = maxLength
-    self.multiline = multiline
+  enum CodingKeys: String, CodingKey {
+    case text, label, placeholder, keyboardType, textContentType, returnKeyType, autocapitalizationType, maxLength, secure, multiline, disabled
   }
 
-  public func update(with newDictionary: [String: Any]) {
-    print("Updating TextFieldProps with:", newDictionary)
-    if let placeholder = newDictionary["placeholder"] as? String {
-      self.placeholder = placeholder
-    }
-    if let text = newDictionary["text"] as? String {
-      if self.text != text {
-        self.text = enforceMaxLength(text)
-      }
-    }
-    if let label = newDictionary["label"] as? String {
-      self.label = label
-    }
-    if let keyboardTypeString = newDictionary["keyboardType"] as? String {
+  public required init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    text = try container.decodeIfPresent(String.self, forKey: .text) ?? ""
+    label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+    placeholder = try container.decodeIfPresent(String.self, forKey: .placeholder) ?? ""
+    // Decode keyboardType
+    if let keyboardTypeString = try container.decodeIfPresent(String.self, forKey: .keyboardType) {
       switch keyboardTypeString {
       case "numberPad": keyboardType = .numberPad
       case "emailAddress": keyboardType = .emailAddress
@@ -66,30 +37,27 @@ public final class TextFieldProps: ObservableObject {
       default: keyboardType = .default
       }
     }
-    if let contentTypeString = newDictionary["textContentType"] as? String {
-      switch contentTypeString {
+    // Decode textContentType
+    if let textContentTypeString = try container.decodeIfPresent(String.self, forKey: .textContentType) {
+      switch textContentTypeString {
       case "username": textContentType = .username
       case "password": textContentType = .password
       case "emailAddress": textContentType = .emailAddress
       default: textContentType = nil
       }
     }
-    if let returnKeyString = newDictionary["returnKeyType"] as? String {
-      switch returnKeyString {
+    // Decode returnKeyType
+    if let returnKeyTypeString = try container.decodeIfPresent(String.self, forKey: .returnKeyType) {
+      switch returnKeyTypeString {
       case "done": returnKeyType = .done
       case "next": returnKeyType = .next
       case "search": returnKeyType = .search
       default: returnKeyType = .default
       }
     }
-    if let isEnabled = newDictionary["isEnabled"] as? Bool {
-      self.isEnabled = isEnabled
-    }
-    if let isSecure = newDictionary["isSecureTextEntry"] as? Bool {
-      isSecureTextEntry = isSecure
-    }
-    if let autocapString = newDictionary["autocapitalizationType"] as? String {
-      switch autocapString {
+    // Decode autocapitalizationType
+    if let autocapitalizationTypeString = try container.decodeIfPresent(String.self, forKey: .autocapitalizationType) {
+      switch autocapitalizationTypeString {
       case "none": autocapitalizationType = .none
       case "words": autocapitalizationType = .words
       case "sentences": autocapitalizationType = .sentences
@@ -97,12 +65,13 @@ public final class TextFieldProps: ObservableObject {
       default: autocapitalizationType = .sentences
       }
     }
-    if let maxLength = newDictionary["maxLength"] as? Int {
-      self.maxLength = maxLength
-      text = enforceMaxLength(text) // Apply maxLength on update
-    }
-    if let multiline = newDictionary["multiline"] as? Bool {
-      self.multiline = multiline
+    maxLength = try container.decodeIfPresent(Int.self, forKey: .maxLength) ?? nil
+    secure = try container.decodeIfPresent(Bool.self, forKey: .secure) ?? false
+    multiline = try container.decodeIfPresent(Bool.self, forKey: .multiline) ?? false
+    disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
+
+    if maxLength != nil {
+      text = enforceMaxLength(text)
     }
   }
 

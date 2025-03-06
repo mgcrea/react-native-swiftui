@@ -3,26 +3,13 @@ struct StepperNode: SwiftUINode, Decodable {
   let children: [any SwiftUINode]? = nil
   let props: StepperProps
 
-  enum PropsCodingKeys: String, CodingKey {
-    case value, label, minimum, maximum, step
-  }
-
-  init(id: String, props: StepperProps) {
-    self.id = id
-    self.props = props
+  enum CodingKeys: String, CodingKey {
+    case id, props
   }
 
   init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: BaseCodingKeys.self)
+    let container = try decoder.container(keyedBy: CodingKeys.self)
     id = try container.decode(String.self, forKey: .id)
-    let propsContainer = try container.nestedContainer(keyedBy: PropsCodingKeys.self, forKey: .props)
-
-    let stepperProps = StepperProps()
-    stepperProps.value = try propsContainer.decode(Int.self, forKey: .value)
-    stepperProps.label = try propsContainer.decodeIfPresent(String.self, forKey: .label) ?? ""
-    stepperProps.minimum = try propsContainer.decodeIfPresent(Int.self, forKey: .minimum) ?? 0
-    stepperProps.maximum = try propsContainer.decodeIfPresent(Int.self, forKey: .maximum) ?? 100
-    stepperProps.step = try propsContainer.decodeIfPresent(Int.self, forKey: .step) ?? 1
-    props = stepperProps
+    props = try container.decode(StepperProps.self, forKey: .props)
   }
 }

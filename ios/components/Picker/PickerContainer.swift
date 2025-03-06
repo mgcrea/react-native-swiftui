@@ -21,6 +21,16 @@ public class PickerContainer: SwiftUIContainerView {
 
   @objc
   public func updateProps(with newDictionary: [String: Any], oldDictionary _: [String: Any]) {
-    props.update(with: newDictionary)
+    do {
+      // Convert NSDictionary to JSON data
+      let jsonData = try JSONSerialization.data(withJSONObject: newDictionary, options: [])
+      // Decode into a new PickerProps instance
+      let decoder = JSONDecoder()
+      let updatedProps = try decoder.decode(PickerProps.self, from: jsonData)
+      // Merge into existing props to preserve onChange
+      props.merge(from: updatedProps)
+    } catch {
+      print("Failed to update PickerProps: \(error)")
+    }
   }
 }

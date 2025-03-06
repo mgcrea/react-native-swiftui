@@ -2,48 +2,27 @@ import SwiftUI
 
 // MARK: - Props
 
-public final class StepperProps: ObservableObject {
-  @Published public var value: Int
-  @Published public var label: String
-  @Published public var minimum: Int
-  @Published public var maximum: Int
-  @Published public var step: Int
+public final class StepperProps: ObservableObject, Decodable {
+  @Published public var value: Int = 0
+  @Published public var label: String = ""
+  @Published public var minimum: Int = 0
+  @Published public var maximum: Int = 100
+  @Published public var step: Int = 1
+  // Events
   public var onChange: ((String) -> Void)?
   public var onFocus: (() -> Void)?
   public var onBlur: (() -> Void)?
 
-  public init(
-    value: Int = 0,
-    label: String = "",
-    minimum: Int = 0,
-    maximum: Int = 100,
-    step: Int = 1
-  ) {
-    self.value = value
-    self.label = label
-    self.minimum = minimum
-    self.maximum = maximum
-    self.step = step
+  enum CodingKeys: String, CodingKey {
+    case value, label, minimum, maximum, step
   }
 
-  public func update(with newDictionary: [String: Any]) {
-    if let value = newDictionary["value"] as? Int {
-      if self.value != value {
-        self.value = value
-        onChange?(String(value)) // Notify change as string
-      }
-    }
-    if let label = newDictionary["label"] as? String {
-      self.label = label
-    }
-    if let minimum = newDictionary["minimum"] as? Int {
-      self.minimum = minimum
-    }
-    if let maximum = newDictionary["maximum"] as? Int {
-      self.maximum = maximum
-    }
-    if let step = newDictionary["step"] as? Int {
-      self.step = step
-    }
+  public required init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    value = try container.decodeIfPresent(Int.self, forKey: .value) ?? 0
+    label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+    minimum = try container.decodeIfPresent(Int.self, forKey: .minimum) ?? 0
+    maximum = try container.decodeIfPresent(Int.self, forKey: .maximum) ?? 100
+    step = try container.decodeIfPresent(Int.self, forKey: .step) ?? 1
   }
 }

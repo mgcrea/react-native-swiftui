@@ -1,27 +1,41 @@
-import {useForm, Controller, SubmitHandler} from 'react-hook-form';
+import {
+  useForm,
+  Controller,
+  SubmitHandler,
+  SubmitErrorHandler,
+} from 'react-hook-form';
 import {SwiftUI} from '@mgcrea/react-native-swiftui/src';
-import {Alert, View} from 'react-native';
+import {Alert, TextInput, View} from 'react-native';
 import {type FunctionComponent} from 'react';
 
 type FormData = {
   firstName: string;
   lastName: string;
+  birthDate: Date;
 };
 
 export const ReactHookFormExample: FunctionComponent = () => {
   const {control, handleSubmit} = useForm<FormData>({
-    defaultValues: {firstName: 'Olivier'},
+    defaultValues: {
+      firstName: 'Olivier',
+      lastName: '',
+      birthDate: new Date('1990-02-22T00:00:00Z'),
+    },
   });
 
-  const onSubmit: SubmitHandler<FormData> = data => {
-    console.log('Submitted with data:', data);
+  const onValidSubmit: SubmitHandler<FormData> = data => {
+    console.log('Submitted with data:', JSON.stringify(data, null, 2));
+  };
+
+  const onInvalidSubmit: SubmitErrorHandler<FormData> = errors => {
+    Alert.alert('Validation Error', JSON.stringify(errors, null, 2));
   };
 
   return (
     <View style={{flex: 1}}>
       <SwiftUI style={{flex: 1}}>
         <SwiftUI.Form>
-          <SwiftUI.Section header="Section 1">
+          <SwiftUI.Section header="Personal Information">
             <Controller
               name="firstName"
               control={control}
@@ -34,15 +48,47 @@ export const ReactHookFormExample: FunctionComponent = () => {
                   onBlur={onBlur}
                   onChange={onChange}
                   text={value}
+                  disabled
                 />
               )}
             />
-            <SwiftUI.Button
-              id="A"
-              title="Submit"
-              onPress={handleSubmit(onSubmit)}
+            <Controller
+              name="lastName"
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({field: {onChange, onBlur, value}}) => (
+                <SwiftUI.TextField
+                  placeholder="Last name"
+                  onBlur={onBlur}
+                  onChange={onChange}
+                  text={value}
+                />
+              )}
+            />
+            <Controller
+              name="birthDate"
+              control={control}
+              rules={{
+                required: true,
+              }}
+              render={({field: {onChange, value}}) => (
+                <SwiftUI.DatePicker
+                  label="Birth Date:"
+                  selection={value}
+                  displayedComponents="date" // Show only date, no time
+                  onChange={onChange}
+                  // disabled
+                  datePickerStyle="automatic"
+                />
+              )}
             />
           </SwiftUI.Section>
+          <SwiftUI.Button
+            title="Submit"
+            onPress={handleSubmit(onValidSubmit, onInvalidSubmit)}
+          />
         </SwiftUI.Form>
       </SwiftUI>
     </View>

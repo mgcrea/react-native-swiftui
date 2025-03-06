@@ -3,21 +3,13 @@ struct ButtonNode: SwiftUINode, Decodable {
   let children: [any SwiftUINode]? = nil
   let props: ButtonProps
 
-  enum PropsCodingKeys: String, CodingKey {
-    case title
-  }
-
-  init(id: String, props: ButtonProps) {
-    self.id = id
-    self.props = props
+  enum CodingKeys: String, CodingKey {
+    case id, props
   }
 
   init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: BaseCodingKeys.self)
+    let container = try decoder.container(keyedBy: CodingKeys.self)
     id = try container.decode(String.self, forKey: .id)
-    let propsContainer = try container.nestedContainer(keyedBy: PropsCodingKeys.self, forKey: .props)
-    let buttonProps = ButtonProps()
-    buttonProps.title = try propsContainer.decode(String.self, forKey: .title)
-    props = buttonProps
+    props = try container.decode(ButtonProps.self, forKey: .props)
   }
 }

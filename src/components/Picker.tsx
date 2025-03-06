@@ -11,6 +11,7 @@ export type NativePickerProps = {
   label?: string;
   options?: string[];
   pickerStyle?: NativePickerStyle;
+  disabled?: boolean;
   onChange?: (value: string) => void;
   onFocus?: () => void;
   onBlur?: () => void;
@@ -33,16 +34,17 @@ export const Picker: IdentifiableFunctionComponent<NativePickerProps> = ({
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
 
-  registerNode(
-    {
-      type: "Picker",
-      id: effectiveId,
-      props: otherProps,
-    },
-    parentId,
-  );
+  useEffect(() => {
+    registerNode(
+      {
+        type: "Picker",
+        id: effectiveId,
+        props: otherProps,
+      },
+      parentId,
+    );
+  }, [effectiveId, otherProps, parentId, registerNode]);
 
-  // Pass updated text to viewTree
   return null;
 };
 Picker.displayName = "Picker";

@@ -1,4 +1,4 @@
-import { useId, type PropsWithChildren } from "react";
+import { useEffect, useId, type PropsWithChildren } from "react";
 import { useSwiftUIContext, SwiftUIParentIdProvider, useSwiftUIParentContext } from "../contexts";
 import type { IdentifiableFunctionComponent } from "src/types";
 
@@ -19,15 +19,17 @@ export const Section: IdentifiableFunctionComponent<PropsWithChildren<NativeSect
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `section:${useId()}`;
 
-  registerNode(
-    {
-      type: "Section",
-      id: effectiveId,
-      props: otherProps,
-      children: [],
-    },
-    parentId,
-  );
+  useEffect(() => {
+    registerNode(
+      {
+        type: "Section",
+        id: effectiveId,
+        props: otherProps,
+        children: [],
+      },
+      parentId,
+    );
+  }, [effectiveId, otherProps, parentId, registerNode]);
 
   return <SwiftUIParentIdProvider id={effectiveId}>{children}</SwiftUIParentIdProvider>;
 };

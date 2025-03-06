@@ -16,14 +16,16 @@ export const Button: IdentifiableFunctionComponent<NativeButtonProps> = ({ id, o
     if (onPress) registerEventHandler(effectiveId, "press", onPress);
   }, [onPress, effectiveId, registerEventHandler]);
 
-  registerNode(
-    {
-      type: "Button",
-      id: effectiveId,
-      props: otherProps,
-    },
-    parentId,
-  );
+  useEffect(() => {
+    registerNode(
+      {
+        type: "Button",
+        id: effectiveId,
+        props: otherProps,
+      },
+      parentId,
+    );
+  }, [effectiveId, otherProps, parentId, registerNode]);
 
   return null;
 };

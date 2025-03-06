@@ -32,13 +32,14 @@ public struct TextFieldView: View {
     Group {
       if props.multiline {
         TextEditor(text: $props.text)
-      } else if props.isSecureTextEntry {
+      } else if props.secure {
         SecureField(props.placeholder, text: $props.text)
       } else {
         TextField(props.placeholder, text: $props.text)
       }
     }
     .keyboardType(props.keyboardType)
+    .disabled(props.disabled).foregroundColor(props.disabled ? .gray : .primary)
     .focused($isFocused)
 //    .toolbar {
 //      ToolbarItemGroup(placement: .keyboard) {

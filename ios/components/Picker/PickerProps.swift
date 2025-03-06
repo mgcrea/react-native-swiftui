@@ -2,15 +2,16 @@ import SwiftUI
 
 // MARK: - Props
 
-public final class PickerProps: ObservableObject {
+public final class PickerProps: ObservableObject, Decodable {
   @Published var selection: String = ""
   @Published var label: String = ""
   @Published var options: [String] = []
-  @Published var pickerStyle: PickerStyle = .wheel
+  @Published var pickerStyle: PickerStyle = .default
+  @Published var disabled: Bool = false
+  // Events
   public var onChange: ((String) -> Void)?
 
   enum PickerStyle: String, CaseIterable {
-
     case `default`
     case menu
     case segmented
@@ -34,16 +35,38 @@ public final class PickerProps: ObservableObject {
     }
   }
 
-  func update(with newDictionary: [String: Any]) {
-    label = newDictionary["label"] as? String ?? ""
-    selection = newDictionary["selection"] as? String ?? ""
-    options = newDictionary["options"] as? [String] ?? []
-    if let styleString = newDictionary["pickerStyle"] as? String,
+  // Coding keys for decoding
+  enum CodingKeys: String, CodingKey, CaseIterable {
+    case label, selection, options, pickerStyle, disabled
+  }
+
+  // Decodable initializer
+  public required init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+    selection = try container.decode(String.self, forKey: .selection)
+    options = try container.decode([String].self, forKey: .options)
+    if let styleString = try container.decodeIfPresent(String.self, forKey: .pickerStyle),
        let style = PickerStyle(rawValue: styleString)
     {
       pickerStyle = style
     } else {
       pickerStyle = .wheel // Default fallback
+    }
+    disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
+  }
+
+  public init() {}
+
+  public func merge(from other: PickerProps) {
+    for key in CodingKeys.allCases {
+      switch key {
+      case .label: label = other.label
+      case .selection: selection = other.selection
+      case .options: options = other.options
+      case .pickerStyle: pickerStyle = other.pickerStyle
+      case .disabled: disabled = other.disabled
+      }
     }
   }
 }

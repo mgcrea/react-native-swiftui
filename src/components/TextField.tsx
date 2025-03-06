@@ -3,10 +3,8 @@ import type { IdentifiableFunctionComponent } from "src/types";
 import { useSwiftUIParentContext, useSwiftUIContext } from "../contexts";
 
 export type NativeKeyboardType = "default" | "numberPad" | "emailAddress" | "decimalPad";
-
 export type NativeTextContentType = "username" | "password" | "emailAddress" | null;
 export type NativeReturnKeyType = "default" | "done" | "next" | "search";
-
 export type NativeAutocapitalizationType = "none" | "words" | "sentences" | "allCharacters";
 
 export type NativeTextFieldProps = {
@@ -16,11 +14,11 @@ export type NativeTextFieldProps = {
   keyboardType?: NativeKeyboardType;
   textContentType?: NativeTextContentType;
   returnKeyType?: NativeReturnKeyType;
-  isEnabled?: boolean;
-  isSecureTextEntry?: boolean;
+  secure?: boolean;
   autocapitalizationType?: NativeAutocapitalizationType;
   maxLength?: number | null;
   multiline?: boolean;
+  disabled?: boolean;
   onChange?: (value: string) => void;
   onFocus?: () => void;
   onBlur?: () => void;
@@ -35,7 +33,7 @@ export const TextField: IdentifiableFunctionComponent<NativeTextFieldProps> = ({
 }) => {
   const { registerEventHandler, registerNode } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
-  const effectiveId = id || `textfield:${useId()}`;
+  const effectiveId = id || `textField:${useId()}`;
 
   useEffect(() => {
     if (onChange) registerEventHandler(effectiveId, "change", onChange);
@@ -43,14 +41,16 @@ export const TextField: IdentifiableFunctionComponent<NativeTextFieldProps> = ({
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
 
-  registerNode(
-    {
-      type: "TextField",
-      id: effectiveId,
-      props: otherProps,
-    },
-    parentId,
-  );
+  useEffect(() => {
+    registerNode(
+      {
+        type: "TextField",
+        id: effectiveId,
+        props: otherProps,
+      },
+      parentId,
+    );
+  }, [effectiveId, otherProps, parentId, registerNode]);
 
   return null;
 };

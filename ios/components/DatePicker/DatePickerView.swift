@@ -11,16 +11,19 @@ public struct DatePickerView: View {
   }
 
   public var body: some View {
-    DatePicker(props.label,
-               selection: $props.selection,
-               displayedComponents: props.displayedComponents)
-      .datePickerStyle(.compact)
-      .focused($isFocused)
-      .onChange(of: isFocused) { newValue in
-        newValue ? props.onFocus?() : props.onBlur?()
+    props.datePickerStyle.applyStyle(DatePicker(
+      selection: $props.selection,
+      displayedComponents: props.displayedComponents, label: {
+        Text(props.label).foregroundColor(props.disabled ? .gray : .primary)
       }
-      .onChange(of: props.selection) { newValue in
-        props.onChange?(newValue)
-      }
+    )
+    .disabled(props.disabled)
+    .focused($isFocused)
+    .onChange(of: isFocused) { newValue in
+      newValue ? props.onFocus?() : props.onBlur?()
+    }
+    .onChange(of: props.selection) { newValue in
+      props.onChange?(newValue)
+    })
   }
 }

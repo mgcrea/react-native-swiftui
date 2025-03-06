@@ -32,14 +32,16 @@ export const Stepper: IdentifiableFunctionComponent<NativeStepperProps> = ({
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
 
-  registerNode(
-    {
-      type: "Stepper",
-      id: effectiveId,
-      props: otherProps,
-    },
-    parentId,
-  );
+  useEffect(() => {
+    registerNode(
+      {
+        type: "Stepper",
+        id: effectiveId,
+        props: otherProps,
+      },
+      parentId,
+    );
+  }, [effectiveId, otherProps, parentId, registerNode]);
 
   return null;
 };
