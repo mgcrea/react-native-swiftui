@@ -1,11 +1,11 @@
 // SectionView.swift
 import SwiftUI
 
-public struct SectionView: View {
+public struct SectionView<Content: View>: View {
     @ObservedObject public var props: SectionProps
-    let content: AnyView // Children from ContainerView
+    let content: () -> Content
 
-    public init(props: SectionProps, content: AnyView) {
+    public init(props: SectionProps, @ViewBuilder content: @escaping () -> Content) {
         self.props = props
         self.content = content
     }
@@ -16,7 +16,7 @@ public struct SectionView: View {
             footer: props.footer.isEmpty ? nil : Text(props.footer)
         ) {
             if !props.isCollapsed {
-                content
+                content()
             } else {
                 EmptyView() // Hide content when collapsed
             }

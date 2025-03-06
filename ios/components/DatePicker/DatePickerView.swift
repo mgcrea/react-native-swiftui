@@ -15,7 +15,6 @@ public struct DatePickerView: View {
                displayedComponents: props.displayedComponents)
       .datePickerStyle(.compact)
       .onChange(of: props.selection) { newValue in
-        print("DatePicker value changed: \(newValue)")
         props.onChange?(newValue)
       }
   }

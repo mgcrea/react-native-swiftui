@@ -1,46 +1,61 @@
-import { View, Text, StyleProp, Alert, ViewStyle } from "react-native";
 import {
   Children,
-  isValidElement,
   PropsWithChildren,
+  ReactElement,
   ReactNode,
-  useId,
+  useMemo,
   type FunctionComponent,
 } from "react";
-import { NativeContainerView } from ".";
+import { StyleProp, ViewStyle } from "react-native";
+import { NativeContainerView, NativeSwiftUIEvent } from ".";
+import {
+  DatePicker,
+  Form,
+  Picker,
+  Section,
+  Stepper,
+  TextField,
+} from "./components";
+import { SwiftUIProvider, useSwiftUIContext } from "./contexts/SwiftUIContext";
 import { convertJsxToViewTree } from "./utils/viewTree";
-import type {
-  NativeTextFieldProps,
-  NativeStepperProps,
-  NativeSectionProps,
-} from "./props";
 
 export type SwiftUIProps = {
+  onEvent?: (event: { nativeEvent: NativeSwiftUIEvent }) => void;
   style?: StyleProp<ViewStyle>;
 };
 
-export const SwiftUI = ({
+export const SwiftUIRootView = ({
   children,
   style,
+  onEvent: rootOnEvent,
 }: PropsWithChildren<SwiftUIProps>): ReactNode => {
-  const viewTree = {
-    type: "Group",
-    id: "root",
-    children: convertJsxToViewTree(children),
+  const { getEventHandler } = useSwiftUIContext();
+
+  const viewTree = useMemo(() => {
+    console.log(`Children have changed!! ${Children.count(children)}`);
+    return {
+      type: "Group",
+      id: "root",
+      children: convertJsxToViewTree(children),
+    };
+  }, [children]);
+
+  console.log(viewTree);
+
+  const handleEvent: SwiftUIProps["onEvent"] = (event) => {
+    const { id, name, value } = event.nativeEvent;
+    console.log(`Received event "${name}" for id=${id}, value=${value}`);
+    const handler = getEventHandler(id, name);
+    if (handler) {
+      handler(name === "change" ? value : undefined); // Pass value only for change
+    }
+    rootOnEvent?.(event); // Forward to root handler
   };
-  console.log({ viewTree });
-  const id = useId();
-  const id2 = useId();
-  console.log({ id, id2 });
-  const onEvent = ({ nativeEvent }: { nativeEvent: { value: string } }) => {
-    const title = "Result";
-    const message = JSON.stringify(nativeEvent);
-    Alert.alert(title, message);
-  };
+
   return (
     <NativeContainerView
       viewTree={JSON.stringify(viewTree)}
-      onEvent={onEvent}
+      onEvent={handleEvent}
       style={style}
     >
       {children}
@@ -48,63 +63,24 @@ export const SwiftUI = ({
   );
 };
 
-// Define sub-components as simple passthroughs (no rendering, just structure)
-SwiftUI.Form = function SwiftUIForm({
+export const SwiftUI = ({
   children,
   ...props
-}: {
-  children?: React.ReactNode;
-}) {
-  return <>{children}</>;
-};
-SwiftUI.Picker = function SwiftUIPicker({
-  label,
-  selection,
-  options,
-  pickerStyle,
-  ...props
-}: {
-  label: string;
-  selection: string;
-  options: string[];
-  pickerStyle?: string;
-}) {
-  return null;
-};
-SwiftUI.DatePicker = function SwiftUIDatePicker({
-  label,
-  selection,
-  displayedComponents,
-  ...props
-}: {
-  label: string;
-  selection: Date;
-  displayedComponents: "date" | "dateTime";
-}) {
-  return null;
+}: PropsWithChildren<SwiftUIProps>): ReactElement => {
+  return (
+    <SwiftUIProvider>
+      <SwiftUIRootView {...props}>{children}</SwiftUIRootView>
+    </SwiftUIProvider>
+  );
 };
 
-const Section: FunctionComponent<PropsWithChildren<NativeSectionProps>> = ({
-  children,
-}) => {
-  console.warn("Section");
-  return <>{children}</>;
-};
-Section.displayName = "Section";
+// Define sub-components
+SwiftUI.Form = Form;
 SwiftUI.Section = Section;
-
-const TextField: FunctionComponent<NativeTextFieldProps> = () => {
-  console.warn("TextField");
-  return null;
-};
-TextField.displayName = "TextField";
 SwiftUI.TextField = TextField;
-
-const Stepper: FunctionComponent<Identifiable<NativeStepperProps>> = () => {
-  console.warn("Stepper");
-  return null;
-};
-Stepper.displayName = "Stepper";
+SwiftUI.Picker = Picker;
+SwiftUI.DatePicker = DatePicker;
 SwiftUI.Stepper = Stepper;
 
 type Identifiable<T> = T & { id?: string };
+type IdentifiableFunctionComponent<T> = FunctionComponent<Identifiable<T>>;

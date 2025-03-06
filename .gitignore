@@ -7,3 +7,4 @@ android/generated/
 dist/
 .idea/
 .vscode/
+tmp/

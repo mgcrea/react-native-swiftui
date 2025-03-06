@@ -5,7 +5,7 @@ import type {
 } from "react-native/Libraries/Types/CodegenTypes";
 import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
 
-type NativeSwiftUIEvent = {
+export type NativeSwiftUIEvent = {
   name: string;
   value: string;
   type: string;

@@ -20,7 +20,7 @@ struct TextFieldNode: SwiftUINode, Decodable {
     let textFieldProps = TextFieldProps()
     textFieldProps.placeholder = try propsContainer
       .decodeIfPresent(String.self, forKey: .placeholder) ?? ""
-    textFieldProps.text = try propsContainer.decode(String.self, forKey: .text)
+    textFieldProps.text = try propsContainer.decodeIfPresent(String.self, forKey: .text) ?? ""
     textFieldProps.label = try propsContainer.decodeIfPresent(String.self, forKey: .label) ?? ""
     if let keyboardTypeString = try propsContainer.decodeIfPresent(String.self, forKey: .keyboardType) {
       switch keyboardTypeString {

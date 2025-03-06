@@ -51,18 +51,16 @@ final class ContainerProps: ObservableObject {
       picker.props.onChange = { [weak self] value in
         self?.onEvent?("change", "Picker", picker.id, value)
       }
-    } else if let datePicker = node as? DatePickerNode {
-      if dateSelections[datePicker.id] == nil {
-        dateSelections[datePicker.id] = datePicker.props.selection
+    } else if let stepper = node as? StepperNode {
+      stepper.props.onChange = { [weak self] value in
+        self?.onEvent?("change", "Stepper", stepper.id, value)
       }
+    } else if let datePicker = node as? DatePickerNode {
       datePicker.props.onChange = { [weak self] rawValue in
         let value = ISO8601DateFormatter().string(from: rawValue)
         self?.onEvent?("change", "DatePicker", datePicker.id, value)
       }
     } else if let textField = node as? TextFieldNode {
-      if textFieldValues[textField.id] == nil {
-        textFieldValues[textField.id] = textField.props.text
-      }
       textField.props.onChange = { [weak self] value in
         self?.onEvent?("change", "TextField", textField.id, value)
       }
@@ -72,6 +70,9 @@ final class ContainerProps: ObservableObject {
       textField.props.onBlur = { [weak self] in
         self?.onEvent?("blur", "TextField", textField.id, nil)
       }
+    }
+    if let children = node.children {
+      children.forEach { bindEventHandlers(from: $0) }
     }
   }
 }
@@ -130,24 +131,22 @@ public class SwiftUIRootView: SwiftUIContainerView {
       )
 
     case let form as FormNode:
-      AnyView(
-        Form {
-          if let children = form.children {
-            ForEach(children, id: \.id) { child in
-              self.buildSwiftUIView(from: child)
-            }
-          }
-        }
-      )
+      AnyView(FormView(props: form.props, content: {
+        if let children = form.children {
+                 ForEach(children, id: \.id) { child in
+                   self.buildSwiftUIView(from: child)
+                 }
+               }
+      }))
 
     case let section as SectionNode:
-      AnyView(Section {
+      AnyView(SectionView(props: section.props, content: {
         if let children = section.children {
-          ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
-          }
-        }
-      })
+                 ForEach(children, id: \.id) { child in
+                   self.buildSwiftUIView(from: child)
+                 }
+               }
+      }))
 
     case let textField as TextFieldNode:
       TextFieldView(props: textField.props)

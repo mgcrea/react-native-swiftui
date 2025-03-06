@@ -32,10 +32,13 @@ import {
 } from '@mgcrea/react-native-swiftui/src';
 
 const CATEGORIES = ['Strength', 'Gymnastics', 'Cardio', 'Mixed'];
-const STRENGTH = ['Deadlift', 'Squat', 'Bench Press', 'Shoulder Press'];
-const GYMNASTICS = ['Pull-up', 'Push-up', 'Sit-up', 'Handstand'];
-const CARDIO = ['Run', 'Row', 'Bike', 'Swim'];
-const MIXED = ['Murph', 'Fran', 'Helen', 'Grace'];
+
+const MOVEMENTS = {
+  Strength: ['Deadlift', 'Squat', 'Bench Press', 'Shoulder Press'],
+  Gymnastics: ['Pull-up', 'Push-up', 'Sit-up', 'Handstand'],
+  Cardio: ['Run', 'Row', 'Bike', 'Swim'],
+  Mixed: ['Murph', 'Fran', 'Helen', 'Grace'],
+};
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -44,16 +47,10 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  /*
-   * To keep the template simple and small we're adding padding to prevent view
-   * from rendering under the System UI.
-   * For bigger apps the reccomendation is to use `react-native-safe-area-context`:
-   * https://github.com/AppAndFlow/react-native-safe-area-context
-   *
-   * You can read more about it here:
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   */
-  const safePadding = '5%';
+  const [category, setCategory] = React.useState('Strength');
+  const [movement, setMovement] = React.useState('');
+  const [stepperValue, setStepperValue] = React.useState(5);
+  const [textValue, setTextValue] = React.useState('60');
 
   return (
     <View style={backgroundStyle}>
@@ -73,6 +70,11 @@ function App(): React.JSX.Element {
         }}
       /> */}
       <SwiftUI
+        // onEvent={({nativeEvent}) => {
+        //   const title = 'Result';
+        //   const message = JSON.stringify(nativeEvent);
+        //   Alert.alert(title, message);
+        // }}
         style={{
           // width: '200',
           height: '100%',
@@ -84,16 +86,20 @@ function App(): React.JSX.Element {
             footer="Adjust settings below"
             isCollapsed={false}>
             <SwiftUI.Picker
+              id="my-picker"
               label="Workout Category"
-              selection="Strength"
+              selection={category}
               options={CATEGORIES}
               pickerStyle="menu"
+              onChange={setCategory}
             />
             <SwiftUI.Picker
+              id="my-picker2"
               label="Movement Name"
-              selection="Deadlift"
-              options={STRENGTH}
+              selection={movement}
+              options={MOVEMENTS[category]}
               pickerStyle="menu"
+              onChange={setMovement}
             />
           </SwiftUI.Section>
           <SwiftUI.Section header="Section 2">
@@ -103,23 +109,60 @@ function App(): React.JSX.Element {
               displayedComponents="date"
             />
             <SwiftUI.Stepper
-              id="stepperX"
-              value={5}
+              id="my-stepper"
+              value={stepperValue}
               label="Quantity:"
               minimum={1}
               maximum={10}
               step={1}
-              // onChange={value =>
-              //   Alert.alert('Stepper Changed', `New value: ${value}`)
-              // }
+              onChange={value => {
+                // Alert.alert('Stepper Changed', `New value: ${value}`)
+                console.log('Stepper Changed', `New value: ${value}`);
+                setStepperValue(value * 1);
+              }}
+            />
+            <SwiftUI.TextField
+              label="Duration:"
+              placeholder="Enter duration"
+              text={stepperValue.toString()}
+              keyboardType="numberPad"
+              returnKeyType="next"
+              // onChange={() => {
+              //   Alert.alert('Result', 'Duration changed');
+              // }}
             />
           </SwiftUI.Section>
           <SwiftUI.Section header="Section 3">
+            {Array.from({length: stepperValue}).map((_, index) => (
+              <SwiftUI.TextField
+                key={index}
+                label={`Duration ${index + 1}:`}
+                placeholder="Enter duration"
+                keyboardType="numberPad"
+                returnKeyType="next"
+              />
+            ))}
+          </SwiftUI.Section>
+          <SwiftUI.Section header="Section 3">
             <SwiftUI.TextField
+              id="my-textfield"
+              label="Duration:"
+              placeholder="Enter duration"
+              // text={textValue}
+              keyboardType="numberPad"
+              returnKeyType="next"
+              onChange={value => {
+                console.log({value});
+                setTextValue(value);
+              }}
+            />
+            <SwiftUI.TextField
+              label="Duration2:"
               placeholder="Enter duration"
               text="60"
               keyboardType="numberPad"
               returnKeyType="next"
+              disabled
               // onChange={() => {
               //   Alert.alert('Result', 'Duration changed');
               // }}

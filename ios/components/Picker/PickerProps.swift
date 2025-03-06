@@ -10,6 +10,8 @@ public final class PickerProps: ObservableObject {
   public var onChange: ((String) -> Void)?
 
   enum PickerStyle: String, CaseIterable {
+
+    case `default`
     case menu
     case segmented
     case wheel
@@ -18,6 +20,8 @@ public final class PickerProps: ObservableObject {
     @ViewBuilder
     func applyStyle<V: View>(_ view: V) -> some View {
       switch self {
+      case .default:
+        view.pickerStyle(DefaultPickerStyle())
       case .menu:
         view.pickerStyle(MenuPickerStyle())
       case .segmented:

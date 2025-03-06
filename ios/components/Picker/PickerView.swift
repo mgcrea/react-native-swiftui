@@ -16,7 +16,6 @@ public struct PickerView: View {
           Text(option).tag(option)
         }
       }.onChange(of: props.selection) { newValue in
-        print("Value changed! \(newValue)")
         props.onChange?(newValue)
       }
     )

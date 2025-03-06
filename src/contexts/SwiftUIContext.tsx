@@ -1,12 +1,18 @@
-// SwiftUIContext.tsx
 import React, { createContext, useContext, useRef } from "react";
 
-type OnChangeHandler = (value: string) => void;
-type EventRegistry = Map<string, OnChangeHandler>;
+type EventHandler = (...props: any[]) => void;
+type EventRegistry = Map<string, Map<string, EventHandler>>; // id -> eventName -> handler
+// type ValueRegistry = Map<string, any>;
 
 interface SwiftUIContextType {
-  registerEventHandler: (id: string, handler: OnChangeHandler) => void;
-  getEventHandler: (id: string) => OnChangeHandler | undefined;
+  registerEventHandler: (
+    id: string,
+    name: string,
+    handler: EventHandler
+  ) => void;
+  getEventHandler: (id: string, name: string) => EventHandler | undefined;
+  // registerValue: (id: string, key: string, value: any) => void;
+  // getValue: (id: string, key: string) => any;
 }
 
 const SwiftUIContext = createContext<SwiftUIContextType | undefined>(undefined);
@@ -16,12 +22,23 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const eventRegistry = useRef<EventRegistry>(new Map());
 
-  const registerEventHandler = (id: string, handler: OnChangeHandler) => {
-    eventRegistry.current.set(id, handler);
+  const registerEventHandler = (
+    id: string,
+    name: string,
+    handler: EventHandler
+  ) => {
+    let handlersForId = eventRegistry.current.get(id);
+    console.log(`registerEventHandler ${id} ${name}`);
+    if (!handlersForId) {
+      handlersForId = new Map<string, EventHandler>();
+      eventRegistry.current.set(id, handlersForId);
+    }
+    handlersForId.set(name, handler);
   };
 
-  const getEventHandler = (id: string) => {
-    return eventRegistry.current.get(id);
+  const getEventHandler = (id: string, name: string) => {
+    console.log(`getEventHandler ${id} ${name}`);
+    return eventRegistry.current.get(id)?.get(name);
   };
 
   return (
@@ -31,7 +48,7 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-const useSwiftUIContext = () => {
+export const useSwiftUIContext = () => {
   const context = useContext(SwiftUIContext);
   if (!context) {
     throw new Error("useSwiftUIContext must be used within a SwiftUIProvider");

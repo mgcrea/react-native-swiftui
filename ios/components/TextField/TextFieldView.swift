@@ -49,11 +49,9 @@ public struct TextFieldView: View {
 //      }
 //    }
     .onChange(of: isFocused) { newValue in
-      print(newValue ? "Focused" : "Blurred")
       newValue ? props.onFocus?() : props.onBlur?()
     }
     .onChange(of: props.text) { newValue in
-      print("TextField value changed: \(newValue)")
       props.onChange?(newValue)
     }
   }

@@ -39,7 +39,6 @@ public struct StepperView: View {
     }
     .focused($isFocused)
     .onChange(of: props.value) { newValue in
-      print("Stepper value changed: \(newValue)")
       props.onChange?(String(newValue))
     }
     .onChange(of: isFocused) { newValue in

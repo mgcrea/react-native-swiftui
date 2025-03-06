@@ -16,7 +16,6 @@ function getComponentName(type: any): string {
   if (typeof type === "function") {
     // Use displayName or name if available
     const name = type.displayName || type.name;
-    console.log("name", name);
     if (name) {
       // For SwiftUI sub-components, strip 'SwiftUI.' prefix if present
       return name.startsWith("SwiftUI") ? name.replace("SwiftUI", "") : name;
@@ -32,6 +31,7 @@ function convertJsxToViewTree(
   children: React.ReactNode,
   idCounter: { current: number } = { current: 0 }
 ): ViewTreeNode[] {
+  console.log("convertJsxToViewTree");
   const nodes: ViewTreeNode[] = [];
 
   React.Children.forEach(children, (child) => {
@@ -46,6 +46,7 @@ function convertJsxToViewTree(
     // Auto-generate ID if not provided
     if (!props.id) {
       node.id = `auto-${idCounter.current++}`;
+      // props.id = node.id;
     } else {
       node.id = props.id;
     }

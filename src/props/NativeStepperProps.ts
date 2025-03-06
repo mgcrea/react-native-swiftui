@@ -6,7 +6,7 @@ export type NativeStepperProps = {
   minimum?: number;
   maximum?: number;
   step?: number;
-  onChange?: BubblingEventHandler<{ value: string }>;
-  onFocus?: BubblingEventHandler<void>;
-  onBlur?: BubblingEventHandler<void>;
+  onChange?: (value: number) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
 };
