@@ -41,6 +41,7 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const unregisterNode = useCallback((id: string) => {
     console.log(`Unregistering node with id=${id}`);
     nodeRegistry.current.delete(id);
+    eventRegistry.current.delete(id);
   }, []);
 
   const getNodes = () => nodeRegistry.current;

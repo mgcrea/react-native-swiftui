@@ -89,38 +89,6 @@ export const TanStackFormExample: FunctionComponent = () => {
                 />
               )}
             </form.Field>
-            {/* <Controller
-              name="lastName"
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({field: {onChange, onBlur, value}}) => (
-                <SwiftUI.TextField
-                  placeholder="Last name"
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  text={value}
-                />
-              )}
-            />
-            <Controller
-              name="birthDate"
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({field: {onChange, value}}) => (
-                <SwiftUI.DatePicker
-                  label="Birth Date:"
-                  selection={value}
-                  displayedComponents="date" // Show only date, no time
-                  onChange={onChange}
-                  // disabled
-                  datePickerStyle="automatic"
-                />
-              )}
-            /> */}
           </SwiftUI.Section>
           <SwiftUI.Button
             title="Submit"
