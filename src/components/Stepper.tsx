@@ -44,7 +44,7 @@ export const Stepper: IdentifiableFunctionComponent<NativeStepperProps> = ({
     return () => {
       unregisterNode(effectiveId);
     };
-  }, [effectiveId, otherProps, parentId, registerNode]);
+  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

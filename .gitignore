@@ -8,3 +8,4 @@ dist/
 .idea/
 .vscode/
 tmp/
+*.private.tsx
