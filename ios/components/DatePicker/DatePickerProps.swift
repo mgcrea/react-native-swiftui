@@ -6,7 +6,10 @@ public final class DatePickerProps: ObservableObject {
   @Published public var selection: Date
   @Published public var label: String
   @Published public var displayedComponents: DatePickerComponents
+  // Events
   public var onChange: ((Date) -> Void)?
+  public var onFocus: (() -> Void)?
+  public var onBlur: (() -> Void)?
 
   public init(
     selection: Date = Date(),
