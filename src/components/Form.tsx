@@ -10,7 +10,7 @@ export const Form: IdentifiableFunctionComponent<React.PropsWithChildren<NativeF
   id,
   children,
 }) => {
-  const { registerNode } = useSwiftUIContext();
+  const { registerNode, unregisterNode } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `form:${useId()}`;
 
@@ -23,7 +23,10 @@ export const Form: IdentifiableFunctionComponent<React.PropsWithChildren<NativeF
       },
       parentId,
     );
-  }, [effectiveId, parentId, registerNode]);
+    return () => {
+      unregisterNode(effectiveId);
+    };
+  }, [effectiveId, parentId, registerNode, unregisterNode]);
 
   return <SwiftUIParentIdProvider id={effectiveId}>{children}</SwiftUIParentIdProvider>;
 };

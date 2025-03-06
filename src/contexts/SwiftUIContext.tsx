@@ -9,7 +9,8 @@ type NodeRegistry = Map<string, { node: ViewTreeNode; parentId?: string }>;
 interface SwiftUIContextType {
   registerEventHandler: (id: string, name: string, handler: EventHandler) => void;
   getEventHandler: (id: string, name: string) => EventHandler | undefined;
-  registerNode: (node: ViewTreeNode, parentId: string) => void; // Keep parentId param for now
+  registerNode: (node: ViewTreeNode, parentId: string) => void;
+  unregisterNode: (id: string) => void;
   getNodes: () => NodeRegistry;
 }
 
@@ -33,8 +34,13 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   const registerNode = useCallback((node: ViewTreeNode, parentId?: string) => {
-    console.log("Registering node", { node, parentId });
+    console.log(`Registering node with id=${node.id}`, { node, parentId });
     nodeRegistry.current.set(node.id, { node, parentId });
+  }, []);
+
+  const unregisterNode = useCallback((id: string) => {
+    console.log(`Unregistering node with id=${id}`);
+    nodeRegistry.current.delete(id);
   }, []);
 
   const getNodes = () => nodeRegistry.current;
@@ -43,12 +49,9 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
     registerEventHandler,
     getEventHandler,
     registerNode,
+    unregisterNode,
     getNodes,
   };
-
-  useEffect(() => {
-    nodeRegistry.current.clear(); // Reset on each render
-  }, [children]);
 
   return <SwiftUIContext.Provider value={context}>{children}</SwiftUIContext.Provider>;
 };

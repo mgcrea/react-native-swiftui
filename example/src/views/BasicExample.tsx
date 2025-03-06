@@ -21,6 +21,7 @@ export const BasicExample: FunctionComponent = () => {
   return (
     <SwiftUI style={{flex: 1}}>
       <SwiftUI.Form>
+        <SwiftUI.Text text="BasicExample" />
         <SwiftUI.Section
           header="Section 1"
           footer="Adjust settings below"

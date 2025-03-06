@@ -15,7 +15,7 @@ export const Section: IdentifiableFunctionComponent<PropsWithChildren<NativeSect
   children,
   ...otherProps
 }) => {
-  const { registerNode } = useSwiftUIContext();
+  const { registerNode, unregisterNode } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `section:${useId()}`;
 
@@ -29,7 +29,10 @@ export const Section: IdentifiableFunctionComponent<PropsWithChildren<NativeSect
       },
       parentId,
     );
-  }, [effectiveId, otherProps, parentId, registerNode]);
+    return () => {
+      unregisterNode(effectiveId);
+    };
+  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
 
   return <SwiftUIParentIdProvider id={effectiveId}>{children}</SwiftUIParentIdProvider>;
 };

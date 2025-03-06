@@ -8,7 +8,7 @@ struct TextFieldNode: SwiftUINode, Decodable {
   }
 
   init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: BaseCodingKeys.self)
+    let container = try decoder.container(keyedBy: CodingKeys.self)
     id = try container.decode(String.self, forKey: .id)
     props = try container.decode(TextFieldProps.self, forKey: .props)
   }

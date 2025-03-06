@@ -152,6 +152,9 @@ public class SwiftUIRootView: SwiftUIContainerView {
         }
       }))
 
+    case let text as TextNode:
+      TextView(props: text.props)
+
     case let textField as TextFieldNode:
       TextFieldView(props: textField.props)
 

@@ -22,7 +22,7 @@ export const Stepper: IdentifiableFunctionComponent<NativeStepperProps> = ({
   onBlur,
   ...otherProps
 }) => {
-  const { registerEventHandler, registerNode } = useSwiftUIContext();
+  const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `stepper:${useId()}`;
 
@@ -41,6 +41,9 @@ export const Stepper: IdentifiableFunctionComponent<NativeStepperProps> = ({
       },
       parentId,
     );
+    return () => {
+      unregisterNode(effectiveId);
+    };
   }, [effectiveId, otherProps, parentId, registerNode]);
 
   return null;

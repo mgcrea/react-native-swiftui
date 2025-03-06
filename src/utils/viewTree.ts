@@ -1,5 +1,3 @@
-// swiftuiUtils.ts
-import React from "react";
 import type { ViewTreeNode } from "src/types";
 
 export function buildViewTree(nodes: Map<string, { node: ViewTreeNode; parentId?: string }>): ViewTreeNode {

@@ -8,7 +8,7 @@ export type NativeButtonProps = {
 };
 
 export const Button: IdentifiableFunctionComponent<NativeButtonProps> = ({ id, onPress, ...otherProps }) => {
-  const { registerEventHandler, registerNode } = useSwiftUIContext();
+  const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `button-${useId()}`;
 
@@ -25,7 +25,10 @@ export const Button: IdentifiableFunctionComponent<NativeButtonProps> = ({ id, o
       },
       parentId,
     );
-  }, [effectiveId, otherProps, parentId, registerNode]);
+    return () => {
+      unregisterNode(effectiveId);
+    };
+  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

@@ -12,9 +12,9 @@ import {
 } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { NativeContainerView, NativeSwiftUIEvent } from ".";
-import { DatePicker, Form, Picker, Section, Stepper, TextField, Button } from "./components";
+import { DatePicker, Form, Picker, Section, Stepper, TextField, Button, Text } from "./components";
 import { SwiftUIProvider, useSwiftUIContext } from "./contexts/SwiftUIContext";
-import { buildViewTree, convertJsxToViewTree } from "./utils/viewTree";
+import { buildViewTree } from "./utils/viewTree";
 import { SwiftUIParentIdProvider } from "./contexts";
 import type { ViewTreeNode } from "./types";
 
@@ -30,32 +30,13 @@ export const SwiftUIRootView = ({
 }: PropsWithChildren<SwiftUIProps>): ReactNode => {
   const { getEventHandler, getNodes } = useSwiftUIContext();
 
-  // const viewTree = useMemo(() => {
-  //   console.log(`Children have changed!! ${Children.count(children)}`);
-  //   return {
-  //     type: "Group",
-  //     id: "root",
-  //     children: convertJsxToViewTree(children),
-  //   };
-  // }, [children]);
-
-  // const [debouncedViewTree, setDebouncedViewTree] = useState(
-  //   JSON.stringify(viewTree)
-  // );
-  // useEffect(() => {
-  //   const timeout = setTimeout(
-  //     () => setDebouncedViewTree(JSON.stringify(viewTree)),
-  //     100
-  //   );
-  //   return () => clearTimeout(timeout);
-  // }, [viewTree]);
-  // console.log({ debouncedViewTree });
-
   const [viewTree, setViewTree] = useState<ViewTreeNode | null>(null);
 
   useEffect(() => {
     const nodes = getNodes();
-    setViewTree(buildViewTree(nodes));
+    const viewTree = buildViewTree(nodes);
+    console.log({ viewTree });
+    setViewTree(viewTree);
   }, [getNodes]);
 
   const serializedViewTree = useMemo(() => {
@@ -97,3 +78,4 @@ SwiftUI.Picker = Picker;
 SwiftUI.DatePicker = DatePicker;
 SwiftUI.Stepper = Stepper;
 SwiftUI.Button = Button;
+SwiftUI.Text = Text;

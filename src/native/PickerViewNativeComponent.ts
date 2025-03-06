@@ -2,18 +2,23 @@ import type { HostComponent, ViewProps } from "react-native";
 import type { BubblingEventHandler, WithDefault } from "react-native/Libraries/Types/CodegenTypes";
 import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
 
+type NativePickerStyle = "default" | "inline" | "menu" | "segmented" | "wheel";
+
 type NativePickerChangeEvent = {
   value: string;
 };
-
-export type NativePickerStyle = "wheel" | "menu" | "segmented";
+type NativePickerFocusEvent = {};
+type NativePickerBlurEvent = {};
 
 export interface NativePickerProps extends ViewProps {
-  label?: string;
   selection?: string;
-  options: string[];
-  pickerStyle?: WithDefault<NativePickerStyle, "wheel">;
+  label?: string;
+  options?: string[];
+  pickerStyle?: WithDefault<NativePickerStyle, "default">;
+  disabled?: boolean;
   onChange?: BubblingEventHandler<Readonly<NativePickerChangeEvent>>;
+  onFocus?: BubblingEventHandler<Readonly<NativePickerFocusEvent>>;
+  onBlur?: BubblingEventHandler<Readonly<NativePickerBlurEvent>>;
 }
 
 export default codegenNativeComponent<NativePickerProps>(

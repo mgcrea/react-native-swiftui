@@ -4,4 +4,5 @@ export * from "./Form";
 export * from "./Picker";
 export * from "./Section";
 export * from "./Stepper";
+export * from "./Text";
 export * from "./TextField";

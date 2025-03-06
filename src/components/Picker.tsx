@@ -24,7 +24,7 @@ export const Picker: IdentifiableFunctionComponent<NativePickerProps> = ({
   onBlur,
   ...otherProps
 }) => {
-  const { registerEventHandler, registerNode } = useSwiftUIContext();
+  const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `picker:${useId()}`;
 
@@ -43,7 +43,10 @@ export const Picker: IdentifiableFunctionComponent<NativePickerProps> = ({
       },
       parentId,
     );
-  }, [effectiveId, otherProps, parentId, registerNode]);
+    return () => {
+      unregisterNode(effectiveId);
+    };
+  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

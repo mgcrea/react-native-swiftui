@@ -54,6 +54,8 @@ private struct NodeWrapper: Decodable {
       node = try StepperNode(from: decoder)
     case "Button":
       node = try ButtonNode(from: decoder)
+    case "Text":
+      node = try TextNode(from: decoder)
     default:
       throw Swift.DecodingError.typeMismatch(
         (any SwiftUINode).self,

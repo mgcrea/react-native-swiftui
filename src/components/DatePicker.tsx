@@ -26,7 +26,7 @@ export const DatePicker: IdentifiableFunctionComponent<NativeDatePickerProps> = 
   onBlur,
   ...otherProps
 }) => {
-  const { registerEventHandler, registerNode } = useSwiftUIContext();
+  const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `datePicker:${useId()}`;
 
@@ -49,7 +49,10 @@ export const DatePicker: IdentifiableFunctionComponent<NativeDatePickerProps> = 
       },
       parentId,
     );
-  }, [effectiveId, otherProps, parentId, registerNode]);
+    return () => {
+      unregisterNode(effectiveId);
+    };
+  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

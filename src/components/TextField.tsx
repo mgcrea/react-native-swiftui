@@ -31,7 +31,7 @@ export const TextField: IdentifiableFunctionComponent<NativeTextFieldProps> = ({
   onBlur,
   ...otherProps
 }) => {
-  const { registerEventHandler, registerNode } = useSwiftUIContext();
+  const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `textField:${useId()}`;
 
@@ -50,7 +50,10 @@ export const TextField: IdentifiableFunctionComponent<NativeTextFieldProps> = ({
       },
       parentId,
     );
-  }, [effectiveId, otherProps, parentId, registerNode]);
+    return () => {
+      unregisterNode(effectiveId);
+    };
+  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };
