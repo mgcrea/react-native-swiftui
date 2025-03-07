@@ -11,7 +11,7 @@ export type NativeSwiftUIEvent = {
 };
 
 export interface NativeSwiftUIRootProps extends ViewProps {
-  viewTree: string;
+  viewTree?: string;
   onEvent?: DirectEventHandler<Readonly<NativeSwiftUIEvent>>;
 }
 

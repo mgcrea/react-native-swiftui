@@ -25,6 +25,7 @@ const SwiftUIContext = createContext<SwiftUIContextType | undefined>(undefined);
 export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const eventRegistry = useRef<EventRegistry>(new Map());
   const nodeRegistry = useRef<NodeRegistry>(new Map());
+  const nativeRef = useRef<React.ElementRef<typeof SwiftUIRootNativeComponent> | null>(null);
 
   const registerEventHandler = useCallback((id: string, name: string, handler: EventHandler) => {
     let handlersForId = eventRegistry.current.get(id);
@@ -50,9 +51,7 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
     eventRegistry.current.delete(id);
   }, []);
 
-  const getNodes = () => nodeRegistry.current;
-
-  const nativeRef = useRef<React.ElementRef<typeof SwiftUIRootNativeComponent> | null>(null);
+  const getNodes = useCallback(() => nodeRegistry.current, []);
 
   const updateNodeProps = useCallback((id: string, props: Record<string, any>) => {
     if (!nativeRef.current) {
@@ -70,13 +69,13 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, []);
 
   const context = {
+    getEventHandler,
+    getNodes,
     nativeRef,
     registerEventHandler,
-    getEventHandler,
     registerNode,
     unregisterNode,
     updateNodeProps,
-    getNodes,
   };
 
   return <SwiftUIContext.Provider value={context}>{children}</SwiftUIContext.Provider>;

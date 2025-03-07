@@ -47,18 +47,13 @@ export const SwiftUIRoot = ({
 }: PropsWithChildren<SwiftUIProps>): ReactNode => {
   const { nativeRef, getEventHandler, getNodes } = useSwiftUIContext();
 
-  const [viewTree, setViewTree] = useState<ViewTreeNode | null>(null);
-
+  const nodes = getNodes();
+  console.log(`SwiftUIRoot rendering with ${nodes.size} nodes`);
   useEffect(() => {
-    const nodes = getNodes();
     const viewTree = buildViewTree(nodes);
-    setViewTree(viewTree);
-  }, [getNodes]);
-
-  const serializedViewTree = useMemo(() => {
-    console.log("Serializing view tree", viewTree);
-    return JSON.stringify(viewTree);
-  }, [viewTree]);
+    console.log("Updating view tree", viewTree);
+    nativeRef.current?.setNativeProps({ viewTree: JSON.stringify(viewTree) });
+  }, [nodes.size, JSON.stringify(nodes.keys())]);
 
   const handleEvent: SwiftUIProps["onEvent"] = (event) => {
     const { id, name, value } = event.nativeEvent;
@@ -71,12 +66,7 @@ export const SwiftUIRoot = ({
   };
 
   return (
-    <SwiftUIRootNativeComponent
-      ref={nativeRef}
-      viewTree={serializedViewTree}
-      onEvent={handleEvent}
-      style={style}
-    >
+    <SwiftUIRootNativeComponent ref={nativeRef} onEvent={handleEvent} style={style}>
       {children}
     </SwiftUIRootNativeComponent>
   );
