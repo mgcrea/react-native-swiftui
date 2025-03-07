@@ -12,7 +12,6 @@ public struct ToggleView: View {
       .disabled(props.disabled)
       .foregroundColor(props.disabled ? .gray : .primary)
       .onChange(of: props.isOn) { newValue in
-        print("ToggleView.onChange: \(newValue) \(type(of: newValue))")
         props.onChange?(newValue)
       }
   }

@@ -78,6 +78,10 @@ final class ContainerProps: ObservableObject {
       toggle.props.onChange = { [weak self] value in
         self?.onEvent?("change", "Toggle", toggle.id, String(value))
       }
+    } else if let slider = node as? SliderNode {
+      slider.props.onChange = { [weak self] value in
+        self?.onEvent?("change", "Slider", slider.id, String(value))
+      }
     }
     if let children = node.children {
       children.forEach { bindEventHandlers(from: $0) }
@@ -176,6 +180,9 @@ public class SwiftUIRootView: SwiftUIContainerView {
 
     case let toggle as ToggleNode:
       ToggleView(props: toggle.props)
+
+    case let slider as SliderNode:
+      SliderView(props: slider.props)
 
     default:
       EmptyView()

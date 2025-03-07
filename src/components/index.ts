@@ -3,6 +3,7 @@ export * from "./DatePicker";
 export * from "./Form";
 export * from "./Picker";
 export * from "./Section";
+export * from "./Slider";
 export * from "./Stepper";
 export * from "./Text";
 export * from "./TextField";

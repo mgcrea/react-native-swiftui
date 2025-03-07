@@ -13,6 +13,7 @@ export const BasicFormExample: FunctionComponent = () => {
   const [lastName, setLastName] = useState('Doe');
   const [birthDate, setBirthDate] = useState(new Date('1970-01-01T00:00:00'));
   const [isActive, setIsActive] = useState(false);
+  const [volume, setVolume] = useState(50);
 
   const handleSubmit = () => {
     const data = {
@@ -51,6 +52,14 @@ export const BasicFormExample: FunctionComponent = () => {
               label="Enable Feature"
               isOn={isActive}
               onChange={value => setIsActive(value)}
+            />
+            <SwiftUI.Slider
+              label="Volume"
+              value={volume}
+              minimum={0}
+              maximum={100}
+              step={1}
+              onChange={value => setVolume(value)}
             />
           </SwiftUI.Section>
           <SwiftUI.Button title="Submit" onPress={handleSubmit} />

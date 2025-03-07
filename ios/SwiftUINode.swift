@@ -58,6 +58,8 @@ private struct NodeWrapper: Decodable {
       node = try TextNode(from: decoder)
     case "Toggle":
       node = try ToggleNode(from: decoder)
+    case "Slider":
+      node = try SliderNode(from: decoder)
     default:
       throw Swift.DecodingError.typeMismatch(
         (any SwiftUINode).self,
