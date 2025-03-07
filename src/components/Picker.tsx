@@ -1,5 +1,6 @@
-import { useId, useEffect, cloneElement } from "react";
-import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
+import { useEffect, useId } from "react";
+import { useSwiftUIContext } from "../contexts";
+import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
 
 // https://developer.apple.com/documentation/swiftui/picker
@@ -24,29 +25,16 @@ export const Picker: FunctionComponentWithId<NativePickerProps> = ({
   onBlur,
   ...otherProps
 }) => {
-  const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
-  const { parentId } = useSwiftUIParentContext();
+  const { registerEventHandler } = useSwiftUIContext();
   const effectiveId = id || `picker:${useId()}`;
+
+  useSwiftUINode("Picker", effectiveId, otherProps);
 
   useEffect(() => {
     if (onChange) registerEventHandler(effectiveId, "change", onChange);
     if (onFocus) registerEventHandler(effectiveId, "focus", onFocus);
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
-
-  useEffect(() => {
-    registerNode(
-      {
-        type: "Picker",
-        id: effectiveId,
-        props: otherProps,
-      },
-      parentId,
-    );
-    return () => {
-      unregisterNode(effectiveId);
-    };
-  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

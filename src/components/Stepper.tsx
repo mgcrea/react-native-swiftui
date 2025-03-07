@@ -1,7 +1,7 @@
-import { useId, useEffect } from "react";
-import { useSwiftUIParentContext, useSwiftUIContext } from "../contexts";
+import { useEffect, useId } from "react";
+import { useSwiftUIContext } from "../contexts";
+import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
-import { useJsonMemo } from "../hooks";
 
 // https://developer.apple.com/documentation/swiftui/stepper
 
@@ -24,8 +24,9 @@ export const Stepper: FunctionComponentWithId<NativeStepperProps> = ({
   ...otherProps
 }) => {
   const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
-  const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `stepper:${useId()}`;
+
+  useSwiftUINode("Stepper", effectiveId, otherProps);
 
   useEffect(() => {
     if (onChange)
@@ -35,21 +36,6 @@ export const Stepper: FunctionComponentWithId<NativeStepperProps> = ({
     if (onFocus) registerEventHandler(effectiveId, "focus", onFocus);
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
-
-  const memoizedProps = useJsonMemo(otherProps);
-  useEffect(() => {
-    registerNode(
-      {
-        type: "Stepper",
-        id: effectiveId,
-        props: memoizedProps,
-      },
-      parentId,
-    );
-    return () => {
-      unregisterNode(effectiveId);
-    };
-  }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

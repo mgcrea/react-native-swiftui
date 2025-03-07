@@ -45,18 +45,18 @@ export const SwiftUIRoot = ({
   style,
   onEvent: rootOnEvent,
 }: PropsWithChildren<SwiftUIProps>): ReactNode => {
-  const { getEventHandler, getNodes } = useSwiftUIContext();
+  const { nativeRef, getEventHandler, getNodes } = useSwiftUIContext();
 
   const [viewTree, setViewTree] = useState<ViewTreeNode | null>(null);
 
   useEffect(() => {
     const nodes = getNodes();
     const viewTree = buildViewTree(nodes);
-    console.log({ viewTree });
     setViewTree(viewTree);
   }, [getNodes]);
 
   const serializedViewTree = useMemo(() => {
+    console.log("Serializing view tree", viewTree);
     return JSON.stringify(viewTree);
   }, [viewTree]);
 
@@ -69,22 +69,6 @@ export const SwiftUIRoot = ({
     }
     rootOnEvent?.(event); // Forward to root handler
   };
-
-  const nativeRef = useRef<React.ElementRef<typeof SwiftUIRootNativeComponent> | null>(null);
-  // Test code to test update
-  useEffect(() => {
-    setTimeout(() => {
-      if (!nativeRef.current) {
-        return;
-      }
-      // const nodes = getNodes().get("textField::r3")?.node.id;
-      NativeSwiftUIRootCommands.updateChildProps(
-        nativeRef.current,
-        "textField::r3",
-        JSON.stringify({ value: "Updated" }),
-      );
-    }, 1000);
-  }, []);
 
   return (
     <SwiftUIRootNativeComponent

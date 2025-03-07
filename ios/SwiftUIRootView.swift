@@ -194,4 +194,44 @@ public class SwiftUIRootView: SwiftUIContainerView {
       EmptyView()
     }
   }
+  
+  // MARK - updateChildProps
+  
+  @objc public func updateChildProps(_ identifier: String, props propsJson: String) {
+      guard let node = findNode(withId: identifier, in: props.viewTree) else {
+        print("Node with id \(identifier) not found")
+        return
+      }
+      
+      do {
+        let decoder = JSONDecoder()
+        let updatedPropsData = propsJson.data(using: .utf8)!
+        switch node {
+        case let slider as SliderNode:
+          let updatedProps = try decoder.decode(SliderProps.self, from: updatedPropsData)
+          slider.props.value = updatedProps.value // Update only the changed prop
+        case let textField as TextFieldNode:
+          let updatedProps = try decoder.decode(TextFieldProps.self, from: updatedPropsData)
+          textField.props.text = updatedProps.text
+        // Add cases for other components as needed
+        default:
+          print("Unsupported node type for updateChildProps: \(type(of: node))")
+        }
+      } catch {
+        print("Failed to decode props for \(identifier): \(error)")
+      }
+    }
+  
+  private func findNode(withId id: String, in node: (any SwiftUINode)?) -> (any SwiftUINode)? {
+      guard let node = node else { return nil }
+      if node.id == id { return node }
+      if let children = node.children {
+        for child in children {
+          if let found = findNode(withId: id, in: child) {
+            return found
+          }
+        }
+      }
+      return nil
+    }
 }

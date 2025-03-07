@@ -1,7 +1,7 @@
 import { useEffect, useId } from "react";
-import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
+import { useSwiftUIContext } from "../contexts";
+import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
-import { useDebugEffect, useJsonMemo } from "../hooks";
 
 export type NativeKeyboardType = "default" | "numberPad" | "emailAddress" | "decimalPad";
 export type NativeTextContentType = "username" | "password" | "emailAddress";
@@ -32,30 +32,16 @@ export const TextField: FunctionComponentWithId<NativeTextFieldProps> = ({
   onBlur,
   ...otherProps
 }) => {
-  const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
-  const { parentId } = useSwiftUIParentContext();
+  const { registerEventHandler } = useSwiftUIContext();
   const effectiveId = id || `textField:${useId()}`;
+
+  useSwiftUINode("TextField", effectiveId, otherProps);
 
   useEffect(() => {
     if (onChange) registerEventHandler(effectiveId, "change", onChange);
     if (onFocus) registerEventHandler(effectiveId, "focus", onFocus);
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
-
-  const memoizedProps = useJsonMemo(otherProps);
-  useEffect(() => {
-    registerNode(
-      {
-        type: "TextField",
-        id: effectiveId,
-        props: memoizedProps,
-      },
-      parentId,
-    );
-    return () => {
-      unregisterNode(effectiveId);
-    };
-  }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

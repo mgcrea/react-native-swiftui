@@ -95,8 +95,7 @@ static NSDictionary *convertProps(const NativeSwiftUIRootProps &props) {
 
 - (void)updateChildProps:(NSString *)identifier props:(NSString *)propsJson {
   NSLog(@"updateChildProps called with identifier: %@, props: %@", identifier, propsJson);
-//  @TODO
-//  [_rootView updateChildProps:identifier props:propsJson];
+  [_rootView updateChildProps:identifier props:propsJson];
 }
 
 // MARK: - RCTComponentViewProtocol

@@ -1,7 +1,7 @@
-import { useId, useEffect } from "react";
-import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
+import { useEffect, useId } from "react";
+import { useSwiftUIContext } from "../contexts";
+import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
-import { useDebugEffect, useJsonMemo } from "../hooks";
 
 export type NativeSliderProps = {
   value: number;
@@ -22,37 +22,21 @@ export const Slider: FunctionComponentWithId<NativeSliderProps> = ({
   onBlur,
   ...otherProps
 }) => {
-  const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
-  const { parentId } = useSwiftUIParentContext();
+  const { registerEventHandler } = useSwiftUIContext();
   const effectiveId = id || `slider:${useId()}`;
+
+  useSwiftUINode("Slider", effectiveId, otherProps);
 
   useEffect(() => {
     if (onChange) {
       registerEventHandler(effectiveId, "change", (value: string) => {
         const numValue = parseFloat(value);
-        console.log({ value, numValue });
         onChange(numValue);
       });
       if (onFocus) registerEventHandler(effectiveId, "focus", onFocus);
       if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
     }
   }, [onChange, effectiveId, registerEventHandler]);
-
-  const memoizedProps = useJsonMemo(otherProps);
-  useEffect(() => {
-    registerNode(
-      {
-        type: "Slider",
-        id: effectiveId,
-        props: memoizedProps,
-      },
-      parentId,
-    );
-    return () => {
-      unregisterNode(effectiveId);
-    };
-  }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
-  useDebugEffect({ memoizedProps, parentId, registerNode, unregisterNode });
 
   return null;
 };

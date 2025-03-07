@@ -12,19 +12,6 @@ TEMP_PATHS=$(mktemp)
 BLACKLIST=("pnpm-lock.yaml" "example" "scripts")
 WHITELIST=("example/src")
 
-# Check for --gist flag
-PUBLISH_GIST=false
-for arg in "$@"; do
-    if [ "$arg" = "--gist" ]; then
-        PUBLISH_GIST=true
-        shift  # Remove --gist from args
-    fi
-done
-
-# Adjust DIR and OUTPUT_FILE after flag removal
-DIR=${1:-.}
-OUTPUT_FILE=${2:-tmp/llm_project_input.yaml}
-
 # Ensure output directory exists
 mkdir -p "$(dirname "$OUTPUT_FILE")"
 
@@ -63,6 +50,10 @@ else
     echo "description: \"No package.json found\"" >> "$OUTPUT_FILE"
 fi
 
+GIT_LOG=$(git log -100 --pretty=format:"%h %ad %s" --date=short | uniq | sed 's/^/  /')
+echo "git_log: |" >> "$OUTPUT_FILE"
+echo "$GIT_LOG" >> "$OUTPUT_FILE"
+
 # Add tree section
 echo "tree: |" >> "$OUTPUT_FILE"
 
@@ -98,20 +89,5 @@ done
 
 # Clean up temporary files
 rm "$TEMP_FILE" "$TEMP_PATHS"
-
-
-# Publish to Gist if --gist flag is provided
-if [ "$PUBLISH_GIST" = true ]; then
-  GIST_URL=$(gh gist create "$OUTPUT_FILE" --desc "Project snapshot for LLM ingestion" | grep '^https://gist.github.com')
-  if [ -n "$GIST_URL" ]; then
-        echo "Private Gist created: $GIST_URL"
-        echo "Sample prompt:"
-        echo "Hi Grok, I’ve got a project snapshot in a Gist for you to analyze. It’s a YAML file with metadata, file tree, and code from my current project. Here’s the link: ${GIST_URL}"
-    else
-        echo "Failed to create Gist. Check if 'gh' is installed and authenticated."
-        echo "Local file retained: $OUTPUT_FILE"
-        exit 1
-    fi
-else
-    echo "YAML file created: $OUTPUT_FILE"
-fi
+echo "YAML file created: $OUTPUT_FILE"
+echo "Hi, I’d like your assistance with a coding project I’m working on. To get you up to speed, I’ve attached a YAML file outlining the project, its file structure, and the contents of each file. Could you review it and let me know how you can help with development, debugging, or any other suggestions?"

@@ -1,7 +1,7 @@
-import { useId, useEffect } from "react";
-import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
+import { useEffect, useId } from "react";
+import { useSwiftUIContext } from "../contexts";
+import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
-import { useJsonMemo } from "../hooks";
 
 export type NativeButtonProps = {
   title: string;
@@ -9,28 +9,14 @@ export type NativeButtonProps = {
 };
 
 export const Button: FunctionComponentWithId<NativeButtonProps> = ({ id, onPress, ...otherProps }) => {
-  const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
-  const { parentId } = useSwiftUIParentContext();
-  const effectiveId = id || `button-${useId()}`;
+  const { registerEventHandler } = useSwiftUIContext();
+  const effectiveId = id || `button:${useId()}`;
+
+  useSwiftUINode("Button", effectiveId, otherProps);
 
   useEffect(() => {
     if (onPress) registerEventHandler(effectiveId, "press", onPress);
   }, [onPress, effectiveId, registerEventHandler]);
-
-  const memoizedProps = useJsonMemo(otherProps);
-  useEffect(() => {
-    registerNode(
-      {
-        type: "Button",
-        id: effectiveId,
-        props: memoizedProps,
-      },
-      parentId,
-    );
-    return () => {
-      unregisterNode(effectiveId);
-    };
-  }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };
