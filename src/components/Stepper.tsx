@@ -1,6 +1,7 @@
-import { useId, useEffect, cloneElement } from "react";
+import { useId, useEffect } from "react";
 import { useSwiftUIParentContext, useSwiftUIContext } from "../contexts";
 import type { FunctionComponentWithId } from "../types";
+import { useJsonMemo } from "../hooks";
 
 // https://developer.apple.com/documentation/swiftui/stepper
 
@@ -35,19 +36,20 @@ export const Stepper: FunctionComponentWithId<NativeStepperProps> = ({
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
 
+  const memoizedProps = useJsonMemo(otherProps);
   useEffect(() => {
     registerNode(
       {
         type: "Stepper",
         id: effectiveId,
-        props: otherProps,
+        props: memoizedProps,
       },
       parentId,
     );
     return () => {
       unregisterNode(effectiveId);
     };
-  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
+  }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

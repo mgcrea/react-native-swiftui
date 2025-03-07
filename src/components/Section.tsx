@@ -1,6 +1,7 @@
 import { useEffect, useId, type PropsWithChildren } from "react";
 import { useSwiftUIContext, SwiftUIParentIdProvider, useSwiftUIParentContext } from "../contexts";
 import type { FunctionComponentWithId } from "../types";
+import { useJsonMemo } from "../hooks";
 
 // https://developer.apple.com/documentation/swiftui/section
 
@@ -19,12 +20,13 @@ export const Section: FunctionComponentWithId<PropsWithChildren<NativeSectionPro
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `section:${useId()}`;
 
+  const memoizedProps = useJsonMemo(otherProps);
   useEffect(() => {
     registerNode(
       {
         type: "Section",
         id: effectiveId,
-        props: otherProps,
+        props: memoizedProps,
         children: [],
       },
       parentId,
@@ -32,7 +34,7 @@ export const Section: FunctionComponentWithId<PropsWithChildren<NativeSectionPro
     return () => {
       unregisterNode(effectiveId);
     };
-  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
+  }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
 
   return <SwiftUIParentIdProvider id={effectiveId}>{children}</SwiftUIParentIdProvider>;
 };

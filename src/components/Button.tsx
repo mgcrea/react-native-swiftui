@@ -1,6 +1,7 @@
 import { useId, useEffect } from "react";
 import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
 import type { FunctionComponentWithId } from "../types";
+import { useJsonMemo } from "../hooks";
 
 export type NativeButtonProps = {
   title: string;
@@ -16,19 +17,20 @@ export const Button: FunctionComponentWithId<NativeButtonProps> = ({ id, onPress
     if (onPress) registerEventHandler(effectiveId, "press", onPress);
   }, [onPress, effectiveId, registerEventHandler]);
 
+  const memoizedProps = useJsonMemo(otherProps);
   useEffect(() => {
     registerNode(
       {
         type: "Button",
         id: effectiveId,
-        props: otherProps,
+        props: memoizedProps,
       },
       parentId,
     );
     return () => {
       unregisterNode(effectiveId);
     };
-  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
+  }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

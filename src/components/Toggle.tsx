@@ -1,6 +1,7 @@
 import { useEffect, useId } from "react";
 import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
 import type { FunctionComponentWithId } from "../types";
+import { useDebugEffect, useJsonMemo } from "../hooks";
 
 export type NativeToggleProps = {
   isOn: boolean;
@@ -23,19 +24,21 @@ export const Toggle: FunctionComponentWithId<NativeToggleProps> = ({ id, onChang
     }
   }, [onChange, effectiveId, registerEventHandler]);
 
+  const memoizedProps = useJsonMemo(otherProps);
   useEffect(() => {
     registerNode(
       {
         type: "Toggle",
         id: effectiveId,
-        props: otherProps,
+        props: memoizedProps,
       },
       parentId,
     );
     return () => {
       unregisterNode(effectiveId);
     };
-  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
+  }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
+  useDebugEffect({ memoizedProps, parentId, registerNode, unregisterNode });
 
   return null;
 };

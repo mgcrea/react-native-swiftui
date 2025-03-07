@@ -9,6 +9,8 @@ public final class SliderProps: ObservableObject, Decodable {
   @Published public var disabled: Bool = false
   // Events
   public var onChange: ((Double) -> Void)?
+  public var onFocus: (() -> Void)?
+  public var onBlur: (() -> Void)?
 
   enum CodingKeys: String, CodingKey {
     case value, minimum, maximum, step, label, disabled

@@ -1,6 +1,7 @@
 import { useEffect, useId } from "react";
 import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
 import type { FunctionComponentWithId } from "../types";
+import { useJsonMemo } from "../hooks";
 
 // https://developer.apple.com/documentation/swiftui/datepickerstyle
 export type NativeDatePickerStyle = "automatic" | "compact" | "field" | "graphical" | "stepperField" | "wheel";
@@ -39,19 +40,20 @@ export const DatePicker: FunctionComponentWithId<NativeDatePickerProps> = ({
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
 
+  const memoizedProps = useJsonMemo(otherProps);
   useEffect(() => {
     registerNode(
       {
         type: "DatePicker",
         id: effectiveId,
-        props: otherProps,
+        props: memoizedProps,
       },
       parentId,
     );
     return () => {
       unregisterNode(effectiveId);
     };
-  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
+  }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

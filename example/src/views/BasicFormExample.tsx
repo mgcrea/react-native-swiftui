@@ -53,6 +53,8 @@ export const BasicFormExample: FunctionComponent = () => {
               isOn={isActive}
               onChange={value => setIsActive(value)}
             />
+          </SwiftUI.Section>
+          <SwiftUI.Section header="Slider">
             <SwiftUI.Slider
               label="Volume"
               value={volume}
@@ -61,6 +63,7 @@ export const BasicFormExample: FunctionComponent = () => {
               step={1}
               onChange={value => setVolume(value)}
             />
+            <SwiftUI.Button title="Set to 75" onPress={() => setVolume(75)} />
           </SwiftUI.Section>
           <SwiftUI.Button title="Submit" onPress={handleSubmit} />
         </SwiftUI.Form>

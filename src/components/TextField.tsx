@@ -1,6 +1,7 @@
 import { useEffect, useId } from "react";
 import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
 import type { FunctionComponentWithId } from "../types";
+import { useDebugEffect, useJsonMemo } from "../hooks";
 
 export type NativeKeyboardType = "default" | "numberPad" | "emailAddress" | "decimalPad";
 export type NativeTextContentType = "username" | "password" | "emailAddress";
@@ -41,19 +42,20 @@ export const TextField: FunctionComponentWithId<NativeTextFieldProps> = ({
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
 
+  const memoizedProps = useJsonMemo(otherProps);
   useEffect(() => {
     registerNode(
       {
         type: "TextField",
         id: effectiveId,
-        props: otherProps,
+        props: memoizedProps,
       },
       parentId,
     );
     return () => {
       unregisterNode(effectiveId);
     };
-  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
+  }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

@@ -1,8 +1,8 @@
 import { useId, useEffect, cloneElement } from "react";
 import { useSwiftUIParentContext, useSwiftUIContext } from "../contexts";
 import type { FunctionComponentWithId } from "../types";
+import { useJsonMemo } from "../hooks";
 
-// src/components/Text.tsx
 export type NativeTextProps = {
   text: string;
   font?: "body" | "headline" | "title" | "caption";
@@ -15,19 +15,20 @@ export const Text: FunctionComponentWithId<NativeTextProps> = ({ id, ...otherPro
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `text:${useId()}`;
 
+  const memoizedProps = useJsonMemo(otherProps);
   useEffect(() => {
     registerNode(
       {
         type: "Text",
         id: effectiveId,
-        props: otherProps,
+        props: memoizedProps,
       },
       parentId,
     );
     return () => {
       unregisterNode(effectiveId);
     };
-  }, [effectiveId, otherProps, parentId, registerNode, unregisterNode]);
+  }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
 
   return null;
 };

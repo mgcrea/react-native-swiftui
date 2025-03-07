@@ -82,6 +82,12 @@ final class ContainerProps: ObservableObject {
       slider.props.onChange = { [weak self] value in
         self?.onEvent?("change", "Slider", slider.id, String(value))
       }
+      slider.props.onFocus = { [weak self] in
+        self?.onEvent?("focus", "Slider", slider.id, nil)
+      }
+      slider.props.onBlur = { [weak self] in
+        self?.onEvent?("blur", "Slider", slider.id, nil)
+      }
     }
     if let children = node.children {
       children.forEach { bindEventHandlers(from: $0) }
