@@ -12,7 +12,7 @@ import {
 } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { NativeContainerView, NativeSwiftUIEvent } from ".";
-import { DatePicker, Form, Picker, Section, Stepper, TextField, Button, Text } from "./components";
+import { DatePicker, Form, Picker, Section, Stepper, TextField, Button, Text, Toggle } from "./components";
 import { SwiftUIProvider, useSwiftUIContext } from "./contexts/SwiftUIContext";
 import { buildViewTree } from "./utils/viewTree";
 import { SwiftUIParentIdProvider } from "./contexts";
@@ -79,3 +79,4 @@ SwiftUI.DatePicker = DatePicker;
 SwiftUI.Stepper = Stepper;
 SwiftUI.Button = Button;
 SwiftUI.Text = Text;
+SwiftUI.Toggle = Toggle;

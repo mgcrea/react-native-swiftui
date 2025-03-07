@@ -1,6 +1,6 @@
 import { useId, useEffect, cloneElement } from "react";
 import { useSwiftUIParentContext, useSwiftUIContext } from "../contexts";
-import type { IdentifiableFunctionComponent } from "src/types";
+import type { FunctionComponentWithId } from "../types";
 
 // https://developer.apple.com/documentation/swiftui/stepper
 
@@ -10,12 +10,12 @@ export type NativeStepperProps = {
   minimum?: number;
   maximum?: number;
   step?: number;
-  onChange?: (value: string) => void;
+  onChange?: (value: number) => void;
   onFocus?: () => void;
   onBlur?: () => void;
 };
 
-export const Stepper: IdentifiableFunctionComponent<NativeStepperProps> = ({
+export const Stepper: FunctionComponentWithId<NativeStepperProps> = ({
   id,
   onChange,
   onFocus,
@@ -27,7 +27,10 @@ export const Stepper: IdentifiableFunctionComponent<NativeStepperProps> = ({
   const effectiveId = id || `stepper:${useId()}`;
 
   useEffect(() => {
-    if (onChange) registerEventHandler(effectiveId, "change", onChange);
+    if (onChange)
+      registerEventHandler(effectiveId, "change", (value: string) => {
+        onChange(Number(value)); // Convert string to number
+      });
     if (onFocus) registerEventHandler(effectiveId, "focus", onFocus);
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
   }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);

@@ -6,3 +6,4 @@ export * from "./Section";
 export * from "./Stepper";
 export * from "./Text";
 export * from "./TextField";
+export * from "./Toggle";

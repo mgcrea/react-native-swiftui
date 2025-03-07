@@ -5,8 +5,8 @@ import {ReactHookFormExample} from './src/views/ReactHookFormExample';
 import {TanStackFormExample} from './src/views/TanStackFormExample';
 
 function App(): React.JSX.Element {
-  return <WorkoutExample />;
-  // return <BasicFormExample />;
+  // return <WorkoutExample />;
+  return <BasicFormExample />;
   // return <TanStackFormExample />;
   // return <ReactHookFormExample />;
 }

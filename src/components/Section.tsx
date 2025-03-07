@@ -1,6 +1,6 @@
 import { useEffect, useId, type PropsWithChildren } from "react";
 import { useSwiftUIContext, SwiftUIParentIdProvider, useSwiftUIParentContext } from "../contexts";
-import type { IdentifiableFunctionComponent } from "src/types";
+import type { FunctionComponentWithId } from "../types";
 
 // https://developer.apple.com/documentation/swiftui/section
 
@@ -10,7 +10,7 @@ export type NativeSectionProps = {
   isCollapsed?: boolean;
 };
 
-export const Section: IdentifiableFunctionComponent<PropsWithChildren<NativeSectionProps>> = ({
+export const Section: FunctionComponentWithId<PropsWithChildren<NativeSectionProps>> = ({
   id,
   children,
   ...otherProps

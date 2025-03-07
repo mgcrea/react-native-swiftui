@@ -65,7 +65,7 @@ export const TanStackFormExample: FunctionComponent = () => {
               }}>
               {field => (
                 <SwiftUI.TextField
-                  placeholder="First name"
+                  placeholder="Last name"
                   onBlur={field.handleBlur}
                   onChange={field.handleChange}
                   text={field.state.value}

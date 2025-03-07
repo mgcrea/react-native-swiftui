@@ -1,9 +1,9 @@
-import { useId, useEffect, cloneElement } from "react";
+import { useEffect, useId } from "react";
 import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
-import type { IdentifiableFunctionComponent } from "src/types";
+import type { FunctionComponentWithId } from "../types";
 
 // https://developer.apple.com/documentation/swiftui/datepickerstyle
-export type NativePickerStyle = "automatic" | "compact" | "field" | "graphical" | "stepperField" | "wheel";
+export type NativeDatePickerStyle = "automatic" | "compact" | "field" | "graphical" | "stepperField" | "wheel";
 
 // https://developer.apple.com/documentation/swiftui/datepickercomponents
 export type NativeDatePickerComponents = "date" | "hourAndMinute" | "hourMinuteAndSecond";
@@ -11,7 +11,7 @@ export type NativeDatePickerComponents = "date" | "hourAndMinute" | "hourMinuteA
 export type NativeDatePickerProps = {
   selection?: Date;
   label?: string;
-  datePickerStyle?: NativePickerStyle;
+  datePickerStyle?: NativeDatePickerStyle;
   displayedComponents?: NativeDatePickerComponents;
   disabled?: boolean;
   onChange?: (value: Date) => void;
@@ -19,7 +19,7 @@ export type NativeDatePickerProps = {
   onBlur?: () => void;
 };
 
-export const DatePicker: IdentifiableFunctionComponent<NativeDatePickerProps> = ({
+export const DatePicker: FunctionComponentWithId<NativeDatePickerProps> = ({
   id,
   onChange,
   onFocus,
@@ -33,8 +33,7 @@ export const DatePicker: IdentifiableFunctionComponent<NativeDatePickerProps> = 
   useEffect(() => {
     if (onChange)
       registerEventHandler(effectiveId, "change", (date: string) => {
-        console.log({ date });
-        onChange(new Date(date));
+        onChange(new Date(date)); // Convert string to Date
       });
     if (onFocus) registerEventHandler(effectiveId, "focus", onFocus);
     if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);

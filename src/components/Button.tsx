@@ -1,13 +1,13 @@
 import { useId, useEffect } from "react";
 import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
-import type { IdentifiableFunctionComponent } from "../types";
+import type { FunctionComponentWithId } from "../types";
 
 export type NativeButtonProps = {
   title: string;
   onPress?: () => void;
 };
 
-export const Button: IdentifiableFunctionComponent<NativeButtonProps> = ({ id, onPress, ...otherProps }) => {
+export const Button: FunctionComponentWithId<NativeButtonProps> = ({ id, onPress, ...otherProps }) => {
   const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `button-${useId()}`;

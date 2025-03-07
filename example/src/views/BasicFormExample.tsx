@@ -12,6 +12,7 @@ export const BasicFormExample: FunctionComponent = () => {
   const [firstName, setFirstName] = useState('John');
   const [lastName, setLastName] = useState('Doe');
   const [birthDate, setBirthDate] = useState(new Date('1970-01-01T00:00:00'));
+  const [isActive, setIsActive] = useState(false);
 
   const handleSubmit = () => {
     const data = {
@@ -45,6 +46,11 @@ export const BasicFormExample: FunctionComponent = () => {
               onChange={setBirthDate}
               // disabled
               datePickerStyle="automatic"
+            />
+            <SwiftUI.Toggle
+              label="Enable Feature"
+              isOn={isActive}
+              onChange={value => setIsActive(value)}
             />
           </SwiftUI.Section>
           <SwiftUI.Button title="Submit" onPress={handleSubmit} />

@@ -1,6 +1,6 @@
 import { useId, useEffect, cloneElement } from "react";
 import { useSwiftUIParentContext, useSwiftUIContext } from "../contexts";
-import type { IdentifiableFunctionComponent } from "src/types";
+import type { FunctionComponentWithId } from "../types";
 
 // src/components/Text.tsx
 export type NativeTextProps = {
@@ -10,7 +10,7 @@ export type NativeTextProps = {
   alignment?: "leading" | "center" | "trailing";
 };
 
-export const Text: IdentifiableFunctionComponent<NativeTextProps> = ({ id, ...otherProps }) => {
+export const Text: FunctionComponentWithId<NativeTextProps> = ({ id, ...otherProps }) => {
   const { registerNode, unregisterNode } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `text:${useId()}`;
@@ -31,3 +31,4 @@ export const Text: IdentifiableFunctionComponent<NativeTextProps> = ({ id, ...ot
 
   return null;
 };
+Text.displayName = "Text";

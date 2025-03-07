@@ -1,15 +1,12 @@
 import { useEffect, useId, type PropsWithChildren } from "react";
 import { useSwiftUIContext, SwiftUIParentIdProvider, useSwiftUIParentContext } from "../contexts";
-import type { IdentifiableFunctionComponent } from "src/types";
+import type { FunctionComponentWithId } from "../types";
 
 // https://developer.apple.com/documentation/swiftui/form
 
 export type NativeFormProps = {};
 
-export const Form: IdentifiableFunctionComponent<React.PropsWithChildren<NativeFormProps>> = ({
-  id,
-  children,
-}) => {
+export const Form: FunctionComponentWithId<PropsWithChildren<NativeFormProps>> = ({ id, children }) => {
   const { registerNode, unregisterNode } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   const effectiveId = id || `form:${useId()}`;

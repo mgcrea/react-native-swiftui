@@ -1,9 +1,9 @@
-import { useId, useEffect, cloneElement } from "react";
-import type { IdentifiableFunctionComponent } from "src/types";
-import { useSwiftUIParentContext, useSwiftUIContext } from "../contexts";
+import { useEffect, useId } from "react";
+import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
+import type { FunctionComponentWithId } from "../types";
 
 export type NativeKeyboardType = "default" | "numberPad" | "emailAddress" | "decimalPad";
-export type NativeTextContentType = "username" | "password" | "emailAddress" | null;
+export type NativeTextContentType = "username" | "password" | "emailAddress";
 export type NativeReturnKeyType = "default" | "done" | "next" | "search";
 export type NativeAutocapitalizationType = "none" | "words" | "sentences" | "allCharacters";
 
@@ -24,7 +24,7 @@ export type NativeTextFieldProps = {
   onBlur?: () => void;
 };
 
-export const TextField: IdentifiableFunctionComponent<NativeTextFieldProps> = ({
+export const TextField: FunctionComponentWithId<NativeTextFieldProps> = ({
   id,
   onChange,
   onFocus,

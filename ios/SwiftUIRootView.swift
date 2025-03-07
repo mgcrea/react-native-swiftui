@@ -74,6 +74,10 @@ final class ContainerProps: ObservableObject {
       button.props.onPress = { [weak self] in
         self?.onEvent?("press", "Button", button.id, nil)
       }
+    } else if let toggle = node as? ToggleNode {
+      toggle.props.onChange = { [weak self] value in
+        self?.onEvent?("change", "Toggle", toggle.id, String(value))
+      }
     }
     if let children = node.children {
       children.forEach { bindEventHandlers(from: $0) }
@@ -169,6 +173,9 @@ public class SwiftUIRootView: SwiftUIContainerView {
 
     case let button as ButtonNode:
       ButtonView(props: button.props)
+
+    case let toggle as ToggleNode:
+      ToggleView(props: toggle.props)
 
     default:
       EmptyView()

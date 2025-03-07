@@ -1,7 +1,8 @@
 import type { FunctionComponent } from "react";
 
-export type Identifiable<T> = T & { id?: string };
-export type IdentifiableFunctionComponent<T> = FunctionComponent<Identifiable<T>>;
+export type Simplify<T> = { [KeyType in keyof T]: T[KeyType] } & {};
+export type WithId<T = unknown> = T & { id?: string | undefined };
+export type FunctionComponentWithId<T> = FunctionComponent<WithId<T>> & { displayName: string };
 
 export type ViewTreeNode = {
   id: string;

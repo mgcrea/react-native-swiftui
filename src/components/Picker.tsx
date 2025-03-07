@@ -1,6 +1,6 @@
 import { useId, useEffect, cloneElement } from "react";
 import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
-import type { IdentifiableFunctionComponent } from "src/types";
+import type { FunctionComponentWithId } from "../types";
 
 // https://developer.apple.com/documentation/swiftui/picker
 
@@ -17,7 +17,7 @@ export type NativePickerProps = {
   onBlur?: () => void;
 };
 
-export const Picker: IdentifiableFunctionComponent<NativePickerProps> = ({
+export const Picker: FunctionComponentWithId<NativePickerProps> = ({
   id,
   onChange,
   onFocus,
