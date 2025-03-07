@@ -63,7 +63,7 @@ Ideal for developers seeking native iOS aesthetics and behavior within a React N
 
 Installation steps:
 
-`sh
+```sh
 git clone https://github.com/mgcrea/react-native-swiftui.git
 cd react-native-swiftui
 corepack enable # Enable pnpm if not already installed
@@ -71,13 +71,13 @@ pnpm install # Install root dependencies
 cd example
 pnpm install:ios # Install iOS dependencies (includes pod install)
 pnpm open:ios # Open Xcode to build and run the example app
-`
+```
 
 ## Usage Example
 
 ### Example with react-hook-form
 
-``tsx
+```tsx
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { SwiftUI } from "@mgcrea/react-native-swiftui";
@@ -105,7 +105,7 @@ function App() {
   );
 }
 export default App;
-``
+```
 
 ### Notes
 
@@ -127,13 +127,9 @@ export default App;
   - `src/contexts/SwiftUIParentContext.tsx`: Hierarchy management with `ParentIdProvider`.
   - `src/SwiftUI.tsx`: Aggregates nodes into the `viewTree` and passes it to `NativeContainerView`.
   - `ios/components/*/Props.swift`: Unified prop initialization via `Decodable` and merging.
-- **Debugging Tips**:
-  - Add `console.log(getNodes())` in `SwiftUIRootView`’s `useEffect` to inspect the `nodeRegistry`.
-  - Verify the `viewTree` structure matches the JSX hierarchy by logging `JSON.stringify(viewTree)`.
 - **Next Steps**:
   - **Performance**: Memoize node registration with `useMemo` in components to reduce object creation.
   - **Incremental Updates**: Send diffs instead of the full `viewTree` on state changes (see `buildViewTree`).
-  - **New Components**: Add more SwiftUI components (e.g., `Toggle`, `Slider`) following the `Decodable` pattern.
   - **Testing**: Stress-test with large forms and frequent updates on real iOS devices.
 
 ### Known Limitations
