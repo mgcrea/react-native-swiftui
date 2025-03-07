@@ -38,7 +38,6 @@ export const Toggle: FunctionComponentWithId<NativeToggleProps> = ({ id, onChang
       unregisterNode(effectiveId);
     };
   }, [effectiveId, memoizedProps, parentId, registerNode, unregisterNode]);
-  useDebugEffect({ memoizedProps, parentId, registerNode, unregisterNode });
 
   return null;
 };

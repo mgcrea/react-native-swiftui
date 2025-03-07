@@ -9,22 +9,24 @@
 
 using namespace facebook::react;
 
-@interface RCTSwiftUIRootView () <RCTComponentViewProtocol>
+@interface RCTSwiftUIRootView () <RCTComponentViewProtocol,
+                                  RCTNativeSwiftUIRootViewProtocol>
 @end
 
 @implementation RCTSwiftUIRootView {
   SwiftUIRootView *_rootView;
 }
 
-+ (ComponentDescriptorProvider)componentDescriptorProvider {
-  return concreteComponentDescriptorProvider<
-  NativeSwiftUIRootViewComponentDescriptor>();
+// Support RCT_DYNAMIC_FRAMEWORKS
+// (https://github.com/facebook/react-native/pull/37274)
++ (void)load {
+  [super load];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps =
-        std::make_shared<const NativeSwiftUIRootViewProps>();
+        std::make_shared<const NativeSwiftUIRootProps>();
     _props = defaultProps;
     _rootView = [SwiftUIRootView new];
 
@@ -46,10 +48,10 @@ using namespace facebook::react;
 - (void)updateProps:(Props::Shared const &)props
            oldProps:(Props::Shared const &)oldProps {
   const auto &oldViewProps =
-      *std::static_pointer_cast<NativeSwiftUIRootViewProps const>(
+      *std::static_pointer_cast<NativeSwiftUIRootProps const>(
           oldProps ? oldProps : _props);
   const auto &newViewProps =
-      *std::static_pointer_cast<NativeSwiftUIRootViewProps const>(props);
+      *std::static_pointer_cast<NativeSwiftUIRootProps const>(props);
   NSDictionary *oldViewPropsDict = convertProps(oldViewProps);
   NSDictionary *newViewPropsDict = convertProps(newViewProps);
 
@@ -64,7 +66,7 @@ using namespace facebook::react;
                id:(NSString *)identifier
 
             value:(NSString *_Nullable)value {
-              NativeSwiftUIRootViewEventEmitter::OnEvent event = {
+  NativeSwiftUIRootEventEmitter::OnEvent event = {
       .name = std::string(name.UTF8String),
       .type = std::string(type.UTF8String),
       .id = std::string(identifier.UTF8String),
@@ -73,16 +75,35 @@ using namespace facebook::react;
   self.eventEmitter.onEvent(event);
 }
 
-- (const NativeSwiftUIRootViewEventEmitter &)eventEmitter {
-  return static_cast<const NativeSwiftUIRootViewEventEmitter &>(*_eventEmitter);
+- (const NativeSwiftUIRootEventEmitter &)eventEmitter {
+  return static_cast<const NativeSwiftUIRootEventEmitter &>(*_eventEmitter);
 }
 
 // MARK: - Props
 
-static NSDictionary *convertProps(const NativeSwiftUIRootViewProps &props) {
+static NSDictionary *convertProps(const NativeSwiftUIRootProps &props) {
   return @{
     @"viewTree" : [NSString stringWithUTF8String:props.viewTree.c_str()],
   };
+}
+
+// MARK: - RCTNativeSwiftUIRootViewProtocol
+
+- (void)handleCommand:(const NSString *)commandName args:(const NSArray *)args {
+  RCTNativeSwiftUIRootHandleCommand(self, commandName, args);
+}
+
+- (void)updateChildProps:(NSString *)identifier props:(NSString *)propsJson {
+  NSLog(@"updateChildProps called with identifier: %@, props: %@", identifier, propsJson);
+//  @TODO
+//  [_rootView updateChildProps:identifier props:propsJson];
+}
+
+// MARK: - RCTComponentViewProtocol
+
++ (ComponentDescriptorProvider)componentDescriptorProvider {
+  return concreteComponentDescriptorProvider<
+      NativeSwiftUIRootComponentDescriptor>();
 }
 
 @end

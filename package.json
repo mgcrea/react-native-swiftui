@@ -54,7 +54,7 @@
     "ios": {
       "componentProvider": {
         "NativePickerView": "RCTPickerView",
-        "NativeSwiftUIRootView": "RCTSwiftUIRootView"
+        "NativeSwiftUIRoot": "RCTSwiftUIRootView"
       }
     },
     "includesGeneratedCode": true

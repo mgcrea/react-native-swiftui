@@ -27,8 +27,8 @@ export const BasicFormExample: FunctionComponent = () => {
   return (
     <View style={{flex: 1}}>
       <SwiftUI style={{flex: 1}}>
+        <SwiftUI.Text text="BasicFormExample" />
         <SwiftUI.Form>
-          <SwiftUI.Text text="BasicFormExample" />
           <SwiftUI.Section header="Personal Information">
             <SwiftUI.TextField
               placeholder="First name"

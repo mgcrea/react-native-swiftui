@@ -7,11 +7,17 @@ import {
   use,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type FunctionComponent,
 } from "react";
-import { StyleProp, ViewStyle } from "react-native";
-import { NativeContainerView, NativeSwiftUIEvent } from ".";
+import { HostComponent, StyleProp, ViewStyle } from "react-native";
+import {
+  default as SwiftUIRootNativeComponent,
+  Commands as NativeSwiftUIRootCommands,
+  NativeSwiftUIEvent,
+  NativeSwiftUIRootProps,
+} from "./native/SwiftUIRootNativeComponent";
 import {
   DatePicker,
   Form,
@@ -34,7 +40,7 @@ export type SwiftUIProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-export const SwiftUIRootView = ({
+export const SwiftUIRoot = ({
   children,
   style,
   onEvent: rootOnEvent,
@@ -64,10 +70,31 @@ export const SwiftUIRootView = ({
     rootOnEvent?.(event); // Forward to root handler
   };
 
+  const nativeRef = useRef<React.ElementRef<typeof SwiftUIRootNativeComponent> | null>(null);
+  // Test code to test update
+  useEffect(() => {
+    setTimeout(() => {
+      if (!nativeRef.current) {
+        return;
+      }
+      // const nodes = getNodes().get("textField::r3")?.node.id;
+      NativeSwiftUIRootCommands.updateChildProps(
+        nativeRef.current,
+        "textField::r3",
+        JSON.stringify({ value: "Updated" }),
+      );
+    }, 1000);
+  }, []);
+
   return (
-    <NativeContainerView viewTree={serializedViewTree} onEvent={handleEvent} style={style}>
+    <SwiftUIRootNativeComponent
+      ref={nativeRef}
+      viewTree={serializedViewTree}
+      onEvent={handleEvent}
+      style={style}
+    >
       {children}
-    </NativeContainerView>
+    </SwiftUIRootNativeComponent>
   );
 };
 
@@ -75,7 +102,7 @@ export const SwiftUI = ({ children, ...props }: PropsWithChildren<SwiftUIProps>)
   return (
     <SwiftUIProvider>
       <SwiftUIParentIdProvider id="__root">
-        <SwiftUIRootView {...props}>{children}</SwiftUIRootView>
+        <SwiftUIRoot {...props}>{children}</SwiftUIRoot>
       </SwiftUIParentIdProvider>
     </SwiftUIProvider>
   );

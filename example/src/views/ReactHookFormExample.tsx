@@ -34,8 +34,8 @@ export const ReactHookFormExample: FunctionComponent = () => {
   return (
     <View style={{flex: 1}}>
       <SwiftUI style={{flex: 1}}>
+        <SwiftUI.Text text="ReactHookFormExample" />
         <SwiftUI.Form>
-          <SwiftUI.Text text="ReactHookFormExample" />
           <SwiftUI.Section header="Personal Information">
             <Controller
               name="firstName"
