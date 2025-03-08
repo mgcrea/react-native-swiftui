@@ -31,23 +31,25 @@ export const SwiftUIRoot = ({
   style,
   onEvent: rootOnEvent,
 }: PropsWithChildren<SwiftUIProps>): ReactNode => {
-  const { nativeRef, getEventHandler, getNodes } = useSwiftUIContext();
+  const { nativeRef, getEventHandler, getNodes, renderSequence } = useSwiftUIContext();
 
   const nodes = getNodes();
+  const nodesKey = JSON.stringify(Array.from(nodes.keys()));
   console.log(`SwiftUIRoot rendering with ${nodes.size} nodes`);
+  renderSequence.current = []; // Reset render sequence
   useEffect(() => {
-    const viewTree = buildViewTree(nodes);
+    const viewTree = buildViewTree(nodes, renderSequence.current);
     console.log("SwiftUIRoot updating view tree", viewTree);
     nativeRef.current?.setNativeProps({ viewTree: JSON.stringify(viewTree) });
-    // }, [JSON.stringify(nodes)]);
-  }, [nodes.size, JSON.stringify(nodes.keys())]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nativeRef, nodesKey]);
 
   const handleEvent: SwiftUIProps["onEvent"] = (event) => {
     const { id, name, value } = event.nativeEvent;
-    console.log(`Received event "${name}" for id=${id}, value=${value}`);
+    console.log(`SwiftUIRoot received event "${name}" for id=${id}, value=${value}`);
     const handler = getEventHandler(id, name);
     if (handler) {
-      handler(name === "change" ? value : undefined); // Pass value only for change
+      handler(name === "change" ? value : ""); // Pass value only for change
     }
     rootOnEvent?.(event); // Forward to root handler
   };

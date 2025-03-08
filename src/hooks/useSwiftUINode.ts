@@ -5,11 +5,14 @@ import { WithId } from "../types";
 import { lowercaseFirstLetter } from "../utils";
 
 export function useSwiftUINode<T extends WithId<Record<string, unknown>>>(type: string, props: T) {
-  const { registerNode, unregisterNode, updateNodeProps } = useSwiftUIContext();
+  const { registerNode, unregisterNode, updateNodeProps, recordRenderOrder } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   // eslint-disable-next-line react-hooks/rules-of-hooks, @typescript-eslint/prefer-nullish-coalescing
   const id = props.id || `${lowercaseFirstLetter(type)}:${useId()}`;
   const isInitialRender = useRef(true);
+
+  // Record the render order every render
+  recordRenderOrder(id);
 
   useEffect(() => {
     registerNode({ type, id, props }, parentId);
