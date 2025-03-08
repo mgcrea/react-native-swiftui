@@ -13,11 +13,13 @@ export function buildViewTree(
   });
 
   nodes.forEach(({ node, parentId }) => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const currentNode = treeMap.get(node.id)!;
     if (parentId && treeMap.has(parentId)) {
       if (!parentChildrenMap.has(parentId)) {
         parentChildrenMap.set(parentId, []);
       }
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       parentChildrenMap.get(parentId)!.push(currentNode);
     } else {
       rootNodes.push(currentNode);
@@ -35,6 +37,7 @@ export function buildViewTree(
       const indexB = sequenceIndexMap.get(b.id) ?? Infinity;
       return indexA - indexB;
     });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     treeMap.get(parentId)!.children = children;
   });
 

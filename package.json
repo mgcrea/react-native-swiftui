@@ -17,7 +17,9 @@
     "open:ios": "cd example; npm run open:ios",
     "codegen:ios": "rm -rf ios/generated; node node_modules/react-native/scripts/generate-codegen-artifacts.js -p . -t ios -s library",
     "lint": "eslint .",
-    "test": "jest",
+    "check": "tsc --noEmit",
+    "spec": "jest",
+    "test": "npm run lint && npm run check && npm run spec",
     "prepare": "npm run build"
   },
   "peerDependencies": {
