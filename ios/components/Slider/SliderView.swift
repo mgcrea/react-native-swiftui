@@ -30,11 +30,9 @@ public struct SliderView: View {
     Slider(
       value: $props.value,
       in: props.minimum ... props.maximum,
-      step: props.step
-    ) {
-      editing in
-      isFocused = editing
-    }
+      step: props.step,
+      onEditingChanged: { self.isFocused = $0 }
+    )
     .disabled(props.disabled)
     .foregroundColor(props.disabled ? .gray : .primary)
     .onChange(of: isFocused) { newValue in
