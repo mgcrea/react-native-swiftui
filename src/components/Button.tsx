@@ -1,4 +1,4 @@
-import { useEffect, useId } from "react";
+import { useEffect } from "react";
 import { useSwiftUIContext } from "../contexts";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
@@ -8,15 +8,14 @@ export type NativeButtonProps = {
   onPress?: () => void;
 };
 
-export const Button: FunctionComponentWithId<NativeButtonProps> = ({ id, onPress, ...otherProps }) => {
+export const Button: FunctionComponentWithId<NativeButtonProps> = ({ onPress, ...otherProps }) => {
   const { registerEventHandler } = useSwiftUIContext();
-  const effectiveId = id || `button:${useId()}`;
 
-  useSwiftUINode("Button", effectiveId, otherProps);
+  const { id } = useSwiftUINode("Button", otherProps);
 
   useEffect(() => {
-    if (onPress) registerEventHandler(effectiveId, "press", onPress);
-  }, [onPress, effectiveId, registerEventHandler]);
+    if (onPress) registerEventHandler(id, "press", onPress);
+  }, [onPress, id, registerEventHandler]);
 
   return null;
 };

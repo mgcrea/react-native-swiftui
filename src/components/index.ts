@@ -1,6 +1,7 @@
 export * from "./Button";
 export * from "./DatePicker";
 export * from "./Form";
+export * from "./Group";
 export * from "./Picker";
 export * from "./Section";
 export * from "./Slider";

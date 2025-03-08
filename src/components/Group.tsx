@@ -6,14 +6,14 @@ import type { FunctionComponentWithId } from "../types";
 // https://developer.apple.com/documentation/swiftui/form
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type NativeFormProps = {};
+export type NativeGroupProps = {};
 
-export const Form: FunctionComponentWithId<PropsWithChildren<NativeFormProps>> = ({
+export const Group: FunctionComponentWithId<PropsWithChildren<NativeGroupProps>> = ({
   children,
   ...otherProps
 }) => {
-  const { id } = useSwiftUINode("Form", otherProps);
+  const { id } = useSwiftUINode("Group", otherProps);
 
   return <SwiftUIParentIdProvider id={id}>{children}</SwiftUIParentIdProvider>;
 };
-Form.displayName = "Form";
+Group.displayName = "Group";

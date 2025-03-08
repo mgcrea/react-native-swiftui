@@ -1,4 +1,4 @@
-import { useEffect, useId } from "react";
+import { useEffect } from "react";
 import { useSwiftUIContext } from "../contexts";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
@@ -21,25 +21,23 @@ export type NativeDatePickerProps = {
 };
 
 export const DatePicker: FunctionComponentWithId<NativeDatePickerProps> = ({
-  id,
   onChange,
   onFocus,
   onBlur,
   ...otherProps
 }) => {
   const { registerEventHandler } = useSwiftUIContext();
-  const effectiveId = id || `datePicker:${useId()}`;
 
-  useSwiftUINode("DatePicker", effectiveId, otherProps);
+  const { id } = useSwiftUINode("DatePicker", otherProps);
 
   useEffect(() => {
     if (onChange)
-      registerEventHandler(effectiveId, "change", (date: string) => {
+      registerEventHandler(id, "change", (date: string) => {
         onChange(new Date(date)); // Convert string to Date
       });
-    if (onFocus) registerEventHandler(effectiveId, "focus", onFocus);
-    if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
-  }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
+    if (onFocus) registerEventHandler(id, "focus", onFocus);
+    if (onBlur) registerEventHandler(id, "blur", onBlur);
+  }, [onChange, onFocus, onBlur, id, registerEventHandler]);
 
   return null;
 };

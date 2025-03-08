@@ -1,4 +1,4 @@
-import { useEffect, useId } from "react";
+import { useEffect } from "react";
 import { useSwiftUIContext } from "../contexts";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
@@ -17,25 +17,24 @@ export type NativeStepperProps = {
 };
 
 export const Stepper: FunctionComponentWithId<NativeStepperProps> = ({
-  id,
   onChange,
   onFocus,
   onBlur,
   ...otherProps
 }) => {
-  const { registerEventHandler, registerNode, unregisterNode } = useSwiftUIContext();
-  const effectiveId = id || `stepper:${useId()}`;
+  const { registerEventHandler } = useSwiftUIContext();
 
-  useSwiftUINode("Stepper", effectiveId, otherProps);
+  const { id } = useSwiftUINode("Stepper", otherProps);
 
   useEffect(() => {
     if (onChange)
-      registerEventHandler(effectiveId, "change", (value: string) => {
-        onChange(Number(value)); // Convert string to number
+      registerEventHandler(id, "change", (value: string) => {
+        const numValue = parseFloat(value);
+        onChange(numValue);
       });
-    if (onFocus) registerEventHandler(effectiveId, "focus", onFocus);
-    if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
-  }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
+    if (onFocus) registerEventHandler(id, "focus", onFocus);
+    if (onBlur) registerEventHandler(id, "blur", onBlur);
+  }, [onChange, onFocus, onBlur, id, registerEventHandler]);
 
   return null;
 };

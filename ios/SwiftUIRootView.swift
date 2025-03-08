@@ -194,44 +194,81 @@ public class SwiftUIRootView: SwiftUIContainerView {
       EmptyView()
     }
   }
-  
-  // MARK - updateChildProps
-  
+
+  // MARK: - updateChildProps
+
   @objc public func updateChildProps(_ identifier: String, props propsJson: String) {
-      guard let node = findNode(withId: identifier, in: props.viewTree) else {
-        print("Node with id \(identifier) not found")
-        return
-      }
-      
-      do {
-        let decoder = JSONDecoder()
-        let updatedPropsData = propsJson.data(using: .utf8)!
-        switch node {
-        case let slider as SliderNode:
-          let updatedProps = try decoder.decode(SliderProps.self, from: updatedPropsData)
-          slider.props.value = updatedProps.value // Update only the changed prop
-        case let textField as TextFieldNode:
-          let updatedProps = try decoder.decode(TextFieldProps.self, from: updatedPropsData)
-          textField.props.text = updatedProps.text
-        // Add cases for other components as needed
-        default:
-          print("Unsupported node type for updateChildProps: \(type(of: node))")
-        }
-      } catch {
-        print("Failed to decode props for \(identifier): \(error)")
-      }
+    guard let node = findNode(withId: identifier, in: props.viewTree) else {
+      print("Node with id \(identifier) not found")
+      return
     }
-  
+
+    do {
+      let decoder = JSONDecoder()
+      let updatedPropsData = propsJson.data(using: .utf8)!
+      switch node {
+      case let button as ButtonNode:
+        let updatedProps = try decoder.decode(ButtonProps.self, from: updatedPropsData)
+        button.props.merge(from: updatedProps)
+
+      case let datePicker as DatePickerNode:
+        let updatedProps = try decoder.decode(DatePickerProps.self, from: updatedPropsData)
+        datePicker.props.merge(from: updatedProps)
+
+      case let stepper as StepperNode:
+        let updatedProps = try decoder.decode(StepperProps.self, from: updatedPropsData)
+        stepper.props.merge(from: updatedProps)
+
+      case let text as TextNode:
+        let updatedProps = try decoder.decode(TextProps.self, from: updatedPropsData)
+        text.props.merge(from: updatedProps)
+
+      case let textField as TextFieldNode:
+        let updatedProps = try decoder.decode(TextFieldProps.self, from: updatedPropsData)
+        textField.props.merge(from: updatedProps)
+
+      case let toggle as ToggleNode:
+        let updatedProps = try decoder.decode(ToggleProps.self, from: updatedPropsData)
+        toggle.props.merge(from: updatedProps)
+
+      case let slider as SliderNode:
+        let updatedProps = try decoder.decode(SliderProps.self, from: updatedPropsData)
+        slider.props.merge(from: updatedProps)
+
+      case let picker as PickerNode:
+        let updatedProps = try decoder.decode(PickerProps.self, from: updatedPropsData)
+        picker.props.merge(from: updatedProps)
+
+      case let form as FormNode:
+        // FormNode has no props to merge
+        print("FormNode has no props to update for id \(identifier)")
+
+      case let section as SectionNode:
+        let updatedProps = try decoder.decode(SectionProps.self, from: updatedPropsData)
+        section.props.merge(from: updatedProps)
+
+      case let group as GroupNode:
+        // GroupNode has no props to merge
+        print("GroupNode has no props to update for id \(identifier)")
+
+      default:
+        print("Unsupported node type for updateChildProps: \(type(of: node))")
+      }
+    } catch {
+      print("Failed to decode props for \(identifier): \(error)")
+    }
+  }
+
   private func findNode(withId id: String, in node: (any SwiftUINode)?) -> (any SwiftUINode)? {
-      guard let node = node else { return nil }
-      if node.id == id { return node }
-      if let children = node.children {
-        for child in children {
-          if let found = findNode(withId: id, in: child) {
-            return found
-          }
+    guard let node = node else { return nil }
+    if node.id == id { return node }
+    if let children = node.children {
+      for child in children {
+        if let found = findNode(withId: id, in: child) {
+          return found
         }
       }
-      return nil
     }
+    return nil
+  }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useId } from "react";
+import { useEffect } from "react";
 import { useSwiftUIContext } from "../contexts";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
@@ -16,27 +16,25 @@ export type NativeSliderProps = {
 };
 
 export const Slider: FunctionComponentWithId<NativeSliderProps> = ({
-  id,
   onChange,
   onFocus,
   onBlur,
   ...otherProps
 }) => {
   const { registerEventHandler } = useSwiftUIContext();
-  const effectiveId = id || `slider:${useId()}`;
 
-  useSwiftUINode("Slider", effectiveId, otherProps);
+  const { id } = useSwiftUINode("Slider", otherProps);
 
   useEffect(() => {
     if (onChange) {
-      registerEventHandler(effectiveId, "change", (value: string) => {
+      registerEventHandler(id, "change", (value: string) => {
         const numValue = parseFloat(value);
         onChange(numValue);
       });
-      if (onFocus) registerEventHandler(effectiveId, "focus", onFocus);
-      if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
+      if (onFocus) registerEventHandler(id, "focus", onFocus);
+      if (onBlur) registerEventHandler(id, "blur", onBlur);
     }
-  }, [onChange, effectiveId, registerEventHandler]);
+  }, [id, registerEventHandler, onChange, onFocus, onBlur]);
 
   return null;
 };

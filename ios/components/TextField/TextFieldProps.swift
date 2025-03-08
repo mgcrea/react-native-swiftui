@@ -81,4 +81,18 @@ public final class TextFieldProps: ObservableObject, Decodable {
     }
     return newText
   }
+
+  public func merge(from other: TextFieldProps) {
+    text = other.text
+    label = other.label
+    placeholder = other.placeholder
+    keyboardType = other.keyboardType
+    textContentType = other.textContentType
+    returnKeyType = other.returnKeyType
+    autocapitalizationType = other.autocapitalizationType
+    maxLength = other.maxLength
+    secure = other.secure
+    multiline = other.multiline
+    disabled = other.disabled
+  }
 }

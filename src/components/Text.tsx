@@ -1,4 +1,3 @@
-import { useId } from "react";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
 
@@ -9,10 +8,8 @@ export type NativeTextProps = {
   alignment?: "leading" | "center" | "trailing";
 };
 
-export const Text: FunctionComponentWithId<NativeTextProps> = ({ id, ...otherProps }) => {
-  const effectiveId = id || `text:${useId()}`;
-
-  useSwiftUINode("Text", effectiveId, otherProps);
+export const Text: FunctionComponentWithId<NativeTextProps> = ({ ...otherProps }) => {
+  useSwiftUINode("Text", otherProps);
 
   return null;
 };

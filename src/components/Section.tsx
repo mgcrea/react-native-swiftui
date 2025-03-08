@@ -1,4 +1,4 @@
-import { useId, type PropsWithChildren } from "react";
+import { type PropsWithChildren } from "react";
 import { SwiftUIParentIdProvider } from "../contexts";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
@@ -12,14 +12,11 @@ export type NativeSectionProps = {
 };
 
 export const Section: FunctionComponentWithId<PropsWithChildren<NativeSectionProps>> = ({
-  id,
   children,
   ...otherProps
 }) => {
-  const effectiveId = id || `section:${useId()}`;
+  const { id } = useSwiftUINode("Section", otherProps);
 
-  useSwiftUINode("Section", effectiveId, otherProps);
-
-  return <SwiftUIParentIdProvider id={effectiveId}>{children}</SwiftUIParentIdProvider>;
+  return <SwiftUIParentIdProvider id={id}>{children}</SwiftUIParentIdProvider>;
 };
 Section.displayName = "Section";

@@ -5,5 +5,7 @@ public final class FormProps: ObservableObject {
     public init(
     ) {}
 
-    public func update(with _: [String: Any]) {}
+    public func merge(from _: FormProps) {
+        // No properties to merge
+    }
 }

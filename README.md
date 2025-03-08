@@ -113,31 +113,6 @@ export default App;
 - **Events**: Pass callbacks like `onChange` or `onPress` to handle native events in JavaScript.
 - **Disabled Fields**: Set `disabled={true}` on components like `TextField` to disable interaction, with visual feedback (grayed-out text and reduced opacity).
 
-## Development Notes
-
-### Current State
-
-- Components use a `Decodable` approach for prop initialization on the Swift side, with `merge(from:)` for updates in Fabric-bridged components (e.g., `PickerContainer`).
-- The `viewTree` is rebuilt dynamically on each render, with nodes registered via `SwiftUIContext`.
-
-### Resuming Work
-
-- **Key Files**:
-  - `src/contexts/SwiftUIContext.tsx`: Event and node registration logic.
-  - `src/contexts/SwiftUIParentContext.tsx`: Hierarchy management with `ParentIdProvider`.
-  - `src/SwiftUI.tsx`: Aggregates nodes into the `viewTree` and passes it to `NativeContainerView`.
-  - `ios/components/*/Props.swift`: Unified prop initialization via `Decodable` and merging.
-- **Next Steps**:
-  - **Performance**: Memoize node registration with `useMemo` in components to reduce object creation.
-  - **Incremental Updates**: Send diffs instead of the full `viewTree` on state changes (see `buildViewTree`).
-  - **Testing**: Stress-test with large forms and frequent updates on real iOS devices.
-
-### Known Limitations
-
-- **Render Timing**: The `viewTree` is built in a `useEffect`, which may cause a slight delay on initial render. Consider async optimizations if needed.
-- **Full Tree Rebuild**: Currently, the entire `viewTree` is serialized and rebuilt on each update, which could be optimized with incremental updates.
-- **iOS-Only**: Limited to iOS due to SwiftUI dependency; Android support is out of scope for this PoC.
-
 ## Contributing
 
 Feel free to fork the repo, experiment with new components, or suggest optimizations! Open issues or PRs on [GitHub](https://github.com/mgcrea/react-native-swiftui).

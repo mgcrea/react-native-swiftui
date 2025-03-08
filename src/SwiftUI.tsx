@@ -1,39 +1,25 @@
+import { PropsWithChildren, ReactElement, ReactNode, useEffect } from "react";
+import { StyleProp, ViewStyle } from "react-native";
 import {
-  Children,
-  memo,
-  PropsWithChildren,
-  ReactElement,
-  ReactNode,
-  use,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type FunctionComponent,
-} from "react";
-import { HostComponent, StyleProp, ViewStyle } from "react-native";
-import {
-  default as SwiftUIRootNativeComponent,
-  Commands as NativeSwiftUIRootCommands,
-  NativeSwiftUIEvent,
-  NativeSwiftUIRootProps,
-} from "./native/SwiftUIRootNativeComponent";
-import {
+  Button,
   DatePicker,
   Form,
+  Group,
   Picker,
   Section,
-  Stepper,
-  TextField,
-  Button,
-  Text,
-  Toggle,
   Slider,
+  Stepper,
+  Text,
+  TextField,
+  Toggle,
 } from "./components";
-import { SwiftUIProvider, useSwiftUIContext } from "./contexts/SwiftUIContext";
-import { buildViewTree } from "./utils/viewTree";
 import { SwiftUIParentIdProvider } from "./contexts";
-import type { ViewTreeNode } from "./types";
+import { SwiftUIProvider, useSwiftUIContext } from "./contexts/SwiftUIContext";
+import {
+  NativeSwiftUIEvent,
+  default as SwiftUIRootNativeComponent,
+} from "./native/SwiftUIRootNativeComponent";
+import { buildViewTree } from "./utils/viewTree";
 
 export type SwiftUIProps = {
   onEvent?: (event: { nativeEvent: NativeSwiftUIEvent }) => void;
@@ -51,8 +37,9 @@ export const SwiftUIRoot = ({
   console.log(`SwiftUIRoot rendering with ${nodes.size} nodes`);
   useEffect(() => {
     const viewTree = buildViewTree(nodes);
-    console.log("Updating view tree", viewTree);
+    console.log("SwiftUIRoot updating view tree", viewTree);
     nativeRef.current?.setNativeProps({ viewTree: JSON.stringify(viewTree) });
+    // }, [JSON.stringify(nodes)]);
   }, [nodes.size, JSON.stringify(nodes.keys())]);
 
   const handleEvent: SwiftUIProps["onEvent"] = (event) => {
@@ -93,3 +80,4 @@ SwiftUI.Button = Button;
 SwiftUI.Text = Text;
 SwiftUI.Toggle = Toggle;
 SwiftUI.Slider = Slider;
+SwiftUI.Group = Group;

@@ -16,4 +16,10 @@ public final class SectionProps: ObservableObject, Decodable {
         footer = try container.decodeIfPresent(String.self, forKey: .footer) ?? ""
         isCollapsed = try container.decodeIfPresent(Bool.self, forKey: .isCollapsed) ?? false
     }
+
+    public func merge(from other: SectionProps) {
+        header = other.header
+        footer = other.footer
+        isCollapsed = other.isCollapsed
+    }
 }

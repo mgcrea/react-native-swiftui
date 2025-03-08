@@ -1,4 +1,4 @@
-import { useEffect, useId } from "react";
+import { useEffect } from "react";
 import { useSwiftUIContext } from "../contexts";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
@@ -19,22 +19,20 @@ export type NativePickerProps = {
 };
 
 export const Picker: FunctionComponentWithId<NativePickerProps> = ({
-  id,
   onChange,
   onFocus,
   onBlur,
   ...otherProps
 }) => {
   const { registerEventHandler } = useSwiftUIContext();
-  const effectiveId = id || `picker:${useId()}`;
 
-  useSwiftUINode("Picker", effectiveId, otherProps);
+  const { id } = useSwiftUINode("Picker", otherProps);
 
   useEffect(() => {
-    if (onChange) registerEventHandler(effectiveId, "change", onChange);
-    if (onFocus) registerEventHandler(effectiveId, "focus", onFocus);
-    if (onBlur) registerEventHandler(effectiveId, "blur", onBlur);
-  }, [onChange, onFocus, onBlur, effectiveId, registerEventHandler]);
+    if (onChange) registerEventHandler(id, "change", onChange);
+    if (onFocus) registerEventHandler(id, "focus", onFocus);
+    if (onBlur) registerEventHandler(id, "blur", onBlur);
+  }, [id, registerEventHandler, onChange, onFocus, onBlur]);
 
   return null;
 };

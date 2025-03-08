@@ -27,4 +27,11 @@ public final class TextProps: ObservableObject, Decodable {
       alignment = alignmentString == "center" ? .center : alignmentString == "trailing" ? .trailing : .leading
     }
   }
+
+  public func merge(from other: TextProps) {
+    text = other.text
+    font = other.font
+    color = other.color
+    alignment = other.alignment
+  }
 }

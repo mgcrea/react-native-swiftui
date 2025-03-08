@@ -33,4 +33,13 @@ public final class SliderProps: ObservableObject, Decodable {
       value = max(minimum, min(maximum, value))
     }
   }
+
+  public func merge(from other: SliderProps) {
+    value = other.value
+    minimum = other.minimum
+    maximum = other.maximum
+    step = other.step
+    label = other.label
+    disabled = other.disabled
+  }
 }

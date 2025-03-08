@@ -1,16 +1,23 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
 import { useJsonMemo } from "../hooks";
+import { WithId } from "../types";
+import { lowercaseFirstLetter } from "../utils";
 
-export function useSwiftUINode<T extends Record<string, any>>(type: string, id: string, props: T) {
+export function useSwiftUINode<T extends WithId<Record<string, unknown>>>(type: string, props: T) {
   const { registerNode, unregisterNode, updateNodeProps } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
+  // eslint-disable-next-line react-hooks/rules-of-hooks, @typescript-eslint/prefer-nullish-coalescing
+  const id = props.id || `${lowercaseFirstLetter(type)}:${useId()}`;
   const isInitialRender = useRef(true);
 
   useEffect(() => {
     registerNode({ type, id, props }, parentId);
-    return () => unregisterNode(id);
-  }, [id, parentId, registerNode, unregisterNode]);
+    return () => {
+      unregisterNode(id);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type, id, parentId, registerNode, unregisterNode]);
 
   const memoizedProps = useJsonMemo(props);
   useEffect(() => {
@@ -20,4 +27,9 @@ export function useSwiftUINode<T extends Record<string, any>>(type: string, id: 
     }
     updateNodeProps(id, memoizedProps);
   }, [id, memoizedProps, updateNodeProps]);
+
+  return {
+    id,
+    parentId,
+  };
 }

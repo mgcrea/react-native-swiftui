@@ -25,4 +25,12 @@ public final class StepperProps: ObservableObject, Decodable {
     maximum = try container.decodeIfPresent(Int.self, forKey: .maximum) ?? 100
     step = try container.decodeIfPresent(Int.self, forKey: .step) ?? 1
   }
+
+  public func merge(from other: StepperProps) {
+    value = other.value
+    label = other.label
+    minimum = other.minimum
+    maximum = other.maximum
+    step = other.step
+  }
 }

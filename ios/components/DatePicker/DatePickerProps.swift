@@ -79,4 +79,12 @@ public final class DatePickerProps: ObservableObject, Decodable {
     displayedComponents = componentsString == "date" ? .date : [.date, .hourAndMinute]
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
   }
+
+  public func merge(from other: DatePickerProps) {
+    selection = other.selection
+    label = other.label
+    datePickerStyle = other.datePickerStyle
+    displayedComponents = other.displayedComponents
+    disabled = other.disabled
+  }
 }

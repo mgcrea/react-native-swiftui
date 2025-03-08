@@ -23,4 +23,8 @@ public final class ButtonProps: ObservableObject, Decodable {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     title = try container.decodeIfPresent(String.self, forKey: .title) ?? ""
   }
+
+  public func merge(from other: ButtonProps) {
+    title = other.title
+  }
 }
