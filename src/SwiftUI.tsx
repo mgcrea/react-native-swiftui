@@ -5,6 +5,7 @@ import {
   DatePicker,
   Form,
   Group,
+  HStack,
   Picker,
   Section,
   Slider,
@@ -12,6 +13,8 @@ import {
   Text,
   TextField,
   Toggle,
+  VStack,
+  ZStack,
 } from "./components";
 import { SwiftUIParentIdProvider } from "./contexts";
 import { SwiftUIProvider, useSwiftUIContext } from "./contexts/SwiftUIContext";
@@ -83,3 +86,6 @@ SwiftUI.Text = Text;
 SwiftUI.Toggle = Toggle;
 SwiftUI.Slider = Slider;
 SwiftUI.Group = Group;
+SwiftUI.HStack = HStack;
+SwiftUI.VStack = VStack;
+SwiftUI.ZStack = ZStack;

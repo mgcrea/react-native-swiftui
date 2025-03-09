@@ -28,7 +28,23 @@ export const BasicFormExample: FunctionComponent = () => {
     <View style={{flex: 1}}>
       <SwiftUI style={{flex: 1}}>
         <SwiftUI.Text text="BasicFormExample" />
+
         <SwiftUI.Form>
+          <SwiftUI.Section header="Personal Information">
+            <SwiftUI.VStack alignment="center" spacing={30}>
+              <SwiftUI.Text text="Title" font="headline" />
+              <SwiftUI.HStack alignment="center" spacing={8}>
+                <SwiftUI.Button
+                  title="Left"
+                  onPress={() => console.log('Left pressed')}
+                />
+                <SwiftUI.Button
+                  title="Right"
+                  onPress={() => console.log('Right pressed')}
+                />
+              </SwiftUI.HStack>
+            </SwiftUI.VStack>
+          </SwiftUI.Section>
           <SwiftUI.Section header="Personal Information">
             <SwiftUI.TextField
               placeholder="First name"

@@ -4,7 +4,7 @@ import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
 
 export type NativeSliderProps = {
-  value: number;
+  value?: number;
   minimum?: number;
   maximum?: number;
   step?: number;

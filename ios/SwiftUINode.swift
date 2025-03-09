@@ -1,23 +1,36 @@
+// ios/SwiftUINode.swift
 import SwiftUI
 
-// MARK: - Protocols and Base Types
-
+// Protocol for all SwiftUI nodes
 protocol SwiftUINode: Identifiable {
   var id: String { get }
   var children: [any SwiftUINode]? { get }
 }
 
-// Base coding keys for all nodes
-public enum BaseCodingKeys: String, CodingKey {
-  case id, type, children, props
+// Generic node struct
+struct GenericNode<T: Decodable>: SwiftUINode, Decodable {
+  let id: String
+  let children: [any SwiftUINode]?
+  let props: T
+
+  enum CodingKeys: String, CodingKey {
+    case id, props, children
+  }
+
+  init(from decoder: Decoder) throws {
+    let container = try decoder.container(keyedBy: CodingKeys.self)
+    id = try container.decode(String.self, forKey: .id)
+    // Only decode children if the component supports them (determined by type or props)
+    children = try container.decodeIfPresent(NodeChildren.self, forKey: .children)?.nodes
+    props = try container.decode(T.self, forKey: .props)
+  }
 }
 
-// MARK: - Helper for Decoding Children
-
-public struct NodeChildren: Decodable {
+// Wrapper for decoding children array
+struct NodeChildren: Decodable {
   let nodes: [any SwiftUINode]
 
-  public init(from decoder: Decoder) throws {
+  init(from decoder: Decoder) throws {
     var container = try decoder.unkeyedContainer()
     var nodes: [any SwiftUINode] = []
     while !container.isAtEnd {
@@ -28,41 +41,51 @@ public struct NodeChildren: Decodable {
   }
 }
 
-// Wrapper to handle type discrimination
+// Wrapper for type discrimination
 private struct NodeWrapper: Decodable {
   let node: any SwiftUINode
 
+  enum CodingKeys: String, CodingKey {
+    case type
+  }
+
   init(from decoder: Decoder) throws {
-    let container = try decoder.container(keyedBy: BaseCodingKeys.self)
+    let container = try decoder.container(keyedBy: CodingKeys.self)
     let type = try container.decode(String.self, forKey: .type)
 
     switch type {
-    case "Group":
-      node = try GroupNode(from: decoder)
-    case "Form":
-      node = try FormNode(from: decoder)
-    case "Section":
-      node = try SectionNode(from: decoder)
-    case "TextField":
-      node = try TextFieldNode(from: decoder)
-    case "Picker":
-      node = try PickerNode(from: decoder)
-    case "DatePicker":
-      node = try DatePickerNode(from: decoder)
-    case "Stepper":
-      node = try StepperNode(from: decoder)
     case "Button":
-      node = try ButtonNode(from: decoder)
-    case "Text":
-      node = try TextNode(from: decoder)
-    case "Toggle":
-      node = try ToggleNode(from: decoder)
+      node = try GenericNode<ButtonProps>(from: decoder)
+    case "DatePicker":
+      node = try GenericNode<DatePickerProps>(from: decoder)
     case "Slider":
-      node = try SliderNode(from: decoder)
+      node = try GenericNode<SliderProps>(from: decoder)
+    case "TextField":
+      node = try GenericNode<TextFieldProps>(from: decoder)
+    case "Picker":
+      node = try GenericNode<PickerProps>(from: decoder)
+    case "Stepper":
+      node = try GenericNode<StepperProps>(from: decoder)
+    case "Text":
+      node = try GenericNode<TextProps>(from: decoder)
+    case "Toggle":
+      node = try GenericNode<ToggleProps>(from: decoder)
+    case "Form":
+      node = try GenericNode<FormProps>(from: decoder)
+    case "Section":
+      node = try GenericNode<SectionProps>(from: decoder)
+    case "Group":
+      node = try GenericNode<EmptyProps>(from: decoder) // No props for Group
+    case "HStack":
+      node = try GenericNode<HStackProps>(from: decoder)
+    case "VStack":
+      node = try GenericNode<VStackProps>(from: decoder)
+    case "ZStack":
+      node = try GenericNode<ZStackProps>(from: decoder)
     default:
-      throw Swift.DecodingError.typeMismatch(
+      throw DecodingError.typeMismatch(
         (any SwiftUINode).self,
-        Swift.DecodingError.Context(
+        DecodingError.Context(
           codingPath: container.codingPath,
           debugDescription: "Unknown type: \(type)"
         )
@@ -71,8 +94,13 @@ private struct NodeWrapper: Decodable {
   }
 }
 
-// MARK: - JSON Decoder
+// Empty props for components like Group that have no props
+final class EmptyProps: ObservableObject, Decodable {
+  init() {}
+  func merge(from _: EmptyProps) {}
+}
 
+// JSON decoding utility
 enum JSONDecodingError: Error {
   case invalidJSON
   case parsingFailed(Error)

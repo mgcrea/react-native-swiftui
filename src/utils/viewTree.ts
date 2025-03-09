@@ -52,5 +52,6 @@ export function buildViewTree(
     type: "Group",
     id: "root",
     children: rootNodes,
+    props: {},
   };
 }

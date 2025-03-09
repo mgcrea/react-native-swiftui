@@ -6,7 +6,7 @@ import type { FunctionComponentWithId } from "../types";
 // https://developer.apple.com/documentation/swiftui/stepper
 
 export type NativeStepperProps = {
-  value: number;
+  value?: number;
   label?: string;
   minimum?: number;
   maximum?: number;
