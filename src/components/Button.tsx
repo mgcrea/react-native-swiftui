@@ -1,10 +1,19 @@
 import { useEffect } from "react";
+import { StyleProp, ViewStyle } from "react-native";
 import { useSwiftUIContext } from "../contexts";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
 
+export type NativeStyleProps = {
+  backgroundColor?: string;
+  foregroundColor?: string;
+  padding?: number;
+  border?: { color?: string; width?: number };
+};
+
 export type NativeButtonProps = {
   title: string;
+  style?: StyleProp<ViewStyle>;
   onPress?: () => void;
 };
 

@@ -11,5 +11,6 @@ public struct ButtonView: View {
     Button(props.title) {
       props.onPress?()
     }
+    .applyStyles(props.style)
   }
 }

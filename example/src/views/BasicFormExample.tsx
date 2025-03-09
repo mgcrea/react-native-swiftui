@@ -36,6 +36,7 @@ export const BasicFormExample: FunctionComponent = () => {
               <SwiftUI.HStack alignment="center" spacing={8}>
                 <SwiftUI.Button
                   title="Left"
+                  style={{backgroundColor: '#00FFFF', padding: 10}}
                   onPress={() => console.log('Left pressed')}
                 />
                 <SwiftUI.Button
