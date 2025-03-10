@@ -39,35 +39,6 @@ React Native excels at cross-platform development, but its UI components can som
 
 Ideal for developers seeking native iOS aesthetics and behavior within a React Native app, this project explores a hybrid paradigm for enhanced UI flexibility.
 
-## How It Works
-
-1. **Component-Level Tree Building**: Each `SwiftUI.*` component (e.g., `<SwiftUI.TextField>`) registers itself with a `viewTree` during React’s render phase, using a context-based system.
-2. **Native Rendering**: The aggregated `viewTree` is serialized as JSON and sent to iOS, where SwiftUI renders it via Fabric’s native bridge. Components use a unified `Decodable` approach for prop initialization.
-3. **Two-Way Binding**: State updates (e.g., text input) sync between React and SwiftUI via event handlers, with props merged efficiently on updates.
-4. **Event Handling**: Native events (e.g., `onChange`, `onPress`) are bubbled back to JavaScript through a custom event system.
-
-### Architecture
-
-- **React Native (JS/TS)**:
-  - Defines UI structure in JSX.
-  - Uses `SwiftUIContext` for event handling and node registration.
-  - Uses `SwiftUIParentContext` to maintain parent-child hierarchy.
-  - Components register their `ViewTreeNode` dynamically during render.
-- **Fabric**: Facilitates communication between JavaScript and native code.
-- **SwiftUI (iOS)**:
-  - Renders the UI using native components (e.g., `TextField`, `Button`) based on the `viewTree`.
-  - `Props` classes (e.g., `PickerProps`) conform to `Decodable` for initialization and use `merge(from:)` for updates, unifying prop handling.
-- **Bridge**: Custom Objective-C++ and Swift files (e.g., `RCTSwiftUIRootView.mm`, `SwiftUIRootView.swift`) manage data flow and event propagation.
-
-### Key Implementation Details
-
-- **Dynamic `viewTree` Generation**: Components register themselves via `SwiftUIContext.registerNode`, with hierarchy tracked using `SwiftUIParentContext`. This supports passthrough components (e.g., `<Controller />` from `react-hook-form`) without explicit prop forwarding.
-- **Context System**:
-  - `SwiftUIContext`: Manages event handlers and the `nodeRegistry`.
-  - `SwiftUIParentContext`: Provides `parentId` to child components via `ParentIdProvider`, ensuring correct tree structure.
-- **Prop Initialization**: Native `Props` classes use `Decodable` to initialize from JSON, reducing redundancy and ensuring consistency across `viewTree` and Fabric flows.
-- **Rendering**: Components return `null` in JSX, as the UI is fully handled by SwiftUI on the native side.
-
 ## Features
 
 - **Supported Components**: `Form`, `Section`, `TextField`, `Picker`, `DatePicker`, `Stepper`, `Button` (more in development).
@@ -133,6 +104,35 @@ function App() {
 }
 export default App;
 ```
+
+## How It Works
+
+1. **Component-Level Tree Building**: Each `SwiftUI.*` component (e.g., `<SwiftUI.TextField>`) registers itself with a `viewTree` during React’s render phase, using a context-based system.
+2. **Native Rendering**: The aggregated `viewTree` is serialized as JSON and sent to iOS, where SwiftUI renders it via Fabric’s native bridge. Components use a unified `Decodable` approach for prop initialization.
+3. **Two-Way Binding**: State updates (e.g., text input) sync between React and SwiftUI via event handlers, with props merged efficiently on updates.
+4. **Event Handling**: Native events (e.g., `onChange`, `onPress`) are bubbled back to JavaScript through a custom event system.
+
+### Architecture
+
+- **React Native (JS/TS)**:
+  - Defines UI structure in JSX.
+  - Uses `SwiftUIContext` for event handling and node registration.
+  - Uses `SwiftUIParentContext` to maintain parent-child hierarchy.
+  - Components register their `ViewTreeNode` dynamically during render.
+- **Fabric**: Facilitates communication between JavaScript and native code.
+- **SwiftUI (iOS)**:
+  - Renders the UI using native components (e.g., `TextField`, `Button`) based on the `viewTree`.
+  - `Props` classes (e.g., `PickerProps`) conform to `Decodable` for initialization and use `merge(from:)` for updates, unifying prop handling.
+- **Bridge**: Custom Objective-C++ and Swift files (e.g., `RCTSwiftUIRootView.mm`, `SwiftUIRootView.swift`) manage data flow and event propagation.
+
+### Key Implementation Details
+
+- **Dynamic `viewTree` Generation**: Components register themselves via `SwiftUIContext.registerNode`, with hierarchy tracked using `SwiftUIParentContext`. This supports passthrough components (e.g., `<Controller />` from `react-hook-form`) without explicit prop forwarding.
+- **Context System**:
+  - `SwiftUIContext`: Manages event handlers and the `nodeRegistry`.
+  - `SwiftUIParentContext`: Provides `parentId` to child components via `ParentIdProvider`, ensuring correct tree structure.
+- **Prop Initialization**: Native `Props` classes use `Decodable` to initialize from JSON, reducing redundancy and ensuring consistency across `viewTree` and Fabric flows.
+- **Rendering**: Components return `null` in JSX, as the UI is fully handled by SwiftUI on the native side.
 
 ### Notes
 
