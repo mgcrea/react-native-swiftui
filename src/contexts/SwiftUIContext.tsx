@@ -6,16 +6,16 @@ import {
   default as SwiftUIRootNativeComponent,
 } from "../native/SwiftUIRootNativeComponent";
 
-type EventHandler = (...props: string[]) => void;
-type EventRegistry = Map<string, Map<string, EventHandler>>;
-type NodeRegistry = Map<string, { node: ViewTreeNode; parentId?: string }>;
+export type EventHandler = (...args: string[]) => void;
+export type EventRegistry = Map<string, Map<string, EventHandler>>;
+export type NodeRegistry = Map<string, { node: ViewTreeNode; parentId?: string }>;
 
 export type SwiftUIContextType = {
   getEventHandler: (id: string, name: string) => EventHandler | undefined;
   getNodes: () => NodeRegistry;
   nativeRef: RefObject<React.ComponentRef<typeof SwiftUIRootNativeComponent> | null>;
   recordRenderOrder: (id: string) => void;
-  registerEventHandler: (id: string, name: string, handler: EventHandler) => void;
+  registerEvents: (id: string, events: Record<string, EventHandler | undefined>) => void; // New method
   registerNode: (node: ViewTreeNode, parentId: string) => void;
   renderSequence: RefObject<string[]>;
   unregisterNode: (id: string) => void;
@@ -30,18 +30,33 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const renderSequence = useRef<string[]>([]);
   const nativeRef = useRef<React.ComponentRef<typeof SwiftUIRootNativeComponent> | null>(null);
 
-  const registerEventHandler = useCallback((id: string, name: string, handler: EventHandler) => {
-    let handlersForId = eventRegistry.current.get(id);
-    if (!handlersForId) {
-      handlersForId = new Map<string, EventHandler>();
-      eventRegistry.current.set(id, handlersForId);
-    }
-    handlersForId.set(name, handler);
-  }, []);
-
   const getEventHandler = (id: string, name: string) => {
     return eventRegistry.current.get(id)?.get(name);
   };
+
+  const getEventHandlersForId = (id: string) => {
+    const handlersForId = eventRegistry.current.get(id);
+    if (handlersForId) {
+      return handlersForId;
+    }
+    const newHandlersForId = new Map<string, EventHandler>();
+    eventRegistry.current.set(id, newHandlersForId);
+    return newHandlersForId;
+  };
+
+  const registerEvents = useCallback((id: string, events: Record<string, EventHandler | undefined>) => {
+    const handlersForId = getEventHandlersForId(id);
+    Object.entries(events).forEach(([name, handler]) => {
+      if (handler) {
+        // if (handlersForId.has(name)) {
+        //   console.log(`Overwriting existing event handler for ${id}:${name}`);
+        // }
+        handlersForId.set(name, handler);
+      } else {
+        handlersForId.delete(name);
+      }
+    });
+  }, []);
 
   const registerNode = useCallback((node: ViewTreeNode, parentId?: string) => {
     console.log(`SwiftUIContext registering node with id=${node.id}`, { node, parentId });
@@ -58,7 +73,6 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const recordRenderOrder = useCallback((id: string) => {
     if (!renderSequence.current.includes(id)) {
-      // Avoid duplicates
       renderSequence.current.push(id);
     }
   }, []);
@@ -83,7 +97,7 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
     getNodes,
     nativeRef,
     recordRenderOrder,
-    registerEventHandler,
+    registerEvents,
     registerNode,
     renderSequence,
     unregisterNode,

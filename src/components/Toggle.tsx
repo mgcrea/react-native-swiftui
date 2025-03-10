@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useSwiftUIContext } from "../contexts";
+import { useMemo } from "react";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
 
@@ -10,19 +9,23 @@ export type NativeToggleProps = {
   onChange?: (value: boolean) => void;
 };
 
-export const Toggle: FunctionComponentWithId<NativeToggleProps> = ({ onChange, ...otherProps }) => {
-  const { registerEventHandler } = useSwiftUIContext();
+export const Toggle: FunctionComponentWithId<NativeToggleProps> = ({
+  onChange: onChangeProp,
+  ...otherProps
+}) => {
+  const onChange = useMemo(
+    () =>
+      onChangeProp
+        ? (value: string) => {
+            onChangeProp(value === "true"); // Cast string to boolean
+          }
+        : undefined,
+    [onChangeProp],
+  );
 
-  const { id } = useSwiftUINode("Toggle", otherProps);
-
-  useEffect(() => {
-    if (onChange) {
-      registerEventHandler(id, "change", (value: string) => {
-        console.log(`value: ${value}, type of value: ${typeof value}`);
-        onChange(value === "true"); // Convert string to boolean
-      });
-    }
-  }, [id, registerEventHandler, onChange]);
+  useSwiftUINode("Toggle", otherProps, {
+    change: onChange,
+  });
 
   return null;
 };

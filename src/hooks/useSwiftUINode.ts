@@ -1,11 +1,19 @@
 import { useEffect, useId, useRef } from "react";
-import { useSwiftUIContext, useSwiftUIParentContext } from "../contexts";
+import { useSwiftUIContext, useSwiftUIParentContext, type EventHandler } from "../contexts";
 import { useJsonMemo } from "../hooks";
 import { WithId } from "../types";
 import { lowercaseFirstLetter } from "../utils";
 
-export function useSwiftUINode<T extends WithId<Record<string, unknown>>>(type: string, props: T) {
-  const { registerNode, unregisterNode, updateNodeProps, recordRenderOrder } = useSwiftUIContext();
+export type SwiftUINodeProps = WithId<Record<string, unknown>>;
+export type SwiftUINodeEvents = Record<string, EventHandler | undefined>;
+
+export function useSwiftUINode<T extends SwiftUINodeProps, U extends SwiftUINodeEvents>(
+  type: string,
+  props: T,
+  events?: U,
+) {
+  const { registerNode, unregisterNode, registerEvents, updateNodeProps, recordRenderOrder } =
+    useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   // eslint-disable-next-line react-hooks/rules-of-hooks, @typescript-eslint/prefer-nullish-coalescing
   const id = props.id || `${lowercaseFirstLetter(type)}:${useId()}`;
@@ -14,6 +22,7 @@ export function useSwiftUINode<T extends WithId<Record<string, unknown>>>(type: 
   // Record the render order every render
   recordRenderOrder(id);
 
+  // Register the node on mount
   useEffect(() => {
     registerNode({ type, id, props }, parentId);
     return () => {
@@ -21,6 +30,15 @@ export function useSwiftUINode<T extends WithId<Record<string, unknown>>>(type: 
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, id, parentId, registerNode, unregisterNode]);
+
+  // Register the events on mount
+  const eventsValues = events ? Object.values(events) : [];
+  useEffect(() => {
+    if (events) {
+      registerEvents(id, events);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, registerEvents, ...eventsValues]);
 
   const memoizedProps = useJsonMemo(props);
   useEffect(() => {

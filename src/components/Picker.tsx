@@ -1,5 +1,4 @@
-import { ReactNode, useEffect } from "react";
-import { useSwiftUIContext } from "../contexts";
+import { ReactNode, useMemo } from "react";
 import { useSwiftUINode } from "../hooks";
 
 // https://developer.apple.com/documentation/swiftui/picker
@@ -18,24 +17,26 @@ export type NativePickerProps<T extends string> = {
 };
 
 export const Picker = <T extends string>({
-  onChange,
+  onChange: onChangeProp,
   onFocus,
   onBlur,
   ...otherProps
 }: NativePickerProps<T>): ReactNode => {
-  const { registerEventHandler } = useSwiftUIContext();
+  const onChange = useMemo(
+    () =>
+      onChangeProp
+        ? (value: string) => {
+            onChangeProp(value as T); // Cast string to T
+          }
+        : undefined,
+    [onChangeProp],
+  );
 
-  const { id } = useSwiftUINode("Picker", otherProps);
-
-  useEffect(() => {
-    if (onChange)
-      registerEventHandler(id, "change", (value: string) => {
-        onChange(value as T);
-      });
-    if (onFocus) registerEventHandler(id, "focus", onFocus);
-    if (onBlur) registerEventHandler(id, "blur", onBlur);
-  }, [id, registerEventHandler, onChange, onFocus, onBlur]);
-
+  useSwiftUINode("Picker", otherProps, {
+    change: onChange,
+    focus: onFocus,
+    blur: onBlur,
+  });
   return null;
 };
 Picker.displayName = "Picker";

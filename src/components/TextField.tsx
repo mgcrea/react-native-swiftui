@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-import { useSwiftUIContext } from "../contexts";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
 
@@ -31,15 +29,7 @@ export const TextField: FunctionComponentWithId<NativeTextFieldProps> = ({
   onBlur,
   ...otherProps
 }) => {
-  const { registerEventHandler } = useSwiftUIContext();
-
-  const { id } = useSwiftUINode("TextField", otherProps);
-
-  useEffect(() => {
-    if (onChange) registerEventHandler(id, "change", onChange);
-    if (onFocus) registerEventHandler(id, "focus", onFocus);
-    if (onBlur) registerEventHandler(id, "blur", onBlur);
-  }, [onChange, onFocus, onBlur, id, registerEventHandler]);
+  useSwiftUINode("TextField", otherProps, { onChange, onFocus, onBlur });
 
   return null;
 };

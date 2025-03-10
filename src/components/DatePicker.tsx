@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useSwiftUIContext } from "../contexts";
+import { useMemo } from "react";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
 
@@ -21,24 +20,22 @@ export type NativeDatePickerProps = {
 };
 
 export const DatePicker: FunctionComponentWithId<NativeDatePickerProps> = ({
-  onChange,
+  onChange: onChangeProp,
   onFocus,
   onBlur,
   ...otherProps
 }) => {
-  const { registerEventHandler } = useSwiftUIContext();
+  const onChange = useMemo(
+    () =>
+      onChangeProp
+        ? (date: string) => {
+            onChangeProp(new Date(date)); // Convert string to Date
+          }
+        : undefined,
+    [onChangeProp],
+  );
 
-  const { id } = useSwiftUINode("DatePicker", otherProps);
-
-  useEffect(() => {
-    if (onChange)
-      registerEventHandler(id, "change", (date: string) => {
-        onChange(new Date(date)); // Convert string to Date
-      });
-    if (onFocus) registerEventHandler(id, "focus", onFocus);
-    if (onBlur) registerEventHandler(id, "blur", onBlur);
-  }, [onChange, onFocus, onBlur, id, registerEventHandler]);
-
+  useSwiftUINode("DatePicker", otherProps, { change: onChange, focus: onFocus, blur: onBlur });
   return null;
 };
 DatePicker.displayName = "DatePicker";

@@ -2,7 +2,7 @@
 import SwiftUI
 
 public final class SheetProps: ObservableObject, Decodable {
-  @Published public var isPresented: Bool = true
+  @Published public var isPresented: Bool = false
   @Published public var detents: [String] = ["medium", "large"]
   // Event for dismissal
   public var onDismiss: (() -> Void)?

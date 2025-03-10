@@ -1,8 +1,9 @@
-// src/components/Sheet.tsx
-import { PropsWithChildren, useEffect } from "react";
-import { SwiftUIParentIdProvider, useSwiftUIContext } from "../contexts";
+import { PropsWithChildren } from "react";
+import { SwiftUIParentIdProvider } from "../contexts";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId } from "../types";
+
+// https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:)
 
 export type NativeSheetDetent = "medium" | "large" | `fraction:${number}` | `height:${number}`;
 
@@ -17,15 +18,7 @@ export const Sheet: FunctionComponentWithId<PropsWithChildren<NativeSheetProps>>
   onDismiss,
   ...otherProps
 }) => {
-  const { registerEventHandler } = useSwiftUIContext();
-  const { id } = useSwiftUINode("Sheet", { ...otherProps });
-
-  useEffect(() => {
-    if (onDismiss) {
-      registerEventHandler(id, "dismiss", onDismiss);
-    }
-  }, [id, onDismiss, registerEventHandler]);
-
+  const { id } = useSwiftUINode("Sheet", otherProps, { dismiss: onDismiss });
   return <SwiftUIParentIdProvider id={id}>{children}</SwiftUIParentIdProvider>;
 };
 Sheet.displayName = "Sheet";
