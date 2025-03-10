@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 -->
 <p align="center">
   <a href="https://mgcrea.github.io/react-native-swiftui">
-    <img src="./.github/assets/logo.png" alt="logo" width="320" height="200"/>
+    <img src="./.github/assets/logo.png" alt="logo" width="480" height="300"/>
   </a>
 </p>
 <p align="center">
