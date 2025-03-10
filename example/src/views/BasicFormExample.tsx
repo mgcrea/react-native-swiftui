@@ -32,7 +32,7 @@ export const BasicFormExample: FunctionComponent = () => {
         <SwiftUI.Form>
           <SwiftUI.Section header="Personal Information">
             <SwiftUI.VStack alignment="center" spacing={30}>
-              <SwiftUI.Text text="Title" font="headline" />
+              <SwiftUI.Text text="Title" style={{font: 'title'}} />
               <SwiftUI.HStack alignment="center" spacing={8}>
                 <SwiftUI.Button
                   title="Left"
@@ -41,7 +41,7 @@ export const BasicFormExample: FunctionComponent = () => {
                     padding: 10,
                     borderColor: 'blue',
                     borderWidth: 1,
-                    cornerRadius: 10,
+                    borderRadius: 10,
                   }}
                   buttonStyle="plain"
                   onPress={() => console.log('Left pressed')}
@@ -63,10 +63,7 @@ export const BasicFormExample: FunctionComponent = () => {
                 keyboardType="decimalPad"
                 text={firstName}
               />
-              <SwiftUI.Text
-                text="kg"
-                style={{color: 'red', fontWeight: 800, fontFamily: 'mono'}}
-              />
+              <SwiftUI.Text text="kg" style={{color: 'red', fontWeight: 800}} />
               <SwiftUI.Button
                 title="Left"
                 style={{
@@ -74,7 +71,8 @@ export const BasicFormExample: FunctionComponent = () => {
                   padding: 10,
                   borderColor: 'blue',
                   borderWidth: 1,
-                  cornerRadius: 10,
+                  borderRadius: 10,
+                  font: 'body',
                 }}
                 buttonStyle="plain"
                 onPress={() => console.log('Left pressed')}

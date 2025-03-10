@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useSwiftUIContext } from "../contexts";
 import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId, NativeViewStyle } from "../types";
+import type { FunctionComponentWithId, NativeTextStyle } from "../types";
 
 export type NativeButtonStyle = "default" | "plain" | "bordered" | "borderedProminent" | "borderless";
 
@@ -9,7 +9,7 @@ export type NativeButtonProps = {
   title?: string;
   disabled?: boolean;
   buttonStyle?: NativeButtonStyle;
-  style?: NativeViewStyle;
+  style?: NativeTextStyle;
   onPress?: () => void;
 };
 

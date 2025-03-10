@@ -13,7 +13,7 @@ extension View {
       if let fgColor = style.foregroundColor ?? style.color {
         view = AnyView(view.foregroundColor(fgColor))
       }
-      if let cornerRadius = style.cornerRadius {
+      if let cornerRadius = style.cornerRadius ?? style.borderRadius {
         view = AnyView(view.cornerRadius(cornerRadius))
       }
       if let borderWidth = style.borderWidth {
@@ -25,12 +25,15 @@ extension View {
       }
       // TextStyle
       if let fontWeight = style.fontWeight {
-        if #available(iOS 16.0, *)  {
+        if #available(iOS 16.0, *) {
           view = AnyView(view.fontWeight(fontWeight))
         }
       }
       if let fontSize = style.fontSize {
         view = AnyView(view.font(.system(size: fontSize)))
+      }
+      if let font = style.font {
+        view = AnyView(view.font(font))
       }
     }
     return view
