@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+/* eslint-disable @typescript-eslint/no-deprecated */
 import type { HostComponent, ViewProps } from "react-native";
-import type { DirectEventHandler, Int32 } from "react-native/Libraries/Types/CodegenTypes";
-import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
+import type { DirectEventHandler } from "react-native/Libraries/Types/CodegenTypes";
 import codegenNativeCommands from "react-native/Libraries/Utilities/codegenNativeCommands";
+import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
 
 export type NativeSwiftUIEvent = {
   name: string;
