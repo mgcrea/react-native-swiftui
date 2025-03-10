@@ -5,9 +5,10 @@ public final class TextProps: ObservableObject, Decodable {
   @Published public var font: Font = .body
   @Published public var color: Color = .primary
   @Published public var alignment: TextAlignment = .leading
+  public var style: StyleProps?
 
   enum CodingKeys: String, CodingKey {
-    case text, font, color, alignment
+    case text, font, color, alignment, style
   }
 
   public init(text: String = "") {
@@ -26,6 +27,7 @@ public final class TextProps: ObservableObject, Decodable {
     if let alignmentString = try container.decodeIfPresent(String.self, forKey: .alignment) {
       alignment = alignmentString == "center" ? .center : alignmentString == "trailing" ? .trailing : .leading
     }
+    style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
   public func merge(from other: TextProps) {
@@ -33,5 +35,6 @@ public final class TextProps: ObservableObject, Decodable {
     font = other.font
     color = other.color
     alignment = other.alignment
+    style = other.style
   }
 }

@@ -1,16 +1,7 @@
 import { useEffect } from "react";
-import { StyleProp, ViewStyle } from "react-native";
 import { useSwiftUIContext } from "../contexts";
 import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId } from "../types";
-
-export type NativeStyleProps = {
-  backgroundColor?: string;
-  foregroundColor?: string;
-  borderColor?: string;
-  borderWidth?: number;
-  padding?: number;
-};
+import type { FunctionComponentWithId, NativeViewStyle } from "../types";
 
 export type NativeButtonStyle = "default" | "plain" | "bordered" | "borderedProminent" | "borderless";
 
@@ -18,7 +9,7 @@ export type NativeButtonProps = {
   title?: string;
   disabled?: boolean;
   buttonStyle?: NativeButtonStyle;
-  style?: StyleProp<ViewStyle>;
+  style?: NativeViewStyle;
   onPress?: () => void;
 };
 

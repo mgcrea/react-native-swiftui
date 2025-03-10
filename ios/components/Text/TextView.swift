@@ -5,8 +5,9 @@ public struct TextView: View {
 
   public var body: some View {
     Text(verbatim: props.text)
-      .font(props.font)
-      .foregroundColor(props.color)
+//      .font(props.font)
+//      .foregroundColor(props.color)
       .multilineTextAlignment(props.alignment)
+      .applyStyles(props.style)
   }
 }
