@@ -1,4 +1,31 @@
-# React Native SwiftUI
+<!-- markdownlint-disable MD033 -->
+<p align="center">
+  <a href="https://mgcrea.github.io/react-native-swiftui">
+    <img src="./.github/assets/logo.png" alt="logo" width="320" height="200"/>
+  </a>
+</p>
+<p align="center">
+  <a href="https://www.npmjs.com/package/@mgcrea/react-native-swiftui">
+    <img src="https://img.shields.io/npm/v/@mgcrea/react-native-swiftui.svg?style=for-the-badge" alt="npm version" />
+  </a>
+  <a href="https://www.npmjs.com/package/@mgcrea/react-native-swiftui">
+    <img src="https://img.shields.io/npm/dt/@mgcrea/react-native-swiftui.svg?style=for-the-badge" alt="npm total downloads" />
+  </a>
+  <a href="https://www.npmjs.com/package/@mgcrea/react-native-swiftui">
+    <img src="https://img.shields.io/npm/dm/@mgcrea/react-native-swiftui.svg?style=for-the-badge" alt="npm monthly downloads" />
+  </a>
+  <a href="https://www.npmjs.com/package/@mgcrea/react-native-swiftui">
+    <img src="https://img.shields.io/npm/l/@mgcrea/react-native-swiftui.svg?style=for-the-badge" alt="npm license" />
+  </a>
+  <br />
+  <a href="https://github.com/mgcrea/react-native-swiftui/actions/workflows/main.yaml">
+    <img src="https://img.shields.io/github/actions/workflow/status/mgcrea/react-native-swiftui/main.yaml?style=for-the-badge&branch=master" alt="build status" />
+  </a>
+  <a href="https://depfu.com/github/mgcrea/react-native-swiftui">
+    <img src="https://img.shields.io/depfu/dependencies/github/mgcrea/react-native-swiftui?style=for-the-badge" alt="dependencies status" />
+  </a>
+</p>
+<!-- markdownlint-enable MD037 -->
 
 A proof-of-concept (PoC) library that integrates SwiftUI components into React Native using the Fabric renderer. This project enables developers to define native iOS UI elements with SwiftUI, controlled via React Native’s JSX syntax, creating a hybrid UI where React drives a dynamic SwiftUI view hierarchy.
 
