@@ -7,12 +7,17 @@ import type { FunctionComponentWithId } from "../types";
 export type NativeStyleProps = {
   backgroundColor?: string;
   foregroundColor?: string;
+  borderColor?: string;
+  borderWidth?: number;
   padding?: number;
-  border?: { color?: string; width?: number };
 };
 
+export type NativeButtonStyle = "default" | "plain" | "bordered" | "borderedProminent" | "borderless";
+
 export type NativeButtonProps = {
-  title: string;
+  title?: string;
+  disabled?: boolean;
+  buttonStyle?: NativeButtonStyle;
   style?: StyleProp<ViewStyle>;
   onPress?: () => void;
 };

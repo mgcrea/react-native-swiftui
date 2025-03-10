@@ -36,11 +36,18 @@ export const BasicFormExample: FunctionComponent = () => {
               <SwiftUI.HStack alignment="center" spacing={8}>
                 <SwiftUI.Button
                   title="Left"
-                  style={{backgroundColor: '#00FFFF', padding: 10}}
+                  style={{
+                    backgroundColor: '#00FFFF',
+                    padding: 10,
+                    borderColor: 'blue',
+                    borderWidth: 1,
+                  }}
+                  buttonStyle="plain"
                   onPress={() => console.log('Left pressed')}
                 />
                 <SwiftUI.Button
                   title="Right"
+                  buttonStyle="plain"
                   onPress={() => console.log('Right pressed')}
                 />
               </SwiftUI.HStack>

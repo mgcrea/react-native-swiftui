@@ -8,9 +8,12 @@ public struct ButtonView: View {
   }
 
   public var body: some View {
-    Button(props.title) {
-      props.onPress?()
-    }
-    .applyStyles(props.style)
+    props.buttonStyle.applyStyle(
+      Button(props.title) {
+        props.onPress?()
+      }
+      .disabled(props.disabled)
+      .applyStyles(props.style)
+    )
   }
 }

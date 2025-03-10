@@ -4,36 +4,31 @@ public struct StyleProps: Decodable {
   public var backgroundColor: Color?
   public var foregroundColor: Color?
   public var padding: CGFloat?
+  public var borderColor: Color?
+  public var borderWidth: CGFloat?
+  public var cornerRadius: CGFloat?
 
   enum CodingKeys: String, CodingKey {
-    case backgroundColor, foregroundColor, padding
+    case backgroundColor, foregroundColor, padding, borderColor, borderWidth, cornerRadius
   }
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     if let bgColorString = try container.decodeIfPresent(String.self, forKey: .backgroundColor) {
-      backgroundColor = Color(hex: bgColorString)
+      backgroundColor = Color(fromString: bgColorString)
     }
     if let fgColorString = try container.decodeIfPresent(String.self, forKey: .foregroundColor) {
-      foregroundColor = Color(hex: fgColorString)
+      foregroundColor = Color(fromString: fgColorString)
+    }
+    if let borderColorString = try container.decodeIfPresent(String.self, forKey: .borderColor) {
+      borderColor = Color(fromString: borderColorString)
+    }
+    if let borderWidth = try container.decodeIfPresent(CGFloat.self, forKey: .borderWidth) {
+      self.borderWidth = borderWidth
+    }
+    if let cornerRadius = try container.decodeIfPresent(CGFloat.self, forKey: .cornerRadius) {
+      self.cornerRadius = cornerRadius
     }
     padding = try container.decodeIfPresent(CGFloat.self, forKey: .padding)
-  }
-}
-
-// Extension to parse hex color strings
-extension Color {
-  init?(hex: String) {
-    var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-    hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
-
-    var rgb: UInt64 = 0
-    guard Scanner(string: hexSanitized).scanHexInt64(&rgb) else { return nil }
-
-    let red = Double((rgb & 0xFF0000) >> 16) / 255.0
-    let green = Double((rgb & 0x00FF00) >> 8) / 255.0
-    let blue = Double(rgb & 0x0000FF) / 255.0
-
-    self.init(red: red, green: green, blue: blue)
   }
 }
