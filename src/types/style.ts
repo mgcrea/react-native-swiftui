@@ -2,7 +2,13 @@ import { TextStyle, ViewStyle } from "react-native";
 
 export type NativeViewStyle = Pick<
   ViewStyle,
-  "backgroundColor" | "borderColor" | "borderWidth" | "borderRadius" | "padding"
+  | "backgroundColor"
+  | "borderColor"
+  | "borderWidth"
+  | "borderRadius"
+  | "padding"
+  | "paddingHorizontal"
+  | "paddingVertical"
 > & {
   cornerRadius?: number;
 };

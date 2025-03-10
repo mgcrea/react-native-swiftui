@@ -3,7 +3,14 @@ import { useSwiftUIContext } from "../contexts";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId, NativeTextStyle } from "../types";
 
-export type NativeButtonStyle = "default" | "plain" | "bordered" | "borderedProminent" | "borderless";
+export type CustomNativeButtonStyle = "subtle" | "picker";
+export type NativeButtonStyle =
+  | "default"
+  | "plain"
+  | "bordered"
+  | "borderedProminent"
+  | "borderless"
+  | CustomNativeButtonStyle;
 
 export type NativeButtonProps = {
   title?: string;

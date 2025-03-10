@@ -7,6 +7,12 @@ extension View {
       if let padding = style.padding {
         view = AnyView(view.padding(padding))
       }
+      if let paddingHorizontal = style.paddingHorizontal {
+        view = AnyView(view.padding(.horizontal, paddingHorizontal))
+      }
+      if let paddingVertical = style.paddingVertical {
+        view = AnyView(view.padding(.vertical, paddingVertical))
+      }
       if let bgColor = style.backgroundColor {
         view = AnyView(view.background(bgColor))
       }
@@ -19,7 +25,7 @@ extension View {
       if let borderWidth = style.borderWidth {
         let borderColor = style.borderColor ?? .black
         view = AnyView(view.overlay(
-          RoundedRectangle(cornerRadius: style.cornerRadius ?? 0)
+          RoundedRectangle(cornerRadius: style.cornerRadius ?? style.borderRadius ?? 0)
             .stroke(borderColor, lineWidth: borderWidth)
         ))
       }

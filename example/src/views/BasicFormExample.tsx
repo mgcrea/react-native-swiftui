@@ -29,23 +29,34 @@ export const BasicFormExample: FunctionComponent = () => {
       <SwiftUI style={{flex: 1}}>
         <SwiftUI.Text text="BasicFormExample" />
 
+        <SwiftUI.Button
+          title="1 Jan 1970"
+          style={{
+            backgroundColor: '#efeff0',
+            // paddingVertical: 7,
+            // paddingHorizontal: 12,
+            // borderRadius: 8,
+            // borderWidth: 1,
+          }}
+          // buttonStyle="bordered"
+          onPress={() => console.log('Left pressed')}
+        />
+        <SwiftUI.Button
+          title="1 Jan 1970"
+          style={{
+            backgroundColor: '#efeff0',
+            paddingVertical: 7,
+            paddingHorizontal: 12,
+            borderRadius: 8,
+          }}
+          buttonStyle="subtle"
+          onPress={() => console.log('Left pressed')}
+        />
         <SwiftUI.Form>
           <SwiftUI.Section header="Personal Information">
             <SwiftUI.VStack alignment="center" spacing={30}>
               <SwiftUI.Text text="Title" style={{font: 'title'}} />
               <SwiftUI.HStack alignment="center" spacing={8}>
-                <SwiftUI.Button
-                  title="Left"
-                  style={{
-                    backgroundColor: 'red',
-                    padding: 10,
-                    borderColor: 'blue',
-                    borderWidth: 1,
-                    borderRadius: 10,
-                  }}
-                  buttonStyle="plain"
-                  onPress={() => console.log('Left pressed')}
-                />
                 <SwiftUI.Button
                   title="Right"
                   buttonStyle="plain"
@@ -83,14 +94,26 @@ export const BasicFormExample: FunctionComponent = () => {
               onChange={setLastName}
               text={lastName}
             />
-            <SwiftUI.DatePicker
-              label="Birth Date:"
-              selection={birthDate}
-              displayedComponents="date" // Show only date, no time
-              onChange={setBirthDate}
-              // disabled
-              datePickerStyle="automatic"
-            />
+            <SwiftUI.HStack>
+              <SwiftUI.Button
+                title="1 Jan 1970"
+                style={{
+                  backgroundColor: '#efeff0',
+                  paddingVertical: 7,
+                  paddingHorizontal: 12,
+                  borderRadius: 8,
+                }}
+                buttonStyle="picker"
+                onPress={() => console.log('Left pressed')}
+              />
+              <SwiftUI.DatePicker
+                selection={birthDate}
+                displayedComponents="date" // Show only date, no time
+                onChange={setBirthDate}
+                // disabled
+                datePickerStyle="automatic"
+              />
+            </SwiftUI.HStack>
             <SwiftUI.Toggle
               label="Enable Feature"
               isOn={isActive}

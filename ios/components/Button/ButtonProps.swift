@@ -14,6 +14,9 @@ public final class ButtonProps: ObservableObject, Decodable {
     case bordered
     case borderedProminent
     case borderless
+    // Custom
+    case subtle
+    case picker
 
     @ViewBuilder
     func applyStyle<V: View>(_ view: V) -> some View {
@@ -28,6 +31,11 @@ public final class ButtonProps: ObservableObject, Decodable {
         view.buttonStyle(BorderedProminentButtonStyle())
       case .borderless:
         view.buttonStyle(BorderlessButtonStyle())
+      // Custom
+      case .subtle:
+        view.buttonStyle(SubtleOpacityButtonStyle())
+      case .picker:
+        view.buttonStyle(PickerButtonStyle())
       }
     }
   }
@@ -51,5 +59,27 @@ public final class ButtonProps: ObservableObject, Decodable {
     title = other.title
     buttonStyle = other.buttonStyle
     style = other.style
+  }
+}
+
+struct PickerButtonStyle: ButtonStyle {
+  var normalOpacity: Double = 1.0
+  var pressedOpacity: Double = 0.3
+
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .opacity(configuration.isPressed ? pressedOpacity : normalOpacity)
+      .animation(.linear(duration: 0.30), value: configuration.isPressed)
+  }
+}
+
+struct SubtleOpacityButtonStyle: ButtonStyle {
+  var normalOpacity: Double = 1.0
+  var pressedOpacity: Double = 0.3
+
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .opacity(configuration.isPressed ? pressedOpacity : normalOpacity)
+      .animation(configuration.isPressed ? .linear(duration: 0.05) : .easeInOut(duration: 0.25), value: configuration.isPressed)
   }
 }
