@@ -75,7 +75,7 @@ public final class DatePickerProps: ObservableObject, Decodable {
     let styleString = try container.decodeIfPresent(String.self, forKey: .datePickerStyle) ?? "default"
     datePickerStyle = DatePickerStyle(rawValue: styleString) ?? .default
     // Decode displayedComponents
-    let componentsString = try container.decode(String.self, forKey: .displayedComponents)
+    let componentsString = try container.decodeIfPresent(String.self, forKey: .displayedComponents)
     displayedComponents = componentsString == "date" ? .date : [.date, .hourAndMinute]
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
   }

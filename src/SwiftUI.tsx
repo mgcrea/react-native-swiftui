@@ -8,6 +8,7 @@ import {
   HStack,
   Picker,
   Section,
+  Sheet,
   Slider,
   Stepper,
   Text,
@@ -89,3 +90,4 @@ SwiftUI.Group = Group;
 SwiftUI.HStack = HStack;
 SwiftUI.VStack = VStack;
 SwiftUI.ZStack = ZStack;
+SwiftUI.Sheet = Sheet;

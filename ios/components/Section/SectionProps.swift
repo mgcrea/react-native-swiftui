@@ -1,4 +1,3 @@
-// SectionProps.swift
 import SwiftUI
 
 public final class SectionProps: ObservableObject, Decodable {

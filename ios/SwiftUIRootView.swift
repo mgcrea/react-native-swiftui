@@ -65,6 +65,10 @@ final class ContainerProps: ObservableObject {
       slider.props.onBlur = { [weak self] in
         self?.onEvent?("blur", "Slider", slider.id, nil)
       }
+    } else if let sheet = node as? GenericNode<SheetProps> {
+      sheet.props.onDismiss = { [weak self] in
+        self?.onEvent?("dismiss", "Sheet", sheet.id, nil)
+      }
     }
     if let children = node.children {
       children.forEach { bindEventHandlers(from: $0) }
@@ -149,6 +153,14 @@ public class SwiftUIRootView: SwiftUIContainerView {
     case let section as GenericNode<SectionProps>:
       AnyView(SectionView(props: section.props, content: {
         if let children = section.children {
+          ForEach(children, id: \.id) { child in
+            self.buildSwiftUIView(from: child)
+          }
+        }
+      }))
+    case let sheet as GenericNode<SheetProps>:
+      AnyView(SheetView(props: sheet.props, content: {
+        if let children = sheet.children {
           ForEach(children, id: \.id) { child in
             self.buildSwiftUIView(from: child)
           }
@@ -240,6 +252,10 @@ public class SwiftUIRootView: SwiftUIContainerView {
       case let zstack as GenericNode<ZStackProps>:
         let updatedProps = try decoder.decode(ZStackProps.self, from: updatedPropsData)
         zstack.props.merge(from: updatedProps)
+
+      case let sheet as GenericNode<SheetProps>:
+        let updatedProps = try decoder.decode(SheetProps.self, from: updatedPropsData)
+        sheet.props.merge(from: updatedProps)
 
       default:
         print("Unsupported node type for updateChildProps: \(type(of: node))")

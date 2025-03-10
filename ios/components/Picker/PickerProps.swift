@@ -51,7 +51,7 @@ public final class PickerProps: ObservableObject, Decodable {
     {
       pickerStyle = style
     } else {
-      pickerStyle = .wheel // Default fallback
+      pickerStyle = .default // Default fallback
     }
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
   }

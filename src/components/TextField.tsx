@@ -9,7 +9,7 @@ export type NativeReturnKeyType = "default" | "done" | "next" | "search";
 export type NativeAutocapitalizationType = "none" | "words" | "sentences" | "allCharacters";
 
 export type NativeTextFieldProps = {
-  text: string;
+  text?: string;
   label?: string;
   placeholder?: string;
   keyboardType?: NativeKeyboardType;

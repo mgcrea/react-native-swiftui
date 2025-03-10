@@ -5,6 +5,7 @@ export * from "./Group";
 export * from "./HStack";
 export * from "./Picker";
 export * from "./Section";
+export * from "./Sheet";
 export * from "./Slider";
 export * from "./Stepper";
 export * from "./Text";
