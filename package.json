@@ -9,6 +9,10 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "ios"
+  ],
   "scripts": {
     "dev": "cd example; npm run dev",
     "build": "npm run build:babel && npm run build:types; npm run codegen:ios",
