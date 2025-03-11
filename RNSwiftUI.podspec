@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   s.source_files = "ios/**/*.{h,m,mm,cpp,swift}"
   s.private_header_files = "ios/generated/**/*.h"
 
-  s.dependency 'SwiftUIIntrospect', '~> 1.3'
+  # s.dependency 'SwiftUIIntrospect', '~> 1.3'
 
   install_modules_dependencies(s)
 end
