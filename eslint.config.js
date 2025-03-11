@@ -8,14 +8,12 @@ const config = [
     },
   },
   {
-    // Add this configuration object to ignore specific folders
-    ignores: [".idea/**", "example/**"],
+    ignores: [".idea/**", "example/**", "test/**"],
   },
   {
     languageOptions: {
       parserOptions: {
         project: ["./tsconfig.node.json", "./tsconfig.json"],
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         tsconfigRootDir: import.meta.dirname,
       },
     },

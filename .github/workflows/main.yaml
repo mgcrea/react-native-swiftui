@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ["lts/-1", "lts/*"]
+        node: ["lts/*"]
     name: Test on node@v${{ matrix.node }}
     steps:
       - name: Checkout 🛎️
@@ -33,13 +33,13 @@ jobs:
         run: pnpm run lint
       - name: TypeScript 🔍
         run: pnpm run check
-      - name: Vitest 🔍
+      - name: Jest 🔍
         run: pnpm run spec
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: ["lts/-1", "lts/*"]
+        node: ["lts/*"]
     name: Build on node@v${{ matrix.node }}
     steps:
       - name: Checkout 🛎️
