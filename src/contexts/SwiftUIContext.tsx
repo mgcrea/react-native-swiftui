@@ -15,7 +15,8 @@ export type SwiftUIContextType = {
   getNodes: () => NodeRegistry;
   nativeRef: RefObject<React.ComponentRef<typeof SwiftUIRootNativeComponent> | null>;
   recordRenderOrder: (id: string) => void;
-  registerEvents: (id: string, events: Record<string, EventHandler | undefined>) => void; // New method
+  registerEvents: (id: string, events: Record<string, EventHandler | undefined>) => void;
+  registerEvent: (id: string, name: string, handler: EventHandler) => void;
   registerNode: (node: ViewTreeNode, parentId: string) => void;
   renderSequence: RefObject<string[]>;
   unregisterNode: (id: string) => void;
@@ -43,6 +44,13 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
     eventRegistry.current.set(id, newHandlersForId);
     return newHandlersForId;
   };
+  const registerEvent = useCallback((id: string, name: string, handler: EventHandler) => {
+    const handlersForId = getEventHandlersForId(id);
+    if (handlersForId.has(name)) {
+      console.log(`Overwriting existing event handler for ${id}:${name}`);
+    }
+    handlersForId.set(name, handler);
+  }, []);
 
   const registerEvents = useCallback((id: string, events: Record<string, EventHandler | undefined>) => {
     const handlersForId = getEventHandlersForId(id);
@@ -98,6 +106,7 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
     nativeRef,
     recordRenderOrder,
     registerEvents,
+    registerEvent,
     registerNode,
     renderSequence,
     unregisterNode,

@@ -103,15 +103,10 @@ extension Color {
   }
 
   init?(fromString color: String) {
-    print("color=\(color)")
     if let namedColor = Self.getNamedColor(color) {
       self = namedColor
-
-      print("namedColor=\(namedColor)")
     } else if let hexColor = Self(hex: color) {
       self = hexColor
-
-      print("hexColor=\(hexColor)")
     } else {
       return nil
     }

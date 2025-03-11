@@ -69,7 +69,7 @@ struct PickerButtonStyle: ButtonStyle {
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
       .opacity(configuration.isPressed ? pressedOpacity : normalOpacity)
-      .animation(.linear(duration: 0.30), value: configuration.isPressed)
+      .animation(.easeIn(duration: 0.35), value: configuration.isPressed)
   }
 }
 
