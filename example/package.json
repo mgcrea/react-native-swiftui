@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "react-native start",
-    "dev": "watchman watch-del-all; react-native start --reset-cache",
+    "dev": "watchman watch-del-all; react-native start --reset-cache --client-logs",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "install:ios": "cd ios && bundle exec pod install && cd -",

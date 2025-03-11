@@ -29,7 +29,7 @@ export const TextField: FunctionComponentWithId<NativeTextFieldProps> = ({
   onBlur,
   ...otherProps
 }) => {
-  useSwiftUINode("TextField", otherProps, { onChange, onFocus, onBlur });
+  useSwiftUINode("TextField", otherProps, { change: onChange, focus: onFocus, blur: onBlur });
 
   return null;
 };
