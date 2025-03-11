@@ -19,7 +19,7 @@
   </a>
   <br />
   <a href="https://github.com/mgcrea/react-native-swiftui/actions/workflows/main.yaml">
-    <img src="https://img.shields.io/github/actions/workflow/status/mgcrea/react-native-swiftui/main.yaml?style=for-the-badge&branch=master" alt="build status" />
+    <img src="https://img.shields.io/github/actions/workflow/status/mgcrea/react-native-swiftui/main.yaml?style=for-the-badge&branch=main" alt="build status" />
   </a>
   <a href="https://depfu.com/github/mgcrea/react-native-swiftui">
     <img src="https://img.shields.io/depfu/dependencies/github/mgcrea/react-native-swiftui?style=for-the-badge" alt="dependencies status" />
