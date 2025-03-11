@@ -15,7 +15,9 @@ export function useThrottle<T>(value: T, delay: number): T {
       delay - (Date.now() - lastRan.current),
     );
 
-    return () => clearTimeout(handler);
+    return () => {
+      clearTimeout(handler);
+    };
   }, [value, delay]);
 
   return throttledValue;

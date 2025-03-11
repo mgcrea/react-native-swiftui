@@ -8,6 +8,10 @@ const config = [
     },
   },
   {
+    // Add this configuration object to ignore specific folders
+    ignores: [".idea/**", "example/**"],
+  },
+  {
     languageOptions: {
       parserOptions: {
         project: ["./tsconfig.node.json", "./tsconfig.json"],

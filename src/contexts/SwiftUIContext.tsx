@@ -10,7 +10,7 @@ export type EventHandler = (...args: string[]) => void;
 export type EventRegistry = Map<string, Map<string, EventHandler>>;
 export type NodeRegistry = Map<string, { node: ViewTreeNode; parentId?: string }>;
 
-export type SwiftUIContextType = {
+export type SwiftUIContextValue = {
   getEventHandler: (id: string, name: string) => EventHandler | undefined;
   getNodes: () => NodeRegistry;
   nativeRef: RefObject<React.ComponentRef<typeof SwiftUIRootNativeComponent> | null>;
@@ -23,7 +23,7 @@ export type SwiftUIContextType = {
   updateNodeProps: (id: string, props: Record<string, unknown>) => void;
 };
 
-const SwiftUIContext = createContext<SwiftUIContextType | undefined>(undefined);
+const SwiftUIContext = createContext<SwiftUIContextValue | undefined>(undefined);
 
 export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const eventRegistry = useRef<EventRegistry>(new Map());
@@ -116,6 +116,7 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
   return <SwiftUIContext.Provider value={context}>{children}</SwiftUIContext.Provider>;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSwiftUIContext = () => {
   const context = useContext(SwiftUIContext);
   if (!context) throw new Error("useSwiftUIContext must be used within a SwiftUIProvider");

@@ -1,23 +1,17 @@
-// src/contexts/SwiftUIParentContext.tsx
 import React, { createContext, FunctionComponent, useContext, useMemo } from "react";
 
-// Define the context type
-interface SwiftUIParentContextType {
-  parentId: string; // The ID of the parent component
-}
+type SwiftUIParentContextValue = {
+  parentId: string;
+};
 
-// Create the context
-const SwiftUIParentContext = createContext<SwiftUIParentContextType | undefined>(undefined);
+const SwiftUIParentContext = createContext<SwiftUIParentContextValue | undefined>(undefined);
 
-// Provider component to set the parentId for a subtree
-type SwiftUIParentProviderProps = {
+type SwiftUIParentIdProviderProps = {
   id: string;
   children: React.ReactNode;
 };
 
-export const SwiftUIParentIdProvider: FunctionComponent<SwiftUIParentProviderProps> = ({ id, children }) => {
-  const parentContext = useContext(SwiftUIParentContext);
-
+export const SwiftUIParentIdProvider: FunctionComponent<SwiftUIParentIdProviderProps> = ({ id, children }) => {
   // Memoize the context value to avoid unnecessary re-renders
   const contextValue = useMemo(
     () => ({
@@ -25,11 +19,10 @@ export const SwiftUIParentIdProvider: FunctionComponent<SwiftUIParentProviderPro
     }),
     [id],
   );
-
   return <SwiftUIParentContext.Provider value={contextValue}>{children}</SwiftUIParentContext.Provider>;
 };
 
-// Hook to access the parentId
+// eslint-disable-next-line react-refresh/only-export-components
 export const useSwiftUIParentContext = () => {
   const context = useContext(SwiftUIParentContext);
   // No error thrown - allow usage outside provider, defaulting to undefined
