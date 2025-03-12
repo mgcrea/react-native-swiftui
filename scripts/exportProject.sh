@@ -10,7 +10,7 @@ TEMP_PATHS=$(mktemp)
 
 # Blacklist and whitelist patterns
 BLACKLIST=("pnpm-lock.yaml" "example" "scripts")
-WHITELIST=("example/src")
+WHITELIST=("example/src/views")
 
 # Ensure output directory exists
 mkdir -p "$(dirname "$OUTPUT_FILE")"

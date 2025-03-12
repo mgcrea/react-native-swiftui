@@ -7,6 +7,7 @@ import {
   Group,
   HStack,
   Image,
+  LazyVGrid,
   Picker,
   Rectangle,
   Section,
@@ -79,21 +80,22 @@ export const SwiftUI = ({ children, ...props }: PropsWithChildren<SwiftUIProps>)
 };
 
 // Define sub-components
-SwiftUI.Form = Form;
-SwiftUI.Section = Section;
-SwiftUI.TextField = TextField;
-SwiftUI.Picker = Picker;
-SwiftUI.DatePicker = DatePicker;
-SwiftUI.Stepper = Stepper;
 SwiftUI.Button = Button;
-SwiftUI.Text = Text;
-SwiftUI.Toggle = Toggle;
-SwiftUI.Slider = Slider;
+SwiftUI.DatePicker = DatePicker;
+SwiftUI.Form = Form;
 SwiftUI.Group = Group;
 SwiftUI.HStack = HStack;
+SwiftUI.Image = Image;
+SwiftUI.LazyVGrid = LazyVGrid;
+SwiftUI.Picker = Picker;
+SwiftUI.Rectangle = Rectangle;
+SwiftUI.Section = Section;
+SwiftUI.Sheet = Sheet;
+SwiftUI.Slider = Slider;
+SwiftUI.Spacer = Spacer;
+SwiftUI.Stepper = Stepper;
+SwiftUI.Text = Text;
+SwiftUI.TextField = TextField;
+SwiftUI.Toggle = Toggle;
 SwiftUI.VStack = VStack;
 SwiftUI.ZStack = ZStack;
-SwiftUI.Sheet = Sheet;
-SwiftUI.Rectangle = Rectangle;
-SwiftUI.Spacer = Spacer;
-SwiftUI.Image = Image;

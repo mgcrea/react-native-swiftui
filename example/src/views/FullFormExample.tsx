@@ -1,12 +1,7 @@
 import {SwiftUI} from '@mgcrea/react-native-swiftui/src';
 import {useState, type FunctionComponent} from 'react';
-import {Image, View} from 'react-native';
+import {View} from 'react-native';
 import logoImage from '../assets/logo.png';
-
-console.log({
-  logoImage,
-  resolvedLogoImage: Image.resolveAssetSource(logoImage),
-});
 
 export const FullFormExample: FunctionComponent = () => {
   return (
@@ -14,14 +9,15 @@ export const FullFormExample: FunctionComponent = () => {
       <SwiftUI style={{flex: 1}}>
         <SwiftUI.Text text="FullFormExample" />
         <SwiftUI.Form>
-          <ImageSection />
-          <RectangleSection />
+          <LazyVGridSection />
           <TextFieldSection />
           <PickerSection />
           <DatePickerSection />
           <StepperSection />
-          <ToggleSection />
           <SliderSection />
+          <ToggleSection />
+          <ImageSection />
+          <RectangleSection />
         </SwiftUI.Form>
       </SwiftUI>
     </View>
@@ -198,6 +194,25 @@ const ImageSection: FunctionComponent = () => {
         title={`Change icon to ${icon === 'iphone' ? 'ipad' : 'iphone'}`}
         onPress={() => setIcon(icon === 'iphone' ? 'ipad' : 'iphone')}
       />
+    </SwiftUI.Section>
+  );
+};
+
+const LazyVGridSection: FunctionComponent = () => {
+  return (
+    <SwiftUI.Section header="LazyVGrid Example">
+      <SwiftUI.LazyVGrid
+        columns={[
+          {type: 'flexible', minimum: 100},
+          {type: 'flexible', minimum: 100},
+        ]}
+        spacing={10}
+        alignment="center">
+        <SwiftUI.Text text="Item 1" />
+        <SwiftUI.Text text="Item 2" />
+        <SwiftUI.Text text="Item 3" />
+        <SwiftUI.Text text="Item 4" />
+      </SwiftUI.LazyVGrid>
     </SwiftUI.Section>
   );
 };

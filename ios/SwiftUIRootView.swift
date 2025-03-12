@@ -166,6 +166,14 @@ public class SwiftUIRootView: SwiftUIContainerView {
           }
         }
       }))
+    case let lazyVGrid as GenericNode<LazyVGridProps>:
+      AnyView(LazyVGridView(props: lazyVGrid.props, content: {
+        if let children = lazyVGrid.children {
+          ForEach(children, id: \.id) { child in
+            self.buildSwiftUIView(from: child)
+          }
+        }
+      }))
     case let text as GenericNode<TextProps>:
       AnyView(TextView(props: text.props))
     case let textField as GenericNode<TextFieldProps>:
@@ -270,6 +278,10 @@ public class SwiftUIRootView: SwiftUIContainerView {
       case let image as GenericNode<ImageProps>:
         let updatedProps = try decoder.decode(ImageProps.self, from: updatedPropsData)
         image.props.merge(from: updatedProps)
+
+      case let lazyVGrid as GenericNode<LazyVGridProps>:
+        let updatedProps = try decoder.decode(LazyVGridProps.self, from: updatedPropsData)
+        lazyVGrid.props.merge(from: updatedProps)
 
       default:
         print("Unsupported node type for updateChildProps: \(type(of: node))")

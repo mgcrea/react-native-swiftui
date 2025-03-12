@@ -4,6 +4,7 @@ export * from "./Form";
 export * from "./Group";
 export * from "./HStack";
 export * from "./Image";
+export * from "./LazyVGrid";
 export * from "./Picker";
 export * from "./Rectangle";
 export * from "./Section";

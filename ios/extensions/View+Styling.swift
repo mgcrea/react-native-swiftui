@@ -11,10 +11,12 @@ extension View {
 
   func applyBoxStyles(_ style: StyleProps?) -> some View {
     guard let style = style else { return AnyView(self) }
-    return AnyView(applyIf(style.width != nil || style.height != nil) { $0.frame(width: style.width, height: style.height) }
+    return AnyView(
+      applyIf(style.width != nil || style.height != nil) { $0.frame(width: style.width, height: style.height)
+      }
       .applyIf(style.padding != nil) { $0.padding(style.padding!) }
       .applyIf(style.paddingHorizontal != nil) { $0.padding(.horizontal, style.paddingHorizontal!) }
-      .applyIf(style.paddingVertical != nil) { $0.padding(.horizontal, style.paddingVertical!) }
+      .applyIf(style.paddingVertical != nil) { $0.padding(.vertical, style.paddingVertical!) }
     )
   }
 
@@ -22,28 +24,31 @@ extension View {
     guard let style = style else { return AnyView(self) }
     return
       AnyView(
-        applyIf(style.backgroundColor != nil) { $0.background(style.backgroundColor!) }
+        applyBoxStyles(style)
+          .applyIf(style.backgroundColor != nil) { $0.background(style.backgroundColor!) }
           .applyIf(style.borderWidth != nil) { view in
             view.overlay(
               RoundedRectangle(cornerRadius: style.cornerRadius ?? style.borderRadius ?? 0)
                 .stroke(style.borderColor ?? .black, lineWidth: style.borderWidth!)
             )
           }
-          .applyBoxStyles(style)
+          .applyIf(style.cornerRadius ?? style.borderRadius != nil) {
+            $0.cornerRadius(style.cornerRadius ?? style.borderRadius ?? 0)
+          }
       )
   }
 
   private func applyTextStyles(_ style: StyleProps) -> some View {
     return applyIf(style.color != nil) { $0.foregroundStyle(style.color!) }
-    .applyIf(style.font != nil) { $0.font(style.font!) }
-    .applyIf(style.fontSize != nil) { $0.font(.system(size: style.fontSize!)) }
-    .applyIf(style.fontWeight != nil) { view in
-      if #available(iOS 16.0, *) {
-        return AnyView(view.fontWeight(style.fontWeight!))
-      } else {
-        return AnyView(view)
+      .applyIf(style.font != nil) { $0.font(style.font!) }
+      .applyIf(style.fontSize != nil) { $0.font(.system(size: style.fontSize!)) }
+      .applyIf(style.fontWeight != nil) { view in
+        if #available(iOS 16.0, *) {
+          return AnyView(view.fontWeight(style.fontWeight!))
+        } else {
+          return AnyView(view)
+        }
       }
-    }
   }
 
   @ViewBuilder

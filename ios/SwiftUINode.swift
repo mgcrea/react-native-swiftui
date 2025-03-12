@@ -90,6 +90,8 @@ private struct NodeWrapper: Decodable {
       node = try GenericNode<SpacerProps>(from: decoder)
     case "Image":
       node = try GenericNode<ImageProps>(from: decoder)
+    case "LazyVGrid":
+      node = try GenericNode<LazyVGridProps>(from: decoder)
     default:
       throw DecodingError.typeMismatch(
         (any SwiftUINode).self,
