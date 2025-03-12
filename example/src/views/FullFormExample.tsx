@@ -32,8 +32,8 @@ const TextFieldSection: FunctionComponent = () => {
         text={firstName}
       />
       <SwiftUI.Button
-        title="Set first name to 'Jane'"
-        onPress={() => setFirstName('Jane')}
+        title={`Set first name to '${firstName === 'John' ? 'Jane' : 'John'}'`}
+        onPress={() => setFirstName(firstName === 'John' ? 'Jane' : 'John')}
       />
     </SwiftUI.Section>
   );

@@ -12,23 +12,23 @@ public struct StepperView: View {
 
   public var body: some View {
     if props.label.isEmpty {
-      inputField()
+      stepperContent()
     } else {
       if #available(iOS 16.0, *) {
         LabeledContent(props.label) {
-          inputField()
+          stepperContent()
         }
       } else {
         HStack {
           Text(props.label)
-          inputField()
+          stepperContent()
         }
       }
     }
   }
 
   @ViewBuilder
-  private func inputField() -> some View {
+  private func stepperContent() -> some View {
     Stepper(
       value: $props.value,
       in: props.minimum ... props.maximum,

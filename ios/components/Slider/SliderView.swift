@@ -27,19 +27,23 @@ public struct SliderView: View {
 
   @ViewBuilder
   private func sliderContent() -> some View {
-    Slider(
-      value: $props.value,
-      in: props.minimum ... props.maximum,
-      step: props.step,
-      onEditingChanged: { self.isFocused = $0 }
-    )
-    .disabled(props.disabled)
-    .foregroundColor(props.disabled ? .gray : .primary)
-    .onChange(of: isFocused) { newValue in
-      newValue ? props.onFocus?() : props.onBlur?()
-    }
-    .onChange(of: props.value) { newValue in
-      props.onChange?(newValue)
+    HStack {
+      Text(String(format: props.step >= 1 ? "%.0f" : "%.1f", props.value))
+        .foregroundColor(.gray)
+      Slider(
+        value: $props.value,
+        in: props.minimum ... props.maximum,
+        step: props.step,
+        onEditingChanged: { self.isFocused = $0 }
+      )
+      .disabled(props.disabled)
+      .foregroundColor(props.disabled ? .gray : .primary)
+      .onChange(of: isFocused) { newValue in
+        newValue ? props.onFocus?() : props.onBlur?()
+      }
+      .onChange(of: props.value) { newValue in
+        props.onChange?(newValue)
+      }
     }
   }
 }
