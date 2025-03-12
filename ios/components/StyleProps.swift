@@ -3,6 +3,9 @@ import SwiftUI
 public struct StyleProps: Decodable {
   // ViewStyle
   public var backgroundColor: Color?
+  // - Frame
+  public var width: CGFloat?
+  public var height: CGFloat?
   // - Padding
   public var padding: CGFloat?
   public var paddingHorizontal: CGFloat?
@@ -20,7 +23,7 @@ public struct StyleProps: Decodable {
   public var font: Font?
 
   enum CodingKeys: String, CodingKey {
-    case color, backgroundColor, foregroundColor, padding, paddingHorizontal, paddingVertical, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font
+    case color, backgroundColor, foregroundColor, width, height, padding, paddingHorizontal, paddingVertical, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font
   }
 
   public init(from decoder: Decoder) throws {
@@ -33,6 +36,8 @@ public struct StyleProps: Decodable {
     borderRadius = try container.decodeIfPresent(CGFloat.self, forKey: .borderRadius) // alias for cornerRadius
     cornerRadius = try container.decodeIfPresent(CGFloat.self, forKey: .cornerRadius)
 
+    width = try container.decodeIfPresent(CGFloat.self, forKey: .width)
+    height = try container.decodeIfPresent(CGFloat.self, forKey: .height)
     padding = try container.decodeIfPresent(CGFloat.self, forKey: .padding)
     paddingHorizontal = try container.decodeIfPresent(CGFloat.self, forKey: .paddingHorizontal)
     paddingVertical = try container.decodeIfPresent(CGFloat.self, forKey: .paddingVertical)

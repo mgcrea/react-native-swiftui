@@ -7,9 +7,11 @@ import {
   Group,
   HStack,
   Picker,
+  Rectangle,
   Section,
   Sheet,
   Slider,
+  Spacer,
   Stepper,
   Text,
   TextField,
@@ -91,3 +93,5 @@ SwiftUI.HStack = HStack;
 SwiftUI.VStack = VStack;
 SwiftUI.ZStack = ZStack;
 SwiftUI.Sheet = Sheet;
+SwiftUI.Rectangle = Rectangle;
+SwiftUI.Spacer = Spacer;

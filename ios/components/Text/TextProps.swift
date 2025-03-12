@@ -5,7 +5,7 @@ public final class TextProps: ObservableObject, Decodable {
   @Published public var font: Font = .body
   @Published public var color: Color = .primary
   @Published public var alignment: TextAlignment = .leading
-  public var style: StyleProps?
+  @Published public var style: StyleProps?
 
   enum CodingKeys: String, CodingKey {
     case text, font, color, alignment, style

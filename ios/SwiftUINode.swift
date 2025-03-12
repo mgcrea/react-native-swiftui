@@ -84,6 +84,10 @@ private struct NodeWrapper: Decodable {
       node = try GenericNode<ZStackProps>(from: decoder)
     case "Sheet":
       node = try GenericNode<SheetProps>(from: decoder)
+    case "Rectangle":
+      node = try GenericNode<RectangleProps>(from: decoder)
+    case "Spacer":
+      node = try GenericNode<SpacerProps>(from: decoder)
     default:
       throw DecodingError.typeMismatch(
         (any SwiftUINode).self,

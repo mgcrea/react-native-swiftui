@@ -13,5 +13,6 @@ public struct HStackView<Content: View>: View {
     HStack(alignment: props.alignment, spacing: props.spacing) {
       content()
     }
+    .applyViewStyles(props.style)
   }
 }

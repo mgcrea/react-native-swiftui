@@ -4,7 +4,7 @@ public final class ButtonProps: ObservableObject, Decodable {
   @Published var title: String = "Button"
   @Published var buttonStyle: ButtonStyle = .default
   @Published var disabled: Bool = false
-  public var style: StyleProps?
+  @Published public var style: StyleProps?
   // Events
   public var onPress: (() -> Void)?
 

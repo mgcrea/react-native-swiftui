@@ -3,9 +3,10 @@ import SwiftUI
 public final class HStackProps: ObservableObject, Decodable {
   @Published public var alignment: VerticalAlignment
   @Published public var spacing: CGFloat?
+  @Published public var style: StyleProps?
 
   enum CodingKeys: String, CodingKey {
-    case alignment, spacing
+    case alignment, spacing, style
   }
 
   public init(alignment: VerticalAlignment = .center, spacing: CGFloat? = nil) {
@@ -24,10 +25,12 @@ public final class HStackProps: ObservableObject, Decodable {
     default: alignment = .center
     }
     spacing = try container.decodeIfPresent(CGFloat.self, forKey: .spacing)
+    style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
   public func merge(from other: HStackProps) {
     alignment = other.alignment
     spacing = other.spacing
+    style = other.style
   }
 }

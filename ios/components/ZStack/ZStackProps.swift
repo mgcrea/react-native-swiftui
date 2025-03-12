@@ -2,6 +2,7 @@ import SwiftUI
 
 public final class ZStackProps: ObservableObject, Decodable {
   @Published public var alignment: Alignment
+  @Published public var style: StyleProps?
 
   enum CodingKeys: String, CodingKey {
     case alignment

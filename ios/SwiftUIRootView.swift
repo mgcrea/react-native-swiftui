@@ -182,6 +182,10 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(ToggleView(props: toggle.props))
     case let slider as GenericNode<SliderProps>:
       AnyView(SliderView(props: slider.props))
+    case let rectangle as GenericNode<RectangleProps>:
+      AnyView(RectangleView(props: rectangle.props))
+    case let spacer as GenericNode<SpacerProps>:
+      AnyView(SpacerView(props: spacer.props))
     default:
       AnyView(EmptyView())
     }
@@ -256,6 +260,10 @@ public class SwiftUIRootView: SwiftUIContainerView {
       case let sheet as GenericNode<SheetProps>:
         let updatedProps = try decoder.decode(SheetProps.self, from: updatedPropsData)
         sheet.props.merge(from: updatedProps)
+        
+      case let rectangle as GenericNode<RectangleProps>:
+        let updatedProps = try decoder.decode(RectangleProps.self, from: updatedPropsData)
+        rectangle.props.merge(from: updatedProps)
 
       default:
         print("Unsupported node type for updateChildProps: \(type(of: node))")

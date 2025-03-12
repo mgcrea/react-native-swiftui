@@ -2,46 +2,64 @@ import SwiftUI
 
 extension View {
   func applyStyles(_ style: StyleProps?) -> some View {
-    var view = AnyView(self)
-    if let style = style {
-      if let padding = style.padding {
-        view = AnyView(view.padding(padding))
-      }
-      if let paddingHorizontal = style.paddingHorizontal {
-        view = AnyView(view.padding(.horizontal, paddingHorizontal))
-      }
-      if let paddingVertical = style.paddingVertical {
-        view = AnyView(view.padding(.vertical, paddingVertical))
-      }
-      if let bgColor = style.backgroundColor {
-        view = AnyView(view.background(bgColor))
-      }
-      if let fgColor = style.foregroundColor ?? style.color {
-        view = AnyView(view.foregroundColor(fgColor))
-      }
-      if let cornerRadius = style.cornerRadius ?? style.borderRadius {
-        view = AnyView(view.cornerRadius(cornerRadius))
-      }
-      if let borderWidth = style.borderWidth {
-        let borderColor = style.borderColor ?? .black
-        view = AnyView(view.overlay(
-          RoundedRectangle(cornerRadius: style.cornerRadius ?? style.borderRadius ?? 0)
-            .stroke(borderColor, lineWidth: borderWidth)
-        ))
-      }
-      // TextStyle
-      if let fontWeight = style.fontWeight {
-        if #available(iOS 16.0, *) {
-          view = AnyView(view.fontWeight(fontWeight))
-        }
-      }
-      if let fontSize = style.fontSize {
-        view = AnyView(view.font(.system(size: fontSize)))
-      }
-      if let font = style.font {
-        view = AnyView(view.font(font))
+    guard let style = style else { return AnyView(self) }
+    return AnyView(
+      applyViewStyles(style)
+        .applyTextStyles(style)
+    )
+  }
+
+  func applyBoxStyles(_ style: StyleProps?) -> some View {
+    guard let style = style else { return AnyView(self) }
+    return AnyView(applyIf(style.width != nil || style.height != nil) { $0.frame(width: style.width, height: style.height) }
+      .applyIf(style.padding != nil) { $0.padding(style.padding!) }
+      .applyIf(style.paddingHorizontal != nil) { $0.padding(.horizontal, style.paddingHorizontal!) }
+      .applyIf(style.paddingVertical != nil) { $0.padding(.horizontal, style.paddingVertical!) }
+    )
+  }
+
+  func applyViewStyles(_ style: StyleProps?) -> some View {
+    guard let style = style else { return AnyView(self) }
+    return
+      AnyView(
+        applyIf(style.backgroundColor != nil) { $0.background(style.backgroundColor!) }
+          .applyIf(style.borderWidth != nil) { view in
+            view.overlay(
+              RoundedRectangle(cornerRadius: style.cornerRadius ?? style.borderRadius ?? 0)
+                .stroke(style.borderColor ?? .black, lineWidth: style.borderWidth!)
+            )
+          }
+          .applyBoxStyles(style)
+      )
+  }
+
+  private func applyTextStyles(_ style: StyleProps) -> some View {
+    return applyIf(style.fontWeight != nil) { view in
+      if #available(iOS 16.0, *) {
+        return AnyView(view.fontWeight(style.fontWeight!))
+      } else {
+        return AnyView(view)
       }
     }
-    return view
+    .applyIf(style.font != nil) { $0.font(style.font!) }
+    .applyIf(style.fontSize != nil) { $0.font(.system(size: style.fontSize!)) }
+  }
+
+  @ViewBuilder
+  func applyIf<T: View>(_ condition: Bool, apply: (Self) -> T) -> some View {
+    if condition {
+      apply(self)
+    } else {
+      self
+    }
+  }
+}
+
+extension Shape {
+  func applyShapeStyles(_ style: StyleProps?) -> some View {
+    guard let style = style else { return AnyView(self) }
+    return AnyView(
+      applyIf(style.backgroundColor != nil) { $0.fill(style.backgroundColor!) }
+        .applyBoxStyles(style))
   }
 }

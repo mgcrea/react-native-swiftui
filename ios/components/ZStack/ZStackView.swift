@@ -13,5 +13,6 @@ public struct ZStackView<Content: View>: View {
     ZStack(alignment: props.alignment) {
       content()
     }
+    .applyViewStyles(props.style)
   }
 }

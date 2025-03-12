@@ -1525,7 +1525,7 @@ PODS:
     - React-logger (= 0.78.0)
     - React-perflogger (= 0.78.0)
     - React-utils (= 0.78.0)
-  - RNSwiftUI (0.0.1):
+  - RNSwiftUI (0.2.3):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1545,10 +1545,8 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - SwiftUIIntrospect (~> 1.3)
     - Yoga
   - SocketRocket (0.7.1)
-  - SwiftUIIntrospect (1.3.0)
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -1625,7 +1623,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - SocketRocket
-    - SwiftUIIntrospect
 
 EXTERNAL SOURCES:
   boost:
@@ -1830,9 +1827,8 @@ SPEC CHECKSUMS:
   ReactAppDependencyProvider: a1fb08dfdc7ebc387b2e54cfc9decd283ed821d8
   ReactCodegen: 008c319179d681a6a00966edfc67fda68f9fbb2e
   ReactCommon: 0c097b53f03d6bf166edbcd0915da32f3015dd90
-  RNSwiftUI: 87f6d42a187811199ac049c2301d63934ef75d51
+  RNSwiftUI: be3460c08b493866bd2a4729d0d3de6a39bc467f
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
-  SwiftUIIntrospect: fee9aa07293ee280373a591e1824e8ddc869ba5d
   Yoga: afd04ff05ebe0121a00c468a8a3c8080221cb14c
 
 PODFILE CHECKSUM: 4fa18c8365472611163bdca71e748ca33ad1be02

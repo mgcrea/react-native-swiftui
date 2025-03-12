@@ -8,6 +8,7 @@ export const FullFormExample: FunctionComponent = () => {
       <SwiftUI style={{flex: 1}}>
         <SwiftUI.Text text="FullFormExample" />
         <SwiftUI.Form>
+          <RectangleSection />
           <TextFieldSection />
           <PickerSection />
           <DatePickerSection />
@@ -23,7 +24,7 @@ export const FullFormExample: FunctionComponent = () => {
 const TextFieldSection: FunctionComponent = () => {
   const [firstName, setFirstName] = useState('John');
   return (
-    <SwiftUI.Section header="TextField">
+    <SwiftUI.Section header="TextField Example">
       <SwiftUI.TextField
         label="First name"
         placeholder="John"
@@ -42,7 +43,7 @@ const PickerSection: FunctionComponent = () => {
   const [options, setOptions] = useState(['Option 1', 'Option 2', 'Option 3']);
   const [selectedOption, setSelectedOption] = useState(options[0]);
   return (
-    <SwiftUI.Section header="Picker">
+    <SwiftUI.Section header="Picker Example">
       <SwiftUI.Picker
         label="Option"
         selection={selectedOption}
@@ -62,7 +63,7 @@ const PickerSection: FunctionComponent = () => {
 const DatePickerSection: FunctionComponent = () => {
   const [birthDate, setBirthDate] = useState(new Date('2019-06-03T00:00:00'));
   return (
-    <SwiftUI.Section header="DatePicker">
+    <SwiftUI.Section header="DatePicker Example">
       <SwiftUI.DatePicker
         label="Birth date"
         selection={birthDate}
@@ -86,7 +87,7 @@ const DatePickerSection: FunctionComponent = () => {
 const ToggleSection: FunctionComponent = () => {
   const [isActive, setIsActive] = useState(false);
   return (
-    <SwiftUI.Section header="Toggle">
+    <SwiftUI.Section header="Toggle Example">
       <SwiftUI.Toggle
         label="Enable Feature"
         isOn={isActive}
@@ -103,7 +104,7 @@ const ToggleSection: FunctionComponent = () => {
 const SliderSection: FunctionComponent = () => {
   const [volume, setVolume] = useState(50);
   return (
-    <SwiftUI.Section header="Slider">
+    <SwiftUI.Section header="Slider Example">
       <SwiftUI.Slider
         label="Volume"
         value={volume}
@@ -120,7 +121,7 @@ const SliderSection: FunctionComponent = () => {
 const StepperSection: FunctionComponent = () => {
   const [value, setValue] = useState(0);
   return (
-    <SwiftUI.Section header="Stepper">
+    <SwiftUI.Section header="Stepper Example">
       <SwiftUI.Stepper
         label="Value"
         value={value}
@@ -130,6 +131,34 @@ const StepperSection: FunctionComponent = () => {
       <SwiftUI.Button
         title="Increment"
         onPress={() => setValue(value => value + 1)}
+      />
+    </SwiftUI.Section>
+  );
+};
+
+const RectangleSection: FunctionComponent = () => {
+  const [color, setColor] = useState('blue');
+
+  return (
+    <SwiftUI.Section header="Rectangle Example">
+      <SwiftUI.HStack
+        spacing={25}
+        style={{
+          backgroundColor: 'white',
+          borderWidth: 1,
+          borderColor: 'black',
+        }}>
+        <SwiftUI.Rectangle
+          style={{backgroundColor: color, width: 25, height: 50}}
+        />
+        <SwiftUI.Rectangle
+          style={{backgroundColor: 'red', width: 25, height: 50}}
+        />
+      </SwiftUI.HStack>
+
+      <SwiftUI.Button
+        title={`Change flag to ${color === 'blue' ? 'Italy' : 'France'}`}
+        onPress={() => setColor(color === 'blue' ? 'green' : 'blue')}
       />
     </SwiftUI.Section>
   );

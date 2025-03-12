@@ -9,6 +9,8 @@ export type NativeViewStyle = Pick<
   | "padding"
   | "paddingHorizontal"
   | "paddingVertical"
+  | "width"
+  | "height"
 > & {
   cornerRadius?: number;
 };
