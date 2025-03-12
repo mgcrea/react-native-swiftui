@@ -41,7 +41,7 @@ Ideal for developers seeking native iOS aesthetics and behavior within a React N
 
 ## Features
 
-- **Supported Components**: `Form`, `Section`, `TextField`, `Picker`, `DatePicker`, `Stepper`, `Button` (more in development).
+- **Supported Components**: We plan to support as many SwiftUI components as possible.
 - **Two-Way Data Binding**: Syncs state between JavaScript and SwiftUI (e.g., text input updates via `onChange`).
 - **Event Support**: Handles events like `change`, `focus`, `blur`, `press` across the JS-native boundary.
 - **Visual Feedback**: Disabled fields (e.g., `TextField` with `disabled={true}`) are grayed out and faded for clarity.
@@ -61,49 +61,104 @@ Ideal for developers seeking native iOS aesthetics and behavior within a React N
 
 Installation steps:
 
-```sh
-git clone https://github.com/mgcrea/react-native-swiftui.git
-cd react-native-swiftui
-corepack enable # Enable pnpm if not already installed
-pnpm install # Install root dependencies
-cd example
-pnpm install:ios # Install iOS dependencies (includes pod install)
-pnpm open:ios # Open Xcode to build and run the example app
+```bash
+npm install @mgcrea/react-native-swiftui --save
+# or
+pnpm add @mgcrea/react-native-swiftui
+# or
+yarn add @mgcrea/react-native-swiftui
 ```
 
 ## Usage Example
 
-### Example with react-hook-form
+### Basic Example
 
 ```tsx
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
 import { SwiftUI } from "@mgcrea/react-native-swiftui";
-function App() {
-  const { control, handleSubmit } = useForm({ defaultValues: { duration: "60" } });
-  const onSubmit = (data) => {
-    console.log("Submitted:", data);
-    Alert.alert("Submitted", `Duration: ${data.duration}`);
+import { useState, type FunctionComponent } from "react";
+import { Alert, View } from "react-native";
+
+export const BasicFormExample: FunctionComponent = () => {
+  const [firstName, setFirstName] = useState("John");
+  const [lastName, setLastName] = useState("Doe");
+  const [birthDate, setBirthDate] = useState(new Date("2019-06-03T00:00:00Z"));
+  const [gender, setGender] = useState<"Male" | "Female">("Male");
+
+  const handleSubmit = () => {
+    const data = {
+      firstName,
+      lastName,
+      birthDate,
+      gender,
+    };
+    Alert.alert("Submitted", JSON.stringify(data, null, 2));
   };
+
   return (
-    <SwiftUI>
-      <SwiftUI.Form>
-        <SwiftUI.Section header="Workout Settings">
-          <Controller
-            control={control}
-            name="duration"
-            render={({ field: { value, onChange } }) => (
-              <SwiftUI.TextField label="Duration:" text={value} onChange={onChange} disabled={false} />
-            )}
-          />
-          <SwiftUI.Button title="Submit" onPress={handleSubmit(onSubmit)} />
-        </SwiftUI.Section>
-      </SwiftUI.Form>
-    </SwiftUI>
+    <View style={{ flex: 1 }}>
+      <SwiftUI style={{ flex: 1 }}>
+        <SwiftUI.Text text="BasicFormExample" />
+        <SwiftUI.Form>
+          <SwiftUI.Section header="Personal Information">
+            <SwiftUI.TextField placeholder="First name" onChange={setFirstName} text={firstName} />
+            <SwiftUI.TextField placeholder="Last name" onChange={setLastName} text={lastName} />
+          </SwiftUI.Section>
+          <SwiftUI.Section header="Additional Details">
+            <SwiftUI.Picker
+              options={["Male", "Female"]}
+              label="Gender"
+              onChange={setGender}
+              selection={gender}
+            />
+            <SwiftUI.DatePicker
+              label="Birth date"
+              selection={birthDate}
+              onChange={(value) => setBirthDate(value)}
+              displayedComponents="date"
+            />
+          </SwiftUI.Section>
+          <SwiftUI.Button title="Submit" onPress={handleSubmit} />
+        </SwiftUI.Form>
+      </SwiftUI>
+    </View>
   );
-}
-export default App;
+};
 ```
+
+## Supported Components
+
+Below is a list of components currently supported by `@mgcrea/react-native-swiftui`. These components leverage SwiftUI's native iOS capabilities while being controlled via React Native's JSX syntax.
+
+| Component    | Description                                 | Key Props                                                                  | Notes                                                                                   |
+| ------------ | ------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `Button`     | A clickable button with customizable styles | `title`, `buttonStyle`, `disabled`, `style`, `onPress`                     | Supports styles like `default`, `plain`, `bordered`, etc.                               |
+| `DatePicker` | A date/time selection picker                | `selection`, `label`, `datePickerStyle`, `displayedComponents`, `onChange` | Options include `compact`, `wheel`, etc.; supports `date`, `hourAndMinute` components   |
+| `Form`       | A container for grouping form elements      | Children (nested components)                                               | No specific props; acts as a layout container                                           |
+| `Group`      | A logical grouping of views                 | Children (nested components)                                               | No specific props; used for hierarchy organization                                      |
+| `HStack`     | Horizontal stack layout                     | `alignment`, `spacing`, `style`, Children                                  | Alignments: `top`, `center`, `bottom`, etc.                                             |
+| `Image`      | Displays an image (named, system, or local) | `name`, `source`, `sourceUri`, `resizeMode`, `style`                       | Supports `system:` prefix for SF Symbols, asset names, and bundled assets via `require` |
+| `Picker`     | A dropdown or segmented selection           | `options`, `selection`, `label`, `pickerStyle`, `onChange`                 | Styles: `menu`, `segmented`, `wheel`, etc.                                              |
+| `Rectangle`  | A simple rectangular shape                  | `style`                                                                    | Used for basic shapes with customizable styling                                         |
+| `Section`    | A collapsible section within a form         | `header`, `footer`, `isCollapsed`, Children                                | Useful for organizing form content                                                      |
+| `Sheet`      | A modal sheet presentation                  | `isPresented`, `detents`, `onDismiss`, Children                            | Detents: `medium`, `large`, or custom values                                            |
+| `Slider`     | A continuous value slider                   | `value`, `minimum`, `maximum`, `step`, `label`, `onChange`                 | Adjustable range with step increments                                                   |
+| `Spacer`     | A flexible space filler                     | `minLength`                                                                | Expands to fill available space                                                         |
+| `Stepper`    | An increment/decrement control              | `value`, `label`, `minimum`, `maximum`, `step`, `onChange`                 | For numeric adjustments                                                                 |
+| `Text`       | Displays static text                        | `text`, `alignment`, `style`                                               | Alignments: `leading`, `center`, `trailing`                                             |
+| `TextField`  | An editable text input                      | `text`, `label`, `placeholder`, `keyboardType`, `onChange`                 | Supports various keyboard types and text content types                                  |
+| `Toggle`     | A switch for boolean values                 | `isOn`, `label`, `onChange`                                                | Simple on/off control                                                                   |
+| `VStack`     | Vertical stack layout                       | `alignment`, `spacing`, `style`, Children                                  | Alignments: `leading`, `center`, `trailing`                                             |
+| `ZStack`     | Overlapping stack layout                    | `alignment`, `style`, Children                                             | Alignments: `topLeading`, `center`, `bottomTrailing`, etc.                              |
+
+### Notes
+
+- **Props**: Most components accept a `style` prop for layout and appearance customization (e.g., `width`, `height`, `backgroundColor`).
+- **Events**: Components like `Button`, `TextField`, and `Picker` support event handlers (e.g., `onPress`, `onChange`) for interactivity.
+- **Children**: Layout components (`Form`, `HStack`, `VStack`, etc.) accept nested components as children.
+- **Image Sources**: The `Image` component supports:
+  - Named assets from `Assets.xcassets` (e.g., `name="logo"`).
+  - System images with a `system:` prefix (e.g., `name="system:star.fill"`).
+  - Local bundled assets via `source={require('../path/to/image.png')}`.
 
 ## How It Works
 
