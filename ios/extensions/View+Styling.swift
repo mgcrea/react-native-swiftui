@@ -34,15 +34,16 @@ extension View {
   }
 
   private func applyTextStyles(_ style: StyleProps) -> some View {
-    return applyIf(style.fontWeight != nil) { view in
+    return applyIf(style.color != nil) { $0.foregroundStyle(style.color!) }
+    .applyIf(style.font != nil) { $0.font(style.font!) }
+    .applyIf(style.fontSize != nil) { $0.font(.system(size: style.fontSize!)) }
+    .applyIf(style.fontWeight != nil) { view in
       if #available(iOS 16.0, *) {
         return AnyView(view.fontWeight(style.fontWeight!))
       } else {
         return AnyView(view)
       }
     }
-    .applyIf(style.font != nil) { $0.font(style.font!) }
-    .applyIf(style.fontSize != nil) { $0.font(.system(size: style.fontSize!)) }
   }
 
   @ViewBuilder

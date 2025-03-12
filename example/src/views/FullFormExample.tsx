@@ -1,6 +1,12 @@
 import {SwiftUI} from '@mgcrea/react-native-swiftui/src';
 import {useState, type FunctionComponent} from 'react';
-import {View} from 'react-native';
+import {Image, View} from 'react-native';
+import logoImage from '../assets/logo.png';
+
+console.log({
+  logoImage,
+  resolvedLogoImage: Image.resolveAssetSource(logoImage),
+});
 
 export const FullFormExample: FunctionComponent = () => {
   return (
@@ -166,20 +172,31 @@ const RectangleSection: FunctionComponent = () => {
 };
 
 const ImageSection: FunctionComponent = () => {
-  const [color, setColor] = useState('blue');
+  const [icon, setIcon] = useState('iphone');
 
   return (
-    <SwiftUI.Section header="Rectangle Example">
-      <SwiftUI.Image
-        name="star.fill"
-        isSystemImage={true}
-        tintColor="#FF0000"
-        style={{width: 50, height: 50}}
-      />
-
+    <SwiftUI.Section header="Image Example">
+      <SwiftUI.HStack>
+        <SwiftUI.Image
+          source={logoImage}
+          resizeMode="contain"
+          style={{
+            width: 128,
+            height: 128,
+            borderWidth: 1,
+            borderColor: 'blue',
+            borderRadius: 64,
+          }}
+        />
+        <SwiftUI.Image
+          name={`system:${icon}`}
+          // tintColor="#FF0000"
+          style={{width: 128, height: 128, fontSize: 64, color: 'blue'}}
+        />
+      </SwiftUI.HStack>
       <SwiftUI.Button
-        title={`Change flag to ${color === 'blue' ? 'Italy' : 'France'}`}
-        onPress={() => setColor(color === 'blue' ? 'green' : 'blue')}
+        title={`Change icon to ${icon === 'iphone' ? 'ipad' : 'iphone'}`}
+        onPress={() => setIcon(icon === 'iphone' ? 'ipad' : 'iphone')}
       />
     </SwiftUI.Section>
   );

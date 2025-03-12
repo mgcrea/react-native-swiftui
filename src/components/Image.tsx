@@ -1,16 +1,18 @@
+import { Image as BaseImage, type ImageSourcePropType } from "react-native";
 import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId, NativeViewStyle } from "../types";
+import type { FunctionComponentWithId, NativeTextStyle } from "../types";
 
 export type NativeImageProps = {
-  name: string;
-  isSystemImage?: boolean;
+  name?: string;
+  source?: ImageSourcePropType;
   resizeMode?: "cover" | "contain" | "stretch" | "center";
   tintColor?: string;
-  style?: NativeViewStyle;
+  style?: NativeTextStyle;
 };
 
-export const Image: FunctionComponentWithId<NativeImageProps> = ({ ...props }) => {
-  useSwiftUINode("Image", props);
+export const Image: FunctionComponentWithId<NativeImageProps> = ({ source, ...props }) => {
+  const sourceUri = source ? BaseImage.resolveAssetSource(source).uri : undefined;
+  useSwiftUINode("Image", { sourceUri, ...props });
   return null;
 };
 

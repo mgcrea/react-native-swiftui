@@ -1,8 +1,8 @@
 import SwiftUI
 
 public final class ImageProps: ObservableObject, Decodable {
-  @Published var name: String = ""
-  @Published var isSystemImage: Bool = false
+  @Published var name: String?
+  @Published var sourceUri: String?
   @Published var resizeMode: ImageResizeMode
   @Published var tintColor: String?
   @Published var style: StyleProps?
@@ -32,13 +32,13 @@ public final class ImageProps: ObservableObject, Decodable {
   }
 
   enum CodingKeys: String, CodingKey {
-    case name, isSystemImage, resizeMode, tintColor, style
+    case name, sourceUri, isSystemImage, resizeMode, tintColor, style
   }
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    name = try container.decode(String.self, forKey: .name)
-    isSystemImage = try container.decodeIfPresent(Bool.self, forKey: .isSystemImage) ?? false
+    name = try container.decodeIfPresent(String.self, forKey: .name)
+    sourceUri = try container.decodeIfPresent(String.self, forKey: .sourceUri)
     resizeMode = try ImageResizeMode(rawValue: container.decodeIfPresent(String.self, forKey: .resizeMode) ?? "") ?? .default
     tintColor = try container.decodeIfPresent(String.self, forKey: .tintColor)
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
@@ -46,7 +46,7 @@ public final class ImageProps: ObservableObject, Decodable {
 
   public func merge(from other: ImageProps) {
     name = other.name
-    isSystemImage = other.isSystemImage
+    sourceUri = other.sourceUri
     resizeMode = other.resizeMode
     tintColor = other.tintColor
     style = other.style
