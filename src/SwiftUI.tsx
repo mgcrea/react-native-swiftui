@@ -6,6 +6,7 @@ import {
   Form,
   Group,
   HStack,
+  Image,
   Picker,
   Rectangle,
   Section,
@@ -95,3 +96,4 @@ SwiftUI.ZStack = ZStack;
 SwiftUI.Sheet = Sheet;
 SwiftUI.Rectangle = Rectangle;
 SwiftUI.Spacer = Spacer;
+SwiftUI.Image = Image;

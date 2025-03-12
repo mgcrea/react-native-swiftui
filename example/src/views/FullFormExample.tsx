@@ -8,6 +8,7 @@ export const FullFormExample: FunctionComponent = () => {
       <SwiftUI style={{flex: 1}}>
         <SwiftUI.Text text="FullFormExample" />
         <SwiftUI.Form>
+          <ImageSection />
           <RectangleSection />
           <TextFieldSection />
           <PickerSection />
@@ -155,6 +156,26 @@ const RectangleSection: FunctionComponent = () => {
           style={{backgroundColor: 'red', width: 25, height: 50}}
         />
       </SwiftUI.HStack>
+
+      <SwiftUI.Button
+        title={`Change flag to ${color === 'blue' ? 'Italy' : 'France'}`}
+        onPress={() => setColor(color === 'blue' ? 'green' : 'blue')}
+      />
+    </SwiftUI.Section>
+  );
+};
+
+const ImageSection: FunctionComponent = () => {
+  const [color, setColor] = useState('blue');
+
+  return (
+    <SwiftUI.Section header="Rectangle Example">
+      <SwiftUI.Image
+        name="star.fill"
+        isSystemImage={true}
+        tintColor="#FF0000"
+        style={{width: 50, height: 50}}
+      />
 
       <SwiftUI.Button
         title={`Change flag to ${color === 'blue' ? 'Italy' : 'France'}`}

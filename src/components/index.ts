@@ -3,6 +3,7 @@ export * from "./DatePicker";
 export * from "./Form";
 export * from "./Group";
 export * from "./HStack";
+export * from "./Image";
 export * from "./Picker";
 export * from "./Rectangle";
 export * from "./Section";

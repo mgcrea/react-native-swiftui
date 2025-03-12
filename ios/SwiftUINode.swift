@@ -88,12 +88,14 @@ private struct NodeWrapper: Decodable {
       node = try GenericNode<RectangleProps>(from: decoder)
     case "Spacer":
       node = try GenericNode<SpacerProps>(from: decoder)
+    case "Image":
+      node = try GenericNode<ImageProps>(from: decoder)
     default:
       throw DecodingError.typeMismatch(
         (any SwiftUINode).self,
         DecodingError.Context(
           codingPath: container.codingPath,
-          debugDescription: "Unknown type: \(type)"
+          debugDescription: "Unknown node type: \(type)"
         )
       )
     }

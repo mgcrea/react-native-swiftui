@@ -186,6 +186,8 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(RectangleView(props: rectangle.props))
     case let spacer as GenericNode<SpacerProps>:
       AnyView(SpacerView(props: spacer.props))
+    case let image as GenericNode<ImageProps>:
+      AnyView(ImageView(props: image.props))
     default:
       AnyView(EmptyView())
     }
@@ -260,10 +262,14 @@ public class SwiftUIRootView: SwiftUIContainerView {
       case let sheet as GenericNode<SheetProps>:
         let updatedProps = try decoder.decode(SheetProps.self, from: updatedPropsData)
         sheet.props.merge(from: updatedProps)
-        
+
       case let rectangle as GenericNode<RectangleProps>:
         let updatedProps = try decoder.decode(RectangleProps.self, from: updatedPropsData)
         rectangle.props.merge(from: updatedProps)
+
+      case let image as GenericNode<ImageProps>:
+        let updatedProps = try decoder.decode(ImageProps.self, from: updatedPropsData)
+        image.props.merge(from: updatedProps)
 
       default:
         print("Unsupported node type for updateChildProps: \(type(of: node))")
