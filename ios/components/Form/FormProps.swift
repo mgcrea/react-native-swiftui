@@ -2,11 +2,18 @@
 import SwiftUI
 
 public final class FormProps: ObservableObject, Decodable {
-    public init() {}
+    @Published public var style: StyleProps?
 
-    public required init(from _: Decoder) throws {}
+    enum CodingKeys: String, CodingKey {
+        case style
+    }
 
-    public func merge(from _: FormProps) {
-        // No properties to merge
+    public required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
+    }
+
+    public func merge(from other: FormProps) {
+        style = other.style
     }
 }

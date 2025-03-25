@@ -13,6 +13,6 @@ public struct FormView<Content: View>: View {
     public var body: some View {
         Form {
             content()
-        }
+        }.applyViewStyles(props.style)
     }
 }
