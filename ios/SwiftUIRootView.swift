@@ -35,14 +35,14 @@ public class SwiftUIRootView: SwiftUIContainerView {
 
   private func buildSwiftUIView(from node: any SwiftUINode) -> AnyView {
     switch node {
-    case let group as GenericNode<EmptyProps>:
-      AnyView(Group {
+    case let group as GenericNode<GroupProps>:
+      AnyView(GroupView(props: group.props, content: {
         if let children = group.children {
           ForEach(children, id: \.id) { child in
             self.buildSwiftUIView(from: child)
           }
         }
-      })
+      }))
     case let hstack as GenericNode<HStackProps>:
       AnyView(HStackView(props: hstack.props, content: {
         if let children = hstack.children {
@@ -99,6 +99,14 @@ public class SwiftUIRootView: SwiftUIContainerView {
           }
         }
       }))
+    case let button as GenericNode<ButtonProps>:
+      AnyView(ButtonView(props: button.props, content: {
+        if let children = button.children {
+          ForEach(children, id: \.id) { child in
+            self.buildSwiftUIView(from: child)
+          }
+        }
+      }))
     case let text as GenericNode<TextProps>:
       AnyView(TextView(props: text.props))
     case let textField as GenericNode<TextFieldProps>:
@@ -109,8 +117,6 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(DatePickerView(props: datePicker.props))
     case let stepper as GenericNode<StepperProps>:
       AnyView(StepperView(props: stepper.props))
-    case let button as GenericNode<ButtonProps>:
-      AnyView(ButtonView(props: button.props))
     case let toggle as GenericNode<ToggleProps>:
       AnyView(ToggleView(props: toggle.props))
     case let slider as GenericNode<SliderProps>:
@@ -176,9 +182,9 @@ public class SwiftUIRootView: SwiftUIContainerView {
         let updatedProps = try decoder.decode(SectionProps.self, from: updatedPropsData)
         section.props.merge(from: updatedProps)
 
-      case let group as GenericNode<EmptyProps>:
-        // GroupNode has no props to merge
-        print("GroupNode has no props to update for id \(identifier)")
+      case let group as GenericNode<GroupProps>:
+        let updatedProps = try decoder.decode(GroupProps.self, from: updatedPropsData)
+        group.props.merge(from: updatedProps)
 
       case let hstack as GenericNode<HStackProps>:
         let updatedProps = try decoder.decode(HStackProps.self, from: updatedPropsData)

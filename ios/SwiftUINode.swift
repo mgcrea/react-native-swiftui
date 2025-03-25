@@ -75,7 +75,7 @@ private struct NodeWrapper: Decodable {
     case "Section":
       node = try GenericNode<SectionProps>(from: decoder)
     case "Group":
-      node = try GenericNode<EmptyProps>(from: decoder) // No props for Group
+      node = try GenericNode<GroupProps>(from: decoder)
     case "HStack":
       node = try GenericNode<HStackProps>(from: decoder)
     case "VStack":

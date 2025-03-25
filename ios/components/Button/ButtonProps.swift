@@ -1,7 +1,7 @@
 import SwiftUI
 
 public final class ButtonProps: ObservableObject, Decodable {
-  @Published var title: String = "Button"
+  @Published var title: String? = nil
   @Published var buttonStyle: ButtonStyle = .default
   @Published var disabled: Bool = false
   @Published public var style: StyleProps?
@@ -15,6 +15,7 @@ public final class ButtonProps: ObservableObject, Decodable {
     case borderedProminent
     case borderless
     // Custom
+    case scale
     case subtle
     case picker
 
@@ -34,6 +35,8 @@ public final class ButtonProps: ObservableObject, Decodable {
       // Custom
       case .subtle:
         view.buttonStyle(SubtleOpacityButtonStyle())
+      case .scale:
+        view.buttonStyle(ScaleButtonStyle())
       case .picker:
         view.buttonStyle(PickerButtonStyle())
       }
@@ -46,7 +49,7 @@ public final class ButtonProps: ObservableObject, Decodable {
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    title = try container.decodeIfPresent(String.self, forKey: .title) ?? ""
+    title = try container.decodeIfPresent(String.self, forKey: .title)
     if let buttonStyleString = try container.decodeIfPresent(String.self, forKey: .buttonStyle), let style = ButtonStyle(rawValue: buttonStyleString) {
       buttonStyle = style
     } else {
@@ -81,5 +84,16 @@ struct SubtleOpacityButtonStyle: ButtonStyle {
     configuration.label
       .opacity(configuration.isPressed ? pressedOpacity : normalOpacity)
       .animation(configuration.isPressed ? .linear(duration: 0.05) : .easeInOut(duration: 0.25), value: configuration.isPressed)
+  }
+}
+
+struct ScaleButtonStyle: ButtonStyle {
+  var normalScale: Double = 1.0
+  var pressedScale: Double = 0.95
+
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .scaleEffect(configuration.isPressed ? pressedScale : normalScale)
+      .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
   }
 }
