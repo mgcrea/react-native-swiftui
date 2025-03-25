@@ -39,10 +39,9 @@ export const SwiftUIRoot = ({
   style,
   onEvent: rootOnEvent,
 }: PropsWithChildren<SwiftUIProps>): ReactNode => {
-  const { nativeRef, getEventHandler, getNodes, renderSequence } = useSwiftUIContext();
+  const { nativeRef, getEventHandler, nodesKey, getNodes, renderSequence } = useSwiftUIContext();
 
   const nodes = getNodes();
-  const nodesKey = JSON.stringify(Array.from(nodes.keys()));
   console.log(`SwiftUIRoot rendering with ${nodes.size} nodes`);
   renderSequence.current = []; // Reset render sequence
   useEffect(() => {

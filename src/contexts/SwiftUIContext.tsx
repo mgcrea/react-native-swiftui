@@ -1,5 +1,5 @@
 // src/contexts/SwiftUIContext.tsx
-import React, { createContext, RefObject, useCallback, useContext, useRef } from "react";
+import React, { createContext, RefObject, useCallback, useContext, useMemo, useRef, useState } from "react";
 import type { ViewTreeNode } from "src/types";
 import {
   Commands as NativeSwiftUIRootCommands,
@@ -12,6 +12,7 @@ export type NodeRegistry = Map<string, { node: ViewTreeNode; parentId?: string }
 
 export type SwiftUIContextValue = {
   getEventHandler: (id: string, name: string) => EventHandler | undefined;
+  nodesKey: string;
   getNodes: () => NodeRegistry;
   nativeRef: RefObject<React.ComponentRef<typeof SwiftUIRootNativeComponent> | null>;
   recordRenderOrder: (id: string) => void;
@@ -28,8 +29,15 @@ const SwiftUIContext = createContext<SwiftUIContextValue | undefined>(undefined)
 export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const eventRegistry = useRef<EventRegistry>(new Map());
   const nodeRegistry = useRef<NodeRegistry>(new Map());
+  const [nodeRegistryVersion, setNodeRegistryVersion] = useState(0);
   const renderSequence = useRef<string[]>([]);
   const nativeRef = useRef<React.ComponentRef<typeof SwiftUIRootNativeComponent> | null>(null);
+
+  const nodesKey = useMemo(() => {
+    const keys = Array.from(nodeRegistry.current.keys());
+    return JSON.stringify(keys);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nodeRegistryVersion]);
 
   const getEventHandler = (id: string, name: string) => {
     return eventRegistry.current.get(id)?.get(name);
@@ -69,12 +77,14 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const registerNode = useCallback((node: ViewTreeNode, parentId?: string) => {
     console.log(`SwiftUIContext registering node with id=${node.id}`, { node, parentId });
     nodeRegistry.current.set(node.id, { node, parentId });
+    setNodeRegistryVersion((prev) => prev + 1);
   }, []);
 
   const unregisterNode = useCallback((id: string) => {
     console.log(`SwiftUIContext unregistering node with id=${id}`);
     nodeRegistry.current.delete(id);
     eventRegistry.current.delete(id);
+    setNodeRegistryVersion((prev) => prev + 1);
   }, []);
 
   const getNodes = useCallback(() => nodeRegistry.current, []);
@@ -102,6 +112,7 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const context = {
     getEventHandler,
+    nodesKey,
     getNodes,
     nativeRef,
     recordRenderOrder,
