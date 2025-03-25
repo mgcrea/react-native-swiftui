@@ -25,12 +25,14 @@ export type NativeViewStyle = Pick<
   | "right"
   | "bottom"
 > & {
+  tint?: string;
+  accentColor?: string;
+  foregroundColor?: string;
   cornerRadius?: number;
 };
 
 export type NativeTextStyle = NativeViewStyle &
   Pick<TextStyle, "color" | "fontSize" | "fontWeight" | "textAlign" | "fontFamily"> & {
-    foregroundColor?: string;
     font?: NativeFont;
   };
 

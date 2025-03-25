@@ -4,6 +4,7 @@
 // export { default as NativePopoverView } from "./PopoverViewNativeComponent";
 // export { default as NativeSectionView } from "./SectionNativeComponent";
 // export * from "./native/SwiftUIRootNativeComponent";
+export * from "./components";
 export { default as NativeContainerView } from "./native/SwiftUIRootNativeComponent";
 export * from "./styles";
 export * from "./SwiftUI";

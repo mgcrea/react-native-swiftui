@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { type PropsWithChildren, useMemo } from "react";
+import { SwiftUIParentIdProvider } from "../contexts";
 import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId } from "../types";
+import type { FunctionComponentWithId, NativeTextStyle } from "../types";
 
 // https://developer.apple.com/documentation/swiftui/stepper
 
@@ -10,12 +11,14 @@ export type NativeStepperProps = {
   minimum?: number;
   maximum?: number;
   step?: number;
+  style?: NativeTextStyle;
   onChange?: (value: number) => void;
   onFocus?: () => void;
   onBlur?: () => void;
 };
 
-export const Stepper: FunctionComponentWithId<NativeStepperProps> = ({
+export const Stepper: FunctionComponentWithId<PropsWithChildren<NativeStepperProps>> = ({
+  children,
   onChange: onChangeProp,
   onFocus,
   onBlur,
@@ -31,12 +34,12 @@ export const Stepper: FunctionComponentWithId<NativeStepperProps> = ({
     [onChangeProp],
   );
 
-  useSwiftUINode("Stepper", otherProps, {
+  const { id } = useSwiftUINode("Stepper", otherProps, {
     change: onChange,
     focus: onFocus,
     blur: onBlur,
   });
 
-  return null;
+  return <SwiftUIParentIdProvider id={id}>{children}</SwiftUIParentIdProvider>;
 };
 Stepper.displayName = "Stepper";

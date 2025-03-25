@@ -1,5 +1,6 @@
 import { ReactNode, useMemo } from "react";
 import { useSwiftUINode } from "../hooks";
+import type { NativeTextStyle } from "../types";
 
 // https://developer.apple.com/documentation/swiftui/picker
 
@@ -11,6 +12,7 @@ export type NativePickerProps<T extends string> = {
   label?: string;
   pickerStyle?: NativePickerStyle;
   disabled?: boolean;
+  style?: NativeTextStyle;
   onChange?: (value: T) => void;
   onFocus?: () => void;
   onBlur?: () => void;
