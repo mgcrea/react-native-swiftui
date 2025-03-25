@@ -107,6 +107,14 @@ public class SwiftUIRootView: SwiftUIContainerView {
           }
         }
       }))
+    case let stepper as GenericNode<StepperProps>:
+      AnyView(StepperView(props: stepper.props, content: {
+        if let children = stepper.children {
+          ForEach(children, id: \.id) { child in
+            self.buildSwiftUIView(from: child)
+          }
+        }
+      }))
     case let text as GenericNode<TextProps>:
       AnyView(TextView(props: text.props))
     case let textField as GenericNode<TextFieldProps>:
@@ -115,8 +123,6 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(PickerView(props: picker.props))
     case let datePicker as GenericNode<DatePickerProps>:
       AnyView(DatePickerView(props: datePicker.props))
-    case let stepper as GenericNode<StepperProps>:
-      AnyView(StepperView(props: stepper.props))
     case let toggle as GenericNode<ToggleProps>:
       AnyView(ToggleView(props: toggle.props))
     case let slider as GenericNode<SliderProps>:

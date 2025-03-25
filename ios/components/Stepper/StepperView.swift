@@ -2,12 +2,14 @@ import SwiftUI
 
 // MARK: - View
 
-public struct StepperView: View {
+public struct StepperView<Content: View>: View {
   @ObservedObject public var props: StepperProps
   @FocusState private var isFocused: Bool
+  let content: () -> Content
 
-  public init(props: StepperProps) {
+  public init(props: StepperProps, @ViewBuilder content: @escaping () -> Content) {
     self.props = props
+    self.content = content
   }
 
   public var body: some View {
@@ -34,7 +36,7 @@ public struct StepperView: View {
       in: props.minimum ... props.maximum,
       step: props.step
     ) {
-      Text("\(props.value)")
+      content()
     }
     .applyStyles(props.style)
     .focused($isFocused)
