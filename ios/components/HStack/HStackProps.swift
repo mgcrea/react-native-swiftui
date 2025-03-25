@@ -1,17 +1,12 @@
 import SwiftUI
 
 public final class HStackProps: ObservableObject, Decodable {
-  @Published public var alignment: VerticalAlignment
+  @Published public var alignment: VerticalAlignment = .center
   @Published public var spacing: CGFloat?
   @Published public var style: StyleProps?
 
   enum CodingKeys: String, CodingKey {
     case alignment, spacing, style
-  }
-
-  public init(alignment: VerticalAlignment = .center, spacing: CGFloat? = nil) {
-    self.alignment = alignment
-    self.spacing = spacing
   }
 
   public required init(from decoder: Decoder) throws {

@@ -1,15 +1,11 @@
 import SwiftUI
 
 public final class ZStackProps: ObservableObject, Decodable {
-  @Published public var alignment: Alignment
+  @Published public var alignment: Alignment = .center
   @Published public var style: StyleProps?
 
   enum CodingKeys: String, CodingKey {
-    case alignment
-  }
-
-  public init(alignment: Alignment = .center) {
-    self.alignment = alignment
+    case alignment, style
   }
 
   public required init(from decoder: Decoder) throws {
@@ -26,9 +22,11 @@ public final class ZStackProps: ObservableObject, Decodable {
     case "bottomTrailing": alignment = .bottomTrailing
     default: alignment = .center
     }
+    style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
   public func merge(from other: ZStackProps) {
     alignment = other.alignment
+    style = other.style
   }
 }

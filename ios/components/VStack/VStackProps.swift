@@ -1,17 +1,12 @@
 import SwiftUI
 
 public final class VStackProps: ObservableObject, Decodable {
-  @Published public var alignment: HorizontalAlignment
+  @Published public var alignment: HorizontalAlignment = .center
   @Published public var spacing: CGFloat?
   @Published public var style: StyleProps?
 
   enum CodingKeys: String, CodingKey {
-    case alignment, spacing
-  }
-
-  public init(alignment: HorizontalAlignment = .center, spacing: CGFloat? = nil) {
-    self.alignment = alignment
-    self.spacing = spacing
+    case alignment, spacing, style
   }
 
   public required init(from decoder: Decoder) throws {
@@ -23,10 +18,12 @@ public final class VStackProps: ObservableObject, Decodable {
     default: alignment = .center
     }
     spacing = try container.decodeIfPresent(CGFloat.self, forKey: .spacing)
+    style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
   public func merge(from other: VStackProps) {
     alignment = other.alignment
     spacing = other.spacing
+    style = other.style
   }
 }
