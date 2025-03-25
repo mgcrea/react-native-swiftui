@@ -79,6 +79,9 @@ extension View {
       AnyView(
         applyBoxStyles(style)
           .applyIf(style.backgroundColor != nil) { $0.background(style.backgroundColor!) }
+          .applyIf(style.color != nil || style.foregroundColor != nil) { $0.foregroundStyle(style.color ?? style.foregroundColor!) }
+          .applyIf(style.accentColor != nil) { $0.accentColor(style.accentColor!) }
+          .applyIf(style.tintColor != nil) { $0.tint(style.tintColor!) }
           .applyIf(style.borderWidth != nil) { view in
             view.overlay(
               RoundedRectangle(cornerRadius: style.cornerRadius ?? style.borderRadius ?? 0)
@@ -92,7 +95,7 @@ extension View {
   }
 
   private func applyTextStyles(_ style: StyleProps) -> some View {
-    return applyIf(style.color != nil) { $0.foregroundStyle(style.color!) }
+    return applyIf(style.color != nil) { $0.foregroundStyle(style.color!).tint(style.color!) }
       .applyIf(style.font != nil) { $0.font(style.font!) }
       .applyIf(style.fontFamily != nil) { $0.font(.custom(style.fontFamily!, size: style.fontSize ?? 17)) }
       .applyIf(style.fontFamily == nil && style.fontSize != nil) { $0.font(.system(size: style.fontSize!)) }

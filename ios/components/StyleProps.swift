@@ -2,6 +2,10 @@ import SwiftUI
 
 public struct StyleProps: Decodable {
   // ViewStyle
+  public var color: Color? // alias for foregroundColor
+  public var accentColor: Color?
+  public var tintColor: Color?
+  public var foregroundColor: Color?
   public var backgroundColor: Color?
   // - Frame
   public var width: Size?
@@ -30,21 +34,23 @@ public struct StyleProps: Decodable {
   public var borderRadius: CGFloat?
   public var cornerRadius: CGFloat?
   // TextStyle
-  public var color: Color? // alias for foregroundColor
-  public var foregroundColor: Color?
   public var fontWeight: Font.Weight?
   public var fontSize: CGFloat?
   public var font: Font?
   public var fontFamily: String?
 
   enum CodingKeys: String, CodingKey {
-    case color, backgroundColor, foregroundColor, width, minWidth, maxWidth, height, minHeight, maxHeight, position, top, left, bottom, right, padding, paddingHorizontal, paddingVertical, paddingLeft, paddingRight, paddingTop, paddingBottom, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font, fontFamily
+    case color, accentColor, tintColor, backgroundColor, foregroundColor, width, minWidth, maxWidth, height, minHeight, maxHeight, position, top, left, bottom, right, padding, paddingHorizontal, paddingVertical, paddingLeft, paddingRight, paddingTop, paddingBottom, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font, fontFamily
   }
 
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
     // ViewStyle
+    color = try container.decodeColorIfPresent(forKey: .color) // alias for foregroundColor
+    accentColor = try container.decodeColorIfPresent(forKey: .accentColor)
+    tintColor = try container.decodeColorIfPresent(forKey: .tintColor)
+    foregroundColor = try container.decodeColorIfPresent(forKey: .foregroundColor)
     backgroundColor = try container.decodeColorIfPresent(forKey: .backgroundColor)
     // - Frame
     width = try container.decodeIfPresent(Size.self, forKey: .width)
@@ -74,8 +80,6 @@ public struct StyleProps: Decodable {
     cornerRadius = try container.decodeIfPresent(CGFloat.self, forKey: .cornerRadius)
 
     // TextStyle
-    color = try container.decodeColorIfPresent(forKey: .color) // alias for foregroundColor
-    foregroundColor = try container.decodeColorIfPresent(forKey: .foregroundColor)
     fontWeight = try container.decodeFontWeightIfPresent(forKey: .fontWeight)
     fontSize = try container.decodeIfPresent(CGFloat.self, forKey: .fontSize)
     font = try container.decodeFontIfPresent(forKey: .font)
