@@ -4,12 +4,26 @@ public struct StyleProps: Decodable {
   // ViewStyle
   public var backgroundColor: Color?
   // - Frame
-  public var width: CGFloat?
-  public var height: CGFloat?
+  public var width: Size?
+  public var minWidth: Size?
+  public var maxWidth: Size?
+  public var height: Size?
+  public var minHeight: Size?
+  public var maxHeight: Size?
+  // - Position
+  public var position: String? // "absolute" or "relative"
+  public var top: CGFloat?
+  public var left: CGFloat?
+  public var bottom: CGFloat?
+  public var right: CGFloat?
   // - Padding
   public var padding: CGFloat?
   public var paddingHorizontal: CGFloat?
   public var paddingVertical: CGFloat?
+  public var paddingLeft: CGFloat?
+  public var paddingRight: CGFloat?
+  public var paddingTop: CGFloat?
+  public var paddingBottom: CGFloat?
   // - Border
   public var borderColor: Color?
   public var borderWidth: CGFloat?
@@ -21,9 +35,10 @@ public struct StyleProps: Decodable {
   public var fontWeight: Font.Weight?
   public var fontSize: CGFloat?
   public var font: Font?
+  public var fontFamily: String?
 
   enum CodingKeys: String, CodingKey {
-    case color, backgroundColor, foregroundColor, width, height, padding, paddingHorizontal, paddingVertical, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font
+    case color, backgroundColor, foregroundColor, width, minWidth, maxWidth, height, minHeight, maxHeight, position, top, left, bottom, right, padding, paddingHorizontal, paddingVertical, paddingLeft, paddingRight, paddingTop, paddingBottom, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font, fontFamily
   }
 
   public init(from decoder: Decoder) throws {
@@ -31,16 +46,32 @@ public struct StyleProps: Decodable {
 
     // ViewStyle
     backgroundColor = try container.decodeColorIfPresent(forKey: .backgroundColor)
+    // - Frame
+    width = try container.decodeIfPresent(Size.self, forKey: .width)
+    minWidth = try container.decodeIfPresent(Size.self, forKey: .minWidth)
+    maxWidth = try container.decodeIfPresent(Size.self, forKey: .maxWidth)
+    height = try container.decodeIfPresent(Size.self, forKey: .height)
+    minHeight = try container.decodeIfPresent(Size.self, forKey: .minHeight)
+    maxHeight = try container.decodeIfPresent(Size.self, forKey: .maxHeight)
+    // - Position
+    position = try container.decodeIfPresent(String.self, forKey: .position)
+    top = try container.decodeIfPresent(CGFloat.self, forKey: .top)
+    left = try container.decodeIfPresent(CGFloat.self, forKey: .left)
+    bottom = try container.decodeIfPresent(CGFloat.self, forKey: .bottom)
+    right = try container.decodeIfPresent(CGFloat.self, forKey: .right)
+    // - Padding
+    padding = try container.decodeIfPresent(CGFloat.self, forKey: .padding)
+    paddingHorizontal = try container.decodeIfPresent(CGFloat.self, forKey: .paddingHorizontal)
+    paddingVertical = try container.decodeIfPresent(CGFloat.self, forKey: .paddingVertical)
+    paddingLeft = try container.decodeIfPresent(CGFloat.self, forKey: .paddingLeft)
+    paddingRight = try container.decodeIfPresent(CGFloat.self, forKey: .paddingRight)
+    paddingTop = try container.decodeIfPresent(CGFloat.self, forKey: .paddingTop)
+    paddingBottom = try container.decodeIfPresent(CGFloat.self, forKey: .paddingBottom)
+    // - Border
     borderColor = try container.decodeColorIfPresent(forKey: .borderColor)
     borderWidth = try container.decodeIfPresent(CGFloat.self, forKey: .borderWidth)
     borderRadius = try container.decodeIfPresent(CGFloat.self, forKey: .borderRadius) // alias for cornerRadius
     cornerRadius = try container.decodeIfPresent(CGFloat.self, forKey: .cornerRadius)
-
-    width = try container.decodeIfPresent(CGFloat.self, forKey: .width)
-    height = try container.decodeIfPresent(CGFloat.self, forKey: .height)
-    padding = try container.decodeIfPresent(CGFloat.self, forKey: .padding)
-    paddingHorizontal = try container.decodeIfPresent(CGFloat.self, forKey: .paddingHorizontal)
-    paddingVertical = try container.decodeIfPresent(CGFloat.self, forKey: .paddingVertical)
 
     // TextStyle
     color = try container.decodeColorIfPresent(forKey: .color) // alias for foregroundColor
@@ -48,6 +79,7 @@ public struct StyleProps: Decodable {
     fontWeight = try container.decodeFontWeightIfPresent(forKey: .fontWeight)
     fontSize = try container.decodeIfPresent(CGFloat.self, forKey: .fontSize)
     font = try container.decodeFontIfPresent(forKey: .font)
+    fontFamily = try container.decodeIfPresent(String.self, forKey: .fontFamily)
   }
 }
 
