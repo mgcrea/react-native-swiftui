@@ -39,7 +39,6 @@ public struct TextFieldView: View {
       }
     }
     .keyboardType(props.keyboardType)
-    .disabled(props.disabled).foregroundColor(props.disabled ? .gray : .primary)
     .focused($isFocused)
 //    .toolbar {
 //      ToolbarItemGroup(placement: .keyboard) {
@@ -49,6 +48,8 @@ public struct TextFieldView: View {
 //        }
 //      }
 //    }
+    .applyStyles(props.style)
+    .disabled(props.disabled).foregroundStyle(props.disabled ? .gray : .primary)
     .onChange(of: isFocused) { newValue in
       newValue ? props.onFocus?() : props.onBlur?()
     }

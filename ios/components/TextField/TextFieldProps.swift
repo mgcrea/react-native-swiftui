@@ -14,13 +14,14 @@ public final class TextFieldProps: ObservableObject, Decodable {
   @Published public var secure: Bool = false
   @Published public var multiline: Bool = false
   @Published public var disabled: Bool = false
+  @Published public var style: StyleProps?
   // Events
   public var onChange: ((String) -> Void)?
   public var onFocus: (() -> Void)?
   public var onBlur: (() -> Void)?
 
   enum CodingKeys: String, CodingKey {
-    case text, label, placeholder, keyboardType, textContentType, returnKeyType, autocapitalizationType, maxLength, secure, multiline, disabled
+    case text, label, placeholder, keyboardType, textContentType, returnKeyType, autocapitalizationType, maxLength, secure, multiline, disabled, style
   }
 
   public required init(from decoder: Decoder) throws {
@@ -58,7 +59,7 @@ public final class TextFieldProps: ObservableObject, Decodable {
     // Decode autocapitalizationType
     if let autocapitalizationTypeString = try container.decodeIfPresent(String.self, forKey: .autocapitalizationType) {
       switch autocapitalizationTypeString {
-      case "none": autocapitalizationType = .none
+      case "none": autocapitalizationType = UITextAutocapitalizationType.none
       case "words": autocapitalizationType = .words
       case "sentences": autocapitalizationType = .sentences
       case "allCharacters": autocapitalizationType = .allCharacters
@@ -69,6 +70,7 @@ public final class TextFieldProps: ObservableObject, Decodable {
     secure = try container.decodeIfPresent(Bool.self, forKey: .secure) ?? false
     multiline = try container.decodeIfPresent(Bool.self, forKey: .multiline) ?? false
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
+    style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
 
     if maxLength != nil {
       text = enforceMaxLength(text)
@@ -94,5 +96,6 @@ public final class TextFieldProps: ObservableObject, Decodable {
     secure = other.secure
     multiline = other.multiline
     disabled = other.disabled
+    style = other.style
   }
 }
