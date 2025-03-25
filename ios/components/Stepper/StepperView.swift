@@ -34,9 +34,9 @@ public struct StepperView: View {
       in: props.minimum ... props.maximum,
       step: props.step
     ) {
-      Text("\(props.value)") // Show value here
-        .foregroundColor(.gray) // Optional styling
+      Text("\(props.value)")
     }
+    .applyStyles(props.style)
     .focused($isFocused)
     .onChange(of: props.value) { newValue in
       props.onChange?(String(newValue))
