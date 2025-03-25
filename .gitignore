@@ -9,3 +9,8 @@ dist/
 .vscode/
 tmp/
 *.private.tsx
+
+example/src/components
+example/assets/fonts
+link-assets-manifest.json
+*.ttf
