@@ -1,12 +1,13 @@
 import { type PropsWithChildren } from "react";
 import { SwiftUIParentIdProvider } from "../contexts";
 import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId } from "../types";
+import type { FunctionComponentWithId, NativeViewStyle } from "../types";
 
 // https://developer.apple.com/documentation/swiftui/form
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export type NativeGroupProps = {};
+export type NativeGroupProps = {
+  style?: NativeViewStyle;
+};
 
 export const Group: FunctionComponentWithId<PropsWithChildren<NativeGroupProps>> = ({
   children,
