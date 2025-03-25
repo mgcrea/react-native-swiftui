@@ -8,6 +8,7 @@ public final class PickerProps: ObservableObject, Decodable {
   @Published var options: [String] = []
   @Published var pickerStyle: PickerStyle = .default
   @Published var disabled: Bool = false
+  @Published public var style: StyleProps?
   // Events
   public var onChange: ((String) -> Void)?
 
@@ -37,7 +38,7 @@ public final class PickerProps: ObservableObject, Decodable {
 
   // Coding keys for decoding
   enum CodingKeys: String, CodingKey, CaseIterable {
-    case label, selection, options, pickerStyle, disabled
+    case label, selection, options, pickerStyle, disabled, style
   }
 
   // Decodable initializer
@@ -54,6 +55,7 @@ public final class PickerProps: ObservableObject, Decodable {
       pickerStyle = .default // Default fallback
     }
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
+    style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
   public init() {}
@@ -66,6 +68,7 @@ public final class PickerProps: ObservableObject, Decodable {
       case .options: options = other.options
       case .pickerStyle: pickerStyle = other.pickerStyle
       case .disabled: disabled = other.disabled
+      case .style: style = other.style
       }
     }
   }

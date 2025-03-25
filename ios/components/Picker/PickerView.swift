@@ -19,5 +19,6 @@ public struct PickerView: View {
         props.onChange?(newValue)
       }
     )
+    .applyStyles(props.style)
   }
 }
