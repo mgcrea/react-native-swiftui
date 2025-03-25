@@ -9,14 +9,27 @@ export type NativeViewStyle = Pick<
   | "padding"
   | "paddingHorizontal"
   | "paddingVertical"
+  | "paddingLeft"
+  | "paddingRight"
+  | "paddingTop"
+  | "paddingBottom"
   | "width"
+  | "minWidth"
+  | "maxWidth"
   | "height"
+  | "minHeight"
+  | "maxHeight"
+  | "position"
+  | "top"
+  | "left"
+  | "right"
+  | "bottom"
 > & {
   cornerRadius?: number;
 };
 
 export type NativeTextStyle = NativeViewStyle &
-  Pick<TextStyle, "color" | "fontSize" | "fontWeight" | "textAlign"> & {
+  Pick<TextStyle, "color" | "fontSize" | "fontWeight" | "textAlign" | "fontFamily"> & {
     foregroundColor?: string;
     font?: NativeFont;
   };

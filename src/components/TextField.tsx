@@ -1,5 +1,5 @@
 import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId } from "../types";
+import type { FunctionComponentWithId, NativeTextStyle } from "../types";
 
 export type NativeKeyboardType = "default" | "numberPad" | "emailAddress" | "decimalPad";
 export type NativeTextContentType = "username" | "password" | "emailAddress";
@@ -18,6 +18,7 @@ export type NativeTextFieldProps = {
   maxLength?: number | null;
   multiline?: boolean;
   disabled?: boolean;
+  style?: NativeTextStyle;
   onChange?: (value: string) => void;
   onFocus?: () => void;
   onBlur?: () => void;

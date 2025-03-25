@@ -1,3 +1,5 @@
+import { type PropsWithChildren } from "react";
+import { SwiftUIParentIdProvider } from "../contexts";
 import { useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId, NativeTextStyle } from "../types";
 
@@ -18,8 +20,12 @@ export type NativeButtonProps = {
   onPress?: () => void;
 };
 
-export const Button: FunctionComponentWithId<NativeButtonProps> = ({ onPress, ...otherProps }) => {
-  useSwiftUINode("Button", otherProps, { press: onPress });
-  return null;
+export const Button: FunctionComponentWithId<PropsWithChildren<NativeButtonProps>> = ({
+  children,
+  onPress,
+  ...otherProps
+}) => {
+  const { id } = useSwiftUINode("Button", otherProps, { press: onPress });
+  return <SwiftUIParentIdProvider id={id}>{children}</SwiftUIParentIdProvider>;
 };
 Button.displayName = "Button";

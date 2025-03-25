@@ -80,14 +80,18 @@ if [ -n "$readme_path" ]; then
     echo "  - name: \"$readme_path\"" >> "$OUTPUT_FILE"
     echo "    content: |" >> "$OUTPUT_FILE"
     sed 's/^/      /' "$readme_path" >> "$OUTPUT_FILE"
+    echo "" >> "$OUTPUT_FILE"
 fi
 for filepath in "${OTHER_PATHS[@]}"; do
     echo "  - name: \"$filepath\"" >> "$OUTPUT_FILE"
     echo "    content: |" >> "$OUTPUT_FILE"
     sed 's/^/      /' "$filepath" >> "$OUTPUT_FILE"
+    echo "" >> "$OUTPUT_FILE"
 done
 
 # Clean up temporary files
 rm "$TEMP_FILE" "$TEMP_PATHS"
 echo "YAML file created: $OUTPUT_FILE"
-echo "Hi, I’d like your assistance with a coding project I’m working on. To get you up to speed, I’ve attached a YAML file outlining the project, its file structure, and the contents of each file. Could you review it and let me know how you can help with development, debugging, or any other suggestions?"
+PROMPT="Hi, I’d like your assistance with a coding project I’m working on. To get you up to speed, I’ve attached a YAML file outlining the project, its file structure, and the contents of each file. Could you review it and help me with the following task?"
+echo -e "\n$PROMPT"
+echo $PROMPT | pbcopy
