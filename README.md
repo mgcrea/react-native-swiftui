@@ -29,10 +29,6 @@
 
 This library integrates SwiftUI components into React Native using the Fabric renderer. This project enables developers to define native iOS UI elements with SwiftUI, controlled via React Native’s JSX syntax, creating a hybrid UI where React drives a dynamic SwiftUI view hierarchy.
 
-## Demo
-
-![demo](./.github/assets/demo.gif)
-
 ## Motivation
 
 React Native excels at cross-platform development, but its UI components can sometimes lack the polish and performance of native iOS frameworks like SwiftUI. This PoC bridges that gap by:
@@ -42,6 +38,10 @@ React Native excels at cross-platform development, but its UI components can som
 - Enabling a familiar JSX workflow to manage native views.
 
 Ideal for developers seeking native iOS aesthetics and behavior within a React Native app, this project explores a hybrid paradigm for enhanced UI flexibility.
+
+## Demo
+
+![demo](./.github/assets/demo.gif)
 
 ## Features
 
