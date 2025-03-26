@@ -1,11 +1,13 @@
 import SwiftUI
 
-public struct SliderView: View {
+public struct SliderView<Content: View>: View {
   @ObservedObject public var props: SliderProps
   @State private var isFocused: Bool = false
+  let content: () -> Content
 
-  public init(props: SliderProps) {
+  public init(props: SliderProps, @ViewBuilder content: @escaping () -> Content) {
     self.props = props
+    self.content = content
   }
 
   public var body: some View {
@@ -28,8 +30,7 @@ public struct SliderView: View {
   @ViewBuilder
   private func sliderContent() -> some View {
     HStack {
-      Text(String(format: props.step >= 1 ? "%.0f" : "%.1f", props.value))
-        .foregroundColor(.gray)
+      content()
       Slider(
         value: $props.value,
         in: props.minimum ... props.maximum,

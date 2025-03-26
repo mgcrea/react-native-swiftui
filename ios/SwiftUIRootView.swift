@@ -115,6 +115,14 @@ public class SwiftUIRootView: SwiftUIContainerView {
           }
         }
       }))
+    case let slider as GenericNode<SliderProps>:
+      AnyView(SliderView(props: slider.props, content: {
+        if let children = slider.children {
+          ForEach(children, id: \.id) { child in
+            self.buildSwiftUIView(from: child)
+          }
+        }
+      }))
     case let text as GenericNode<TextProps>:
       AnyView(TextView(props: text.props))
     case let textField as GenericNode<TextFieldProps>:
@@ -125,8 +133,6 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(DatePickerView(props: datePicker.props))
     case let toggle as GenericNode<ToggleProps>:
       AnyView(ToggleView(props: toggle.props))
-    case let slider as GenericNode<SliderProps>:
-      AnyView(SliderView(props: slider.props))
     case let rectangle as GenericNode<RectangleProps>:
       AnyView(RectangleView(props: rectangle.props))
     case let spacer as GenericNode<SpacerProps>:
