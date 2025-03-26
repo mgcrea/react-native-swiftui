@@ -25,7 +25,7 @@ export type NativeViewStyle = Pick<
   | "right"
   | "bottom"
 > & {
-  tint?: string;
+  tintColor?: string;
   accentColor?: string;
   foregroundColor?: string;
   cornerRadius?: number;
