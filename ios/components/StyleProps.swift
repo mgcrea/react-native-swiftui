@@ -38,9 +38,10 @@ public struct StyleProps: Decodable {
   public var fontSize: CGFloat?
   public var font: Font?
   public var fontFamily: String?
+  public var textAlign: TextAlignment?
 
   enum CodingKeys: String, CodingKey {
-    case color, accentColor, tintColor, backgroundColor, foregroundColor, width, minWidth, maxWidth, height, minHeight, maxHeight, position, top, left, bottom, right, padding, paddingHorizontal, paddingVertical, paddingLeft, paddingRight, paddingTop, paddingBottom, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font, fontFamily
+    case color, accentColor, tintColor, backgroundColor, foregroundColor, width, minWidth, maxWidth, height, minHeight, maxHeight, position, top, left, bottom, right, padding, paddingHorizontal, paddingVertical, paddingLeft, paddingRight, paddingTop, paddingBottom, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font, fontFamily, textAlign
   }
 
   public init(from decoder: Decoder) throws {
@@ -84,6 +85,7 @@ public struct StyleProps: Decodable {
     fontSize = try container.decodeIfPresent(CGFloat.self, forKey: .fontSize)
     font = try container.decodeFontIfPresent(forKey: .font)
     fontFamily = try container.decodeIfPresent(String.self, forKey: .fontFamily)
+    textAlign = try container.decodeTextAlignIfPresent(forKey: .textAlign)
   }
 }
 
@@ -114,6 +116,20 @@ extension KeyedDecodingContainer {
   func decodeFontIfPresent(forKey key: Key) throws -> Font? {
     if let fontString = try decodeIfPresent(String.self, forKey: key) {
       return Font.fromString(fontString)
+    }
+    return nil
+  }
+
+  func decodeTextAlignIfPresent(forKey key: Key) throws -> TextAlignment? {
+    if let fontString = try decodeIfPresent(String.self, forKey: key) {
+      switch fontString.lowercased() {
+      case "left": return .leading
+      case "leading": return .leading
+      case "center": return .center
+      case "right": return .trailing
+      case "trailing": return .trailing
+      default: return nil
+      }
     }
     return nil
   }
