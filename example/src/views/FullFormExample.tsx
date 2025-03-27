@@ -11,7 +11,8 @@ export const FullFormExample: FunctionComponent = () => {
         <SwiftUI.Form>
           <LazyVGridSection />
           <TextFieldSection />
-          <PickerSection />
+          <PickerMenuSection />
+          <PickerSegmentedSection />
           <DatePickerSection />
           <StepperSection />
           <SliderSection />
@@ -42,11 +43,33 @@ const TextFieldSection: FunctionComponent = () => {
   );
 };
 
-const PickerSection: FunctionComponent = () => {
+const PickerMenuSection: FunctionComponent = () => {
+  const [options, setOptions] = useState(['x1', 'x2', 'x3']);
+  const [selectedOption, setSelectedOption] = useState(options[0]);
+  return (
+    <SwiftUI.Section header="Picker Menu Example">
+      <SwiftUI.Picker
+        label="Scale"
+        selection={selectedOption}
+        options={options}
+        onChange={value => setSelectedOption(value)}
+        pickerStyle="segmented"
+      />
+      <SwiftUI.Button
+        title={`Add a new option 'x${options.length + 1}'`}
+        onPress={() => {
+          setOptions([...options, `x${options.length + 1}`]);
+        }}
+      />
+    </SwiftUI.Section>
+  );
+};
+
+const PickerSegmentedSection: FunctionComponent = () => {
   const [options, setOptions] = useState(['Option 1', 'Option 2', 'Option 3']);
   const [selectedOption, setSelectedOption] = useState(options[0]);
   return (
-    <SwiftUI.Section header="Picker Example">
+    <SwiftUI.Section header="Picker Segmented Example">
       <SwiftUI.Picker
         label="Option"
         selection={selectedOption}

@@ -8,7 +8,7 @@ import {TanStackFormExample} from './src/views/TanStackFormExample';
 import {AdvancedFormExample} from './src/views/AdvancedFormExample.private';
 
 function App(): React.JSX.Element {
-  return <WorkoutExample />;
+  return <FullFormExample />;
 }
 
 export default App;
