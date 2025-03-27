@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactElement, ReactNode, useEffect } from "react";
+import { PropsWithChildren, ReactElement, ReactNode, useCallback, useEffect, useId } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import {
   Button,
@@ -8,6 +8,7 @@ import {
   HStack,
   Image,
   LazyVGrid,
+  NumberField,
   Picker,
   Rectangle,
   Section,
@@ -30,30 +31,39 @@ import {
 import { buildViewTree } from "./utils/viewTree";
 
 export type SwiftUIProps = {
+  id?: string;
   onEvent?: (event: { nativeEvent: NativeSwiftUIEvent }) => void;
   style?: StyleProp<ViewStyle>;
 };
 
 export const SwiftUIRoot = ({
+  id: rootId,
   children,
   style,
   onEvent: rootOnEvent,
 }: PropsWithChildren<SwiftUIProps>): ReactNode => {
   const { nativeRef, getEventHandler, nodesKey, getNodes, renderSequence } = useSwiftUIContext();
 
+  const log = useCallback(
+    (message: string, ...args: unknown[]) => {
+      console.log(`SwiftUIRoot(${rootId}) ${message}`, ...args);
+    },
+    [rootId],
+  );
+
   const nodes = getNodes();
-  console.log(`SwiftUIRoot rendering with ${nodes.size} nodes`);
+  log(`rendering with ${nodes.size} nodes`);
   renderSequence.current = []; // Reset render sequence
   useEffect(() => {
     const viewTree = buildViewTree(nodes, renderSequence.current);
-    console.log("SwiftUIRoot updating view tree", viewTree);
+    log(`updating view tree`, viewTree);
     nativeRef.current?.setNativeProps({ viewTree: JSON.stringify(viewTree) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nativeRef, nodesKey]);
 
   const handleEvent: SwiftUIProps["onEvent"] = (event) => {
     const { id, name, value } = event.nativeEvent;
-    console.log(`SwiftUIRoot received event "${name}" for id=${id}, value=${value}`);
+    log(`received event "${name}" for id=${id}, value=${value}`);
     const handler = getEventHandler(id, name);
     if (handler) {
       handler(name === "change" ? value : ""); // Pass value only for change
@@ -69,10 +79,14 @@ export const SwiftUIRoot = ({
 };
 
 export const SwiftUI = ({ children, ...props }: PropsWithChildren<SwiftUIProps>): ReactElement => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks, @typescript-eslint/prefer-nullish-coalescing
+  const id = props.id || `root:${useId()}`;
   return (
-    <SwiftUIProvider>
+    <SwiftUIProvider id={id}>
       <SwiftUIParentIdProvider id="__root">
-        <SwiftUIRoot {...props}>{children}</SwiftUIRoot>
+        <SwiftUIRoot id={id} {...props}>
+          {children}
+        </SwiftUIRoot>
       </SwiftUIParentIdProvider>
     </SwiftUIProvider>
   );
@@ -95,6 +109,7 @@ SwiftUI.Spacer = Spacer;
 SwiftUI.Stepper = Stepper;
 SwiftUI.Text = Text;
 SwiftUI.TextField = TextField;
+SwiftUI.NumberField = NumberField;
 SwiftUI.Toggle = Toggle;
 SwiftUI.VStack = VStack;
 SwiftUI.ZStack = ZStack;

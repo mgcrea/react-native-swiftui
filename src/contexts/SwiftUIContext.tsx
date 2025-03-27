@@ -1,5 +1,15 @@
 // src/contexts/SwiftUIContext.tsx
-import React, { createContext, RefObject, useCallback, useContext, useMemo, useRef, useState } from "react";
+import React, {
+  createContext,
+  FunctionComponent,
+  PropsWithChildren,
+  RefObject,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { ViewTreeNode } from "src/types";
 import {
   Commands as NativeSwiftUIRootCommands,
@@ -26,12 +36,26 @@ export type SwiftUIContextValue = {
 
 const SwiftUIContext = createContext<SwiftUIContextValue | undefined>(undefined);
 
-export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export type SwiftUIProviderProps = {
+  id: string;
+};
+
+export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProviderProps>> = ({
+  id: rootId,
+  children,
+}) => {
   const eventRegistry = useRef<EventRegistry>(new Map());
   const nodeRegistry = useRef<NodeRegistry>(new Map());
   const [nodeRegistryVersion, setNodeRegistryVersion] = useState(0);
   const renderSequence = useRef<string[]>([]);
   const nativeRef = useRef<React.ComponentRef<typeof SwiftUIRootNativeComponent> | null>(null);
+
+  const log = useCallback(
+    (message: string, ...args: unknown[]) => {
+      console.log(`SwiftUIContext(${rootId}) ${message}`, ...args);
+    },
+    [rootId],
+  );
 
   const nodesKey = useMemo(() => {
     const keys = Array.from(nodeRegistry.current.keys());
@@ -52,13 +76,16 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
     eventRegistry.current.set(id, newHandlersForId);
     return newHandlersForId;
   };
-  const registerEvent = useCallback((id: string, name: string, handler: EventHandler) => {
-    const handlersForId = getEventHandlersForId(id);
-    if (handlersForId.has(name)) {
-      console.log(`Overwriting existing event handler for ${id}:${name}`);
-    }
-    handlersForId.set(name, handler);
-  }, []);
+  const registerEvent = useCallback(
+    (id: string, name: string, handler: EventHandler) => {
+      const handlersForId = getEventHandlersForId(id);
+      if (handlersForId.has(name)) {
+        log(`overwriting existing event handler for ${id}:${name}`);
+      }
+      handlersForId.set(name, handler);
+    },
+    [log],
+  );
 
   const registerEvents = useCallback((id: string, events: Record<string, EventHandler | undefined>) => {
     const handlersForId = getEventHandlersForId(id);
@@ -74,18 +101,24 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
     });
   }, []);
 
-  const registerNode = useCallback((node: ViewTreeNode, parentId?: string) => {
-    console.log(`SwiftUIContext registering node with id=${node.id}`, { node, parentId });
-    nodeRegistry.current.set(node.id, { node, parentId });
-    setNodeRegistryVersion((prev) => prev + 1);
-  }, []);
+  const registerNode = useCallback(
+    (node: ViewTreeNode, parentId?: string) => {
+      log(`registering node with id=${node.id}`, { node, parentId });
+      nodeRegistry.current.set(node.id, { node, parentId });
+      setNodeRegistryVersion((prev) => prev + 1);
+    },
+    [log],
+  );
 
-  const unregisterNode = useCallback((id: string) => {
-    console.log(`SwiftUIContext unregistering node with id=${id}`);
-    nodeRegistry.current.delete(id);
-    eventRegistry.current.delete(id);
-    setNodeRegistryVersion((prev) => prev + 1);
-  }, []);
+  const unregisterNode = useCallback(
+    (id: string) => {
+      log(`unregistering node with id=${id}`);
+      nodeRegistry.current.delete(id);
+      eventRegistry.current.delete(id);
+      setNodeRegistryVersion((prev) => prev + 1);
+    },
+    [log],
+  );
 
   const getNodes = useCallback(() => nodeRegistry.current, []);
 
@@ -95,20 +128,23 @@ export const SwiftUIProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, []);
 
-  const updateNodeProps = useCallback((id: string, props: Record<string, unknown>) => {
-    if (!nativeRef.current) {
-      console.warn("Native ref not available");
-      return;
-    }
-    const node = nodeRegistry.current.get(id);
-    if (!node) {
-      console.warn(`Node with id=${id} not found`);
-      return;
-    }
-    console.log(`SwiftUIContext updating node with id=${id}`, { props });
-    node.node.props = { ...node.node.props, ...props };
-    NativeSwiftUIRootCommands.updateChildProps(nativeRef.current, id, JSON.stringify(props));
-  }, []);
+  const updateNodeProps = useCallback(
+    (id: string, props: Record<string, unknown>) => {
+      if (!nativeRef.current) {
+        log("[warn] native ref not available");
+        return;
+      }
+      const node = nodeRegistry.current.get(id);
+      if (!node) {
+        log(`[warn] node with id=${id} not found`);
+        return;
+      }
+      log(`updating node with id=${id}`, { props });
+      node.node.props = { ...node.node.props, ...props };
+      NativeSwiftUIRootCommands.updateChildProps(nativeRef.current, id, JSON.stringify(props));
+    },
+    [log],
+  );
 
   const context = {
     getEventHandler,

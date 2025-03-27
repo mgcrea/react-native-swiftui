@@ -6,8 +6,8 @@ export type NativeTextContentType = "username" | "password" | "emailAddress";
 export type NativeReturnKeyType = "default" | "done" | "next" | "search";
 export type NativeAutocapitalizationType = "none" | "words" | "sentences" | "allCharacters";
 
-export type NativeTextFieldProps = {
-  text?: string;
+export type NativeTextFieldProps<T = string> = {
+  text?: T;
   label?: string;
   placeholder?: string;
   keyboardType?: NativeKeyboardType;
@@ -19,7 +19,7 @@ export type NativeTextFieldProps = {
   multiline?: boolean;
   disabled?: boolean;
   style?: NativeTextStyle;
-  onChange?: (value: string) => void;
+  onChange?: (value: T) => void;
   onFocus?: () => void;
   onBlur?: () => void;
 };
