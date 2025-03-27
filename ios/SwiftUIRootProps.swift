@@ -44,6 +44,17 @@ final class SwiftUIRootProps: ObservableObject {
       textField.props.onBlur = { [weak self] in
         self?.onEvent?("blur", "TextField", textField.id, nil)
       }
+    } else if let numberField = node as? GenericNode<NumberFieldProps> {
+      numberField.props.onChange = { [weak self] rawValue in
+        let value = rawValue != nil ? String(rawValue!) : ""
+        self?.onEvent?("change", "NumberField", numberField.id, value)
+      }
+      numberField.props.onFocus = { [weak self] in
+        self?.onEvent?("focus", "NumberField", numberField.id, nil)
+      }
+      numberField.props.onBlur = { [weak self] in
+        self?.onEvent?("blur", "NumberField", numberField.id, nil)
+      }
     } else if let button = node as? GenericNode<ButtonProps> {
       button.props.onPress = { [weak self] in
         self?.onEvent?("press", "Button", button.id, nil)

@@ -29,7 +29,9 @@ public class SwiftUIRootView: SwiftUIContainerView {
 
   private func updateSwiftUIView(with node: (any SwiftUINode)?) {
     hostingController.rootView = AnyView(
-      node.map { AnyView(buildSwiftUIView(from: $0)) } ?? AnyView(Text("Invalid view tree"))
+//      NavigationView {
+        node.map { AnyView(buildSwiftUIView(from: $0)) } ?? AnyView(Text("Invalid view tree"))
+//      }
     )
   }
 
@@ -127,6 +129,8 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(TextView(props: text.props))
     case let textField as GenericNode<TextFieldProps>:
       AnyView(TextFieldView(props: textField.props))
+    case let numberField as GenericNode<NumberFieldProps>:
+      AnyView(NumberFieldView(props: numberField.props))
     case let picker as GenericNode<PickerProps>:
       AnyView(PickerView(props: picker.props))
     case let datePicker as GenericNode<DatePickerProps>:
@@ -174,6 +178,10 @@ public class SwiftUIRootView: SwiftUIContainerView {
         let updatedProps = try decoder.decode(TextFieldProps.self, from: updatedPropsData)
         textField.props.merge(from: updatedProps)
 
+      case let numberField as GenericNode<NumberFieldProps>:
+        let updatedProps = try decoder.decode(NumberFieldProps.self, from: updatedPropsData)
+        numberField.props.merge(from: updatedProps)
+
       case let toggle as GenericNode<ToggleProps>:
         let updatedProps = try decoder.decode(ToggleProps.self, from: updatedPropsData)
         toggle.props.merge(from: updatedProps)
@@ -187,8 +195,8 @@ public class SwiftUIRootView: SwiftUIContainerView {
         picker.props.merge(from: updatedProps)
 
       case let form as GenericNode<FormProps>:
-        // FormNode has no props to merge
-        print("FormNode has no props to update for id \(identifier)")
+        let updatedProps = try decoder.decode(FormProps.self, from: updatedPropsData)
+        form.props.merge(from: updatedProps)
 
       case let section as GenericNode<SectionProps>:
         let updatedProps = try decoder.decode(SectionProps.self, from: updatedPropsData)

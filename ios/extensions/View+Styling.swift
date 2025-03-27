@@ -62,7 +62,7 @@ extension View {
   func applyBoxStyles(_ style: StyleProps?) -> some View {
     guard let style = style else { return AnyView(self) }
 
-    return AnyView(applyFrameStyles(style)
+    return AnyView(AnyView(applyFrameStyles(style)
       .modifier(AbsolutePositionModifier(style: style))
       .applyIf(style.padding != nil) { $0.padding(style.padding!) }
       .applyIf(style.paddingHorizontal != nil) { $0.padding(.horizontal, style.paddingHorizontal!) }
@@ -70,7 +70,7 @@ extension View {
       .applyIf(style.paddingLeft != nil) { $0.padding(.leading, style.paddingLeft!) }
       .applyIf(style.paddingRight != nil) { $0.padding(.trailing, style.paddingRight!) }
       .applyIf(style.paddingTop != nil) { $0.padding(.top, style.paddingTop!) }
-      .applyIf(style.paddingBottom != nil) { $0.padding(.bottom, style.paddingBottom!) }
+      .applyIf(style.paddingBottom != nil) { $0.padding(.bottom, style.paddingBottom!) })
   }
 
   func applyViewStyles(_ style: StyleProps?) -> some View {
@@ -105,6 +105,9 @@ extension View {
         } else {
           return AnyView(view)
         }
+      }
+      .applyIf(style.textAlign != nil) {
+        return $0.multilineTextAlignment(style.textAlign!)
       }
   }
 

@@ -2,7 +2,7 @@
 import SwiftUI
 
 // Protocol for all SwiftUI nodes
-protocol SwiftUINode: Identifiable {
+public protocol SwiftUINode: Identifiable {
   var id: String { get }
   var children: [any SwiftUINode]? { get }
 }
@@ -62,6 +62,8 @@ private struct NodeWrapper: Decodable {
       node = try GenericNode<SliderProps>(from: decoder)
     case "TextField":
       node = try GenericNode<TextFieldProps>(from: decoder)
+    case "NumberField":
+      node = try GenericNode<NumberFieldProps>(from: decoder)
     case "Picker":
       node = try GenericNode<PickerProps>(from: decoder)
     case "Stepper":
