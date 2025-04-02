@@ -1,8 +1,8 @@
 #ifdef __cplusplus
 
+#import "./generated/RNSwiftUISpec/RCTComponentViewHelpers.h"
 #import <React/RCTViewComponentView.h>
 #import <UIKit/UIKit.h>
-#import "./generated/RNSwiftUISpec/RCTComponentViewHelpers.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

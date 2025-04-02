@@ -14,6 +14,7 @@ using namespace facebook::react;
 @end
 
 @implementation RCTSwiftUIRootView {
+  boolean_t _isInWindow;
   SwiftUIRootView *_rootView;
 }
 
@@ -64,8 +65,14 @@ using namespace facebook::react;
 - (void)emitEvent:(NSString *)name
              type:(NSString *)type
                id:(NSString *)identifier
-
             value:(NSString *_Nullable)value {
+
+  // Check if the view is in the window hierarchy
+  if (!_isInWindow) {
+    NSLog(@"SwiftUIRootView is not in the window hierarchy. Ignoring event.");
+    return;
+  }
+
   NativeSwiftUIRootEventEmitter::OnEvent event = {
       .name = std::string(name.UTF8String),
       .type = std::string(type.UTF8String),
@@ -94,7 +101,8 @@ static NSDictionary *convertProps(const NativeSwiftUIRootProps &props) {
 }
 
 - (void)updateChildProps:(NSString *)identifier props:(NSString *)propsJson {
-  NSLog(@"updateChildProps called with identifier: %@, props: %@", identifier, propsJson);
+  NSLog(@"updateChildProps called with identifier: %@, props: %@", identifier,
+        propsJson);
   [_rootView updateChildProps:identifier props:propsJson];
 }
 
@@ -103,6 +111,13 @@ static NSDictionary *convertProps(const NativeSwiftUIRootProps &props) {
 + (ComponentDescriptorProvider)componentDescriptorProvider {
   return concreteComponentDescriptorProvider<
       NativeSwiftUIRootComponentDescriptor>();
+}
+
+// MARK: - UIView Lifecycle
+
+- (void)didMoveToWindow {
+  [super didMoveToWindow];
+  _isInWindow = (self.window != nil);
 }
 
 @end
