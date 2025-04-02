@@ -63,10 +63,10 @@ extension View {
     guard let style = style else { return AnyView(self) }
 
     return AnyView(AnyView(applyFrameStyles(style)
-      .modifier(AbsolutePositionModifier(style: style))
-      .applyIf(style.padding != nil) { $0.padding(style.padding!) }
-      .applyIf(style.paddingHorizontal != nil) { $0.padding(.horizontal, style.paddingHorizontal!) }
-      .applyIf(style.paddingVertical != nil) { $0.padding(.vertical, style.paddingVertical!) })
+        .modifier(AbsolutePositionModifier(style: style))
+        .applyIf(style.padding != nil) { $0.padding(style.padding!) }
+        .applyIf(style.paddingHorizontal != nil) { $0.padding(.horizontal, style.paddingHorizontal!) }
+        .applyIf(style.paddingVertical != nil) { $0.padding(.vertical, style.paddingVertical!) })
       .applyIf(style.paddingLeft != nil) { $0.padding(.leading, style.paddingLeft!) }
       .applyIf(style.paddingRight != nil) { $0.padding(.trailing, style.paddingRight!) }
       .applyIf(style.paddingTop != nil) { $0.padding(.top, style.paddingTop!) }
@@ -82,6 +82,7 @@ extension View {
           .applyIf(style.color != nil || style.foregroundColor != nil) { $0.foregroundStyle(style.color ?? style.foregroundColor!) }
           .applyIf(style.accentColor != nil) { $0.accentColor(style.accentColor!) }
           .applyIf(style.tintColor != nil) { $0.tint(style.tintColor!) }
+          .applyIf(style.preferredColorScheme != nil) { $0.preferredColorScheme(style.preferredColorScheme!) }
           .applyIf(style.borderWidth != nil) { view in
             view.overlay(
               RoundedRectangle(cornerRadius: style.cornerRadius ?? style.borderRadius ?? 0)
@@ -107,7 +108,7 @@ extension View {
         }
       }
       .applyIf(style.textAlign != nil) {
-        return $0.multilineTextAlignment(style.textAlign!)
+        $0.multilineTextAlignment(style.textAlign!)
       }
   }
 

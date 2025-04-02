@@ -7,6 +7,7 @@ public struct StyleProps: Decodable {
   public var tintColor: Color?
   public var foregroundColor: Color?
   public var backgroundColor: Color?
+  public var preferredColorScheme: ColorScheme?
   // - Frame
   public var width: Size?
   public var minWidth: Size?
@@ -41,7 +42,7 @@ public struct StyleProps: Decodable {
   public var textAlign: TextAlignment?
 
   enum CodingKeys: String, CodingKey {
-    case color, accentColor, tintColor, backgroundColor, foregroundColor, width, minWidth, maxWidth, height, minHeight, maxHeight, position, top, left, bottom, right, padding, paddingHorizontal, paddingVertical, paddingLeft, paddingRight, paddingTop, paddingBottom, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font, fontFamily, textAlign
+    case color, accentColor, tintColor, backgroundColor, preferredColorScheme, foregroundColor, width, minWidth, maxWidth, height, minHeight, maxHeight, position, top, left, bottom, right, padding, paddingHorizontal, paddingVertical, paddingLeft, paddingRight, paddingTop, paddingBottom, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font, fontFamily, textAlign
   }
 
   public init(from decoder: Decoder) throws {
@@ -53,6 +54,7 @@ public struct StyleProps: Decodable {
     tintColor = try container.decodeColorIfPresent(forKey: .tintColor)
     foregroundColor = try container.decodeColorIfPresent(forKey: .foregroundColor)
     backgroundColor = try container.decodeColorIfPresent(forKey: .backgroundColor)
+    preferredColorScheme = try container.decodeColorSchemeIfPresent(forKey: .preferredColorScheme)
     // - Frame
     width = try container.decodeIfPresent(Size.self, forKey: .width)
     minWidth = try container.decodeIfPresent(Size.self, forKey: .minWidth)
@@ -93,6 +95,13 @@ extension KeyedDecodingContainer {
   func decodeColorIfPresent(forKey key: Key) throws -> Color? {
     if let colorString = try decodeIfPresent(String.self, forKey: key) {
       return Color(fromString: colorString)
+    }
+    return nil
+  }
+
+  func decodeColorSchemeIfPresent(forKey key: Key) throws -> ColorScheme? {
+    if let colorScheme = try decodeIfPresent(String.self, forKey: key) {
+      return colorScheme.lowercased() == "dark" ? ColorScheme.dark : ColorScheme.light
     }
     return nil
   }
