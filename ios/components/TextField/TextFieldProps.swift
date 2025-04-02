@@ -9,6 +9,7 @@ public final class TextFieldProps: ObservableObject, Decodable {
   @Published public var keyboardType: UIKeyboardType = .default
   @Published public var textContentType: UITextContentType? = nil
   @Published public var returnKeyType: UIReturnKeyType = .default
+  @Published public var submitLabel: SubmitLabel? = nil
   @Published public var autocapitalizationType: UITextAutocapitalizationType? = nil
   @Published public var maxLength: Int? = nil
   @Published public var secure: Bool = false
@@ -21,7 +22,7 @@ public final class TextFieldProps: ObservableObject, Decodable {
   public var onBlur: (() -> Void)?
 
   enum CodingKeys: String, CodingKey {
-    case text, label, placeholder, keyboardType, textContentType, returnKeyType, autocapitalizationType, maxLength, secure, multiline, disabled, style
+    case text, label, placeholder, keyboardType, textContentType, returnKeyType, submitLabel, autocapitalizationType, maxLength, secure, multiline, disabled, style
   }
 
   public required init(from decoder: Decoder) throws {
@@ -66,6 +67,7 @@ public final class TextFieldProps: ObservableObject, Decodable {
       default: autocapitalizationType = .sentences
       }
     }
+    submitLabel = try container.decodeSubmitLabelIfPresent(forKey: .submitLabel)
     maxLength = try container.decodeIfPresent(Int.self, forKey: .maxLength) ?? nil
     secure = try container.decodeIfPresent(Bool.self, forKey: .secure) ?? false
     multiline = try container.decodeIfPresent(Bool.self, forKey: .multiline) ?? false
@@ -98,4 +100,37 @@ public final class TextFieldProps: ObservableObject, Decodable {
     disabled = other.disabled
     style = other.style
   }
+}
+
+
+extension KeyedDecodingContainer {
+  
+  func decodeSubmitLabelIfPresent(forKey key: Key) throws -> SubmitLabel? {
+    if let submitLabelString = try decodeIfPresent(String.self, forKey: key) {
+      switch submitLabelString {
+      case "continue":
+        return .continue
+      case "done":
+        return .done
+      case "go":
+        return .go
+      case "join":
+        return .join
+      case "next":
+        return .next
+      case "return":
+        return .return
+      case "route":
+        return .route
+      case "search":
+        return .search
+      case "send":
+        return .send
+      default:
+        return nil
+      }
+    }
+    return nil
+  }
+  
 }

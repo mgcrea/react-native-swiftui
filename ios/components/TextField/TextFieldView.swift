@@ -40,14 +40,17 @@ public struct TextFieldView: View {
     }
     .keyboardType(props.keyboardType)
     .focused($isFocused)
-//    .toolbar {
-//      ToolbarItemGroup(placement: .keyboard) {
-//        Spacer()
-//        Button("Done") {
-//          isFocused = false
+//        .toolbar {
+//          ToolbarItemGroup(placement: .keyboard) {
+//            Spacer()
+//            Button("Done") {
+//              isFocused = false
+//            }
+//          }
 //        }
-//      }
-//    }
+    .applyIf(props.submitLabel != nil) {
+      $0.submitLabel(props.submitLabel!)
+    }
     .applyStyles(props.style)
     .disabled(props.disabled).foregroundStyle(props.disabled ? .gray : .primary)
     .onChange(of: isFocused) { newValue in
