@@ -72,13 +72,42 @@ extension Color {
 extension UIColor {
   static func systemColor(named name: String) -> UIColor? {
     switch name {
-    case "systemGreen": return .systemGreen
-    case "systemBlue": return .systemBlue
-    case "systemOrange": return .systemOrange
-    case "systemRed": return .systemRed
-    case "systemYellow": return .systemYellow
+    // Backgrounds
+    case "systemBackground": return .systemBackground
+    case "secondarySystemBackground": return .secondarySystemBackground
+    case "tertiarySystemBackground": return .tertiarySystemBackground
+    case "systemGroupedBackground": return .systemGroupedBackground
+    case "secondarySystemGroupedBackground": return .secondarySystemGroupedBackground
+    case "tertiarySystemGroupedBackground": return .tertiarySystemGroupedBackground
+    // Labels
     case "label": return .label
-    // Add more system colors as needed
+    case "secondaryLabel": return .secondaryLabel
+    case "tertiaryLabel": return .tertiaryLabel
+    case "quaternaryLabel": return .quaternaryLabel
+    case "placeholderText": return .placeholderText
+    // Fill colors
+    case "systemFill": return .systemFill
+    case "secondarySystemFill": return .secondarySystemFill
+    case "tertiarySystemFill": return .tertiarySystemFill
+    case "quaternarySystemFill": return .quaternarySystemFill
+    // Standard colors
+    case "systemRed": return .systemRed
+    case "systemBlue": return .systemBlue
+    case "systemGreen": return .systemGreen
+    case "systemOrange": return .systemOrange
+    case "systemYellow": return .systemYellow
+    case "systemPink": return .systemPink
+    case "systemPurple": return .systemPurple
+    case "systemTeal": return .systemTeal
+    case "systemIndigo": return .systemIndigo
+    // Grays
+    case "systemGray": return .systemGray
+    case "systemGray2": return .systemGray2
+    case "systemGray3": return .systemGray3
+    case "systemGray4": return .systemGray4
+    case "systemGray5": return .systemGray5
+    case "systemGray6": return .systemGray6
+    // Default
     default: return nil
     }
   }

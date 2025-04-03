@@ -1,4 +1,4 @@
-import { TextStyle, ViewStyle } from "react-native";
+import { ColorValue, TextStyle, ViewStyle } from "react-native";
 
 export type NativeViewStyle = Pick<
   ViewStyle,
@@ -25,9 +25,9 @@ export type NativeViewStyle = Pick<
   | "right"
   | "bottom"
 > & {
-  tintColor?: string;
-  accentColor?: string;
-  foregroundColor?: string;
+  tintColor?: ColorValue;
+  accentColor?: ColorValue;
+  foregroundColor?: ColorValue;
   cornerRadius?: number;
   preferredColorScheme?: "light" | "dark";
 };
