@@ -6,7 +6,7 @@ public final class NumberFieldProps: ObservableObject, Decodable {
   @Published public var value: Double? = nil
   @Published public var label: String = ""
   @Published public var placeholder: String = ""
-  @Published public var keyboardType: UIKeyboardType = .default
+  @Published public var keyboardType: UIKeyboardType = .decimalPad
   @Published public var returnKeyType: UIReturnKeyType = .default
   @Published public var min: Double? = nil
   @Published public var max: Double? = nil
@@ -30,10 +30,11 @@ public final class NumberFieldProps: ObservableObject, Decodable {
     // Decode keyboardType
     if let keyboardTypeString = try container.decodeIfPresent(String.self, forKey: .keyboardType) {
       switch keyboardTypeString {
+      case "default": keyboardType = .default
       case "numberPad": keyboardType = .numberPad
       case "emailAddress": keyboardType = .emailAddress
       case "decimalPad": keyboardType = .decimalPad
-      default: keyboardType = .default
+      default: keyboardType = .decimalPad
       }
     }
     // Decode returnKeyType

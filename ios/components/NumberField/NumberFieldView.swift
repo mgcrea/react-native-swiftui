@@ -30,23 +30,24 @@ public struct NumberFieldView: View {
   @ViewBuilder
   private func inputField() -> some View {
     TextField(props.placeholder, value: $props.value, formatter: props.formatter)
-    .keyboardType(props.keyboardType)
-    .focused($isFocused)
-    .applyStyles(props.style)
-    .disabled(props.disabled).foregroundStyle(props.disabled ? .gray : .primary)
-    .onChange(of: isFocused) { newValue in
-      newValue ? props.onFocus?() : props.onBlur?()
-    }
-    .onChange(of: props.value) { newValue in
-      props.onChange?(newValue)
-    }
-//    .toolbar {
-//      ToolbarItemGroup(placement: .keyboard) {
-//        Spacer()
-//        Button("Done") {
-//          isFocused = false
-//        }
-//      }
-//    }
+      .focused($isFocused)
+      .keyboardType(props.keyboardType)
+      .applyStyles(props.style)
+      .disabled(props.disabled).foregroundStyle(props.disabled ? .gray : .primary)
+      .onChange(of: isFocused) { newValue in
+        newValue ? props.onFocus?() : props.onBlur?()
+      }
+      .onChange(of: props.value) { newValue in
+        props.onChange?(newValue)
+      }.toolbar {
+        ToolbarItemGroup(placement: .keyboard) {
+          if isFocused {
+            Spacer()
+            Button("Done") {
+              isFocused = false
+            }
+          }
+        }
+      }
   }
 }
