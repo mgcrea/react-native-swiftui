@@ -2,11 +2,11 @@ import SwiftUI
 
 public struct StyleProps: Decodable {
   // ViewStyle
-  public var color: Color? // alias for foregroundColor
-  public var accentColor: Color?
-  public var tintColor: Color?
-  public var foregroundColor: Color?
-  public var backgroundColor: Color?
+  public var color: ColorValue? // alias for foregroundColor
+  public var accentColor: ColorValue?
+  public var tintColor: ColorValue?
+  public var foregroundColor: ColorValue?
+  public var backgroundColor: ColorValue?
   public var preferredColorScheme: ColorScheme?
   // - Frame
   public var width: Size?
@@ -30,7 +30,7 @@ public struct StyleProps: Decodable {
   public var paddingTop: CGFloat?
   public var paddingBottom: CGFloat?
   // - Border
-  public var borderColor: Color?
+  public var borderColor: ColorValue?
   public var borderWidth: CGFloat?
   public var borderRadius: CGFloat?
   public var cornerRadius: CGFloat?
@@ -49,11 +49,11 @@ public struct StyleProps: Decodable {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
     // ViewStyle
-    color = try container.decodeColorIfPresent(forKey: .color) // alias for foregroundColor
-    accentColor = try container.decodeColorIfPresent(forKey: .accentColor)
-    tintColor = try container.decodeColorIfPresent(forKey: .tintColor)
-    foregroundColor = try container.decodeColorIfPresent(forKey: .foregroundColor)
-    backgroundColor = try container.decodeColorIfPresent(forKey: .backgroundColor)
+    color = try container.decodeIfPresent(ColorValue.self, forKey: .color) // alias for foregroundColor
+    accentColor = try container.decodeIfPresent(ColorValue.self, forKey: .accentColor)
+    tintColor = try container.decodeIfPresent(ColorValue.self, forKey: .tintColor)
+    foregroundColor = try container.decodeIfPresent(ColorValue.self, forKey: .foregroundColor)
+    backgroundColor = try container.decodeIfPresent(ColorValue.self, forKey: .backgroundColor)
     preferredColorScheme = try container.decodeColorSchemeIfPresent(forKey: .preferredColorScheme)
     // - Frame
     width = try container.decodeIfPresent(Size.self, forKey: .width)
@@ -77,7 +77,7 @@ public struct StyleProps: Decodable {
     paddingTop = try container.decodeIfPresent(CGFloat.self, forKey: .paddingTop)
     paddingBottom = try container.decodeIfPresent(CGFloat.self, forKey: .paddingBottom)
     // - Border
-    borderColor = try container.decodeColorIfPresent(forKey: .borderColor)
+    borderColor = try container.decodeIfPresent(ColorValue.self, forKey: .borderColor)
     borderWidth = try container.decodeIfPresent(CGFloat.self, forKey: .borderWidth)
     borderRadius = try container.decodeIfPresent(CGFloat.self, forKey: .borderRadius) // alias for cornerRadius
     cornerRadius = try container.decodeIfPresent(CGFloat.self, forKey: .cornerRadius)
@@ -92,12 +92,12 @@ public struct StyleProps: Decodable {
 }
 
 extension KeyedDecodingContainer {
-  func decodeColorIfPresent(forKey key: Key) throws -> Color? {
-    if let colorString = try decodeIfPresent(String.self, forKey: key) {
-      return Color(fromString: colorString)
-    }
-    return nil
-  }
+//  func decodeColorIfPresent(forKey key: Key) throws -> Color? {
+//    if let colorString = try decodeIfPresent(String.self, forKey: key) {
+//      return Color(fromString: colorString)
+//    }
+//    return nil
+//  }
 
   func decodeColorSchemeIfPresent(forKey key: Key) throws -> ColorScheme? {
     if let colorScheme = try decodeIfPresent(String.self, forKey: key) {

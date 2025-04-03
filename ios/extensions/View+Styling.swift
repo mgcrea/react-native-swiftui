@@ -78,15 +78,15 @@ extension View {
     return
       AnyView(
         applyBoxStyles(style)
-          .applyIf(style.backgroundColor != nil) { $0.background(style.backgroundColor!) }
-          .applyIf(style.color != nil || style.foregroundColor != nil) { $0.foregroundStyle(style.color ?? style.foregroundColor!) }
-          .applyIf(style.accentColor != nil) { $0.accentColor(style.accentColor!) }
-          .applyIf(style.tintColor != nil) { $0.tint(style.tintColor!) }
+          .applyIf(style.backgroundColor != nil) { $0.background(Color(value: style.backgroundColor!)) }
+          .applyIf(style.color != nil || style.foregroundColor != nil) { $0.foregroundStyle(Color(value: style.color ?? style.foregroundColor!)) }
+          .applyIf(style.accentColor != nil) { $0.accentColor(Color(value: style.accentColor!)) }
+          .applyIf(style.tintColor != nil) { $0.tint(Color(value: style.tintColor!)) }
           .applyIf(style.preferredColorScheme != nil) { $0.preferredColorScheme(style.preferredColorScheme!) }
           .applyIf(style.borderWidth != nil) { view in
             view.overlay(
               RoundedRectangle(cornerRadius: style.cornerRadius ?? style.borderRadius ?? 0)
-                .stroke(style.borderColor ?? .black, lineWidth: style.borderWidth!)
+                .stroke(style.borderColor != nil ? Color(value: style.borderColor!) : .black, lineWidth: style.borderWidth!)
             )
           }
           .applyIf(style.cornerRadius ?? style.borderRadius != nil) {
@@ -96,7 +96,7 @@ extension View {
   }
 
   private func applyTextStyles(_ style: StyleProps) -> some View {
-    return applyIf(style.color != nil) { $0.foregroundStyle(style.color!).tint(style.color!) }
+    return applyIf(style.color != nil) { $0.foregroundStyle(Color(value: style.color!)).tint(Color(value: style.color!)) }
       .applyIf(style.font != nil) { $0.font(style.font!) }
       .applyIf(style.fontFamily != nil) { $0.font(.custom(style.fontFamily!, size: style.fontSize ?? 17)) }
       .applyIf(style.fontFamily == nil && style.fontSize != nil) { $0.font(.system(size: style.fontSize!)) }
@@ -126,7 +126,7 @@ extension Shape {
   func applyShapeStyles(_ style: StyleProps?) -> some View {
     guard let style = style else { return AnyView(self) }
     return AnyView(
-      applyIf(style.backgroundColor != nil) { $0.fill(style.backgroundColor!) }
+      applyIf(style.backgroundColor != nil) { $0.fill(Color(value: style.backgroundColor!)) }
         .applyBoxStyles(style))
   }
 }

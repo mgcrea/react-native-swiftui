@@ -1,6 +1,89 @@
 
 import SwiftUI
 
+extension ColorValue.ColorVariant {
+  var asColorValue: ColorValue {
+    switch self {
+    case let .string(str):
+      return .string(str)
+    case let .semantic(semantic):
+      return .semantic(semantic)
+    }
+  }
+}
+
+extension Color {
+  // Existing hex parser (if not present, add this)
+  init?(hex: String) {
+    let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+    var int: UInt64 = 0
+    Scanner(string: hex).scanHexInt64(&int)
+    let a, r, g, b: UInt64
+    switch hex.count {
+    case 3: // RGB (12-bit)
+      (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+    case 6: // RGB (24-bit)
+      (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+    case 8: // ARGB (32-bit)
+      (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+    default:
+      return nil
+    }
+    self.init(
+      .sRGB,
+      red: Double(r) / 255,
+      green: Double(g) / 255,
+      blue: Double(b) / 255,
+      opacity: Double(a) / 255
+    )
+  }
+
+  // New initializer for ColorValue
+  init(value: ColorValue) {
+    switch value {
+    case let .string(str):
+      // Handle string colors (hex or asset catalog)
+      if let uiColor = UIColor(named: str) {
+        self = Color(uiColor)
+      } else if let hexColor = Color(hex: str) { // Hex color
+        self = hexColor
+      } else {
+        self = .clear // Fallback
+      }
+    case let .semantic(names):
+      // Use first valid system color
+      for name in names.semantic {
+        if let uiColor = UIColor.systemColor(named: name) {
+          self = Color(uiColor)
+          return
+        }
+      }
+      self = .clear // Fallback
+    case let .dynamic(dynamic):
+      let lightColor = Color(value: dynamic.light.asColorValue)
+      let darkColor = Color(value: dynamic.dark.asColorValue)
+      self = Color(uiColor: UIColor { traitCollection in
+        traitCollection.userInterfaceStyle == .dark ? UIColor(darkColor) : UIColor(lightColor)
+      })
+    }
+  }
+}
+
+extension UIColor {
+  static func systemColor(named name: String) -> UIColor? {
+    switch name {
+    case "systemGreen": return .systemGreen
+    case "systemBlue": return .systemBlue
+    case "systemOrange": return .systemOrange
+    case "systemRed": return .systemRed
+    case "systemYellow": return .systemYellow
+    case "label": return .label
+    // Add more system colors as needed
+    default: return nil
+    }
+  }
+}
+
 extension Color {
   // Backgrounds
   static let systemBackground = Color(UIColor.systemBackground)
@@ -41,88 +124,4 @@ extension Color {
   static let systemGray4 = Color(UIColor.systemGray4)
   static let systemGray5 = Color(UIColor.systemGray5)
   static let systemGray6 = Color(UIColor.systemGray6)
-
-  private static let namedColors: [String: Color] = [
-    "accentcolor": .accentColor,
-    "black": .black,
-    "blue": .blue,
-    "brown": .brown,
-    "clear": .clear,
-    "cyan": .cyan,
-    "gray": .gray,
-    "green": .green,
-    "indigo": .indigo,
-    "mint": .mint,
-    "orange": .orange,
-    "pink": .pink,
-    "primary": .primary,
-    "purple": .purple,
-    "red": .red,
-    "secondary": .secondary,
-    "teal": .teal,
-    "white": .white,
-    "yellow": .yellow,
-    // System colors
-    "systemBackground": .systemBackground,
-    "secondarySystemBackground": .secondarySystemBackground,
-    "tertiarySystemBackground": .tertiarySystemBackground,
-    "systemGroupedBackground": .systemGroupedBackground,
-    "secondarySystemGroupedBackground": .secondarySystemGroupedBackground,
-    "tertiarySystemGroupedBackground": .tertiarySystemGroupedBackground,
-    "label": .label,
-    "secondaryLabel": .secondaryLabel,
-    "tertiaryLabel": .tertiaryLabel,
-    "quaternaryLabel": .quaternaryLabel,
-    "placeholderText": .placeholderText,
-    "systemFill": .systemFill,
-    "secondarySystemFill": .secondarySystemFill,
-    "tertiarySystemFill": .tertiarySystemFill,
-    "quaternarySystemFill": .quaternarySystemFill,
-    "systemRed": .systemRed,
-    "systemBlue": .systemBlue,
-    "systemGreen": .systemGreen,
-    "systemOrange": .systemOrange,
-    "systemYellow": .systemYellow,
-    "systemPink": .systemPink,
-    "systemPurple": .systemPurple,
-    "systemTeal": .systemTeal,
-    "systemIndigo": .systemIndigo,
-    "systemGray": .systemGray,
-    "systemGray2": .systemGray2,
-    "systemGray3": .systemGray3,
-    "systemGray4": .systemGray4,
-    "systemGray5": .systemGray5,
-    "systemGray6": .systemGray6,
-  ]
-  private static func getNamedColor(_ color: String) -> Color? {
-    let colorSanitized = color.trimmingCharacters(in: .whitespacesAndNewlines)
-    if let namedColor = namedColors[colorSanitized] {
-      return namedColor
-    }
-    return nil
-  }
-
-  init?(fromString color: String) {
-    if let namedColor = Self.getNamedColor(color) {
-      self = namedColor
-    } else if let hexColor = Self(hex: color) {
-      self = hexColor
-    } else {
-      return nil
-    }
-  }
-
-  init?(hex: String) {
-    var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-    hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
-
-    var rgb: UInt64 = 0
-    guard Scanner(string: hexSanitized).scanHexInt64(&rgb) else { return nil }
-
-    let red = Double((rgb & 0xFF0000) >> 16) / 255.0
-    let green = Double((rgb & 0x00FF00) >> 8) / 255.0
-    let blue = Double(rgb & 0x0000FF) / 255.0
-
-    self.init(red: red, green: green, blue: blue)
-  }
 }
