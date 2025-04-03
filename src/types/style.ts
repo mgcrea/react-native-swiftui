@@ -29,6 +29,7 @@ export type NativeViewStyle = Pick<
   accentColor?: string;
   foregroundColor?: string;
   cornerRadius?: number;
+  preferredColorScheme?: "light" | "dark";
 };
 
 export type NativeTextStyle = NativeViewStyle &

@@ -38,10 +38,12 @@ const SwiftUIContext = createContext<SwiftUIContextValue | undefined>(undefined)
 
 export type SwiftUIProviderProps = {
   id: string;
+  debug?: boolean;
 };
 
 export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProviderProps>> = ({
   id: rootId,
+  debug,
   children,
 }) => {
   const eventRegistry = useRef<EventRegistry>(new Map());
@@ -52,9 +54,11 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
 
   const log = useCallback(
     (message: string, ...args: unknown[]) => {
-      console.log(`SwiftUIContext(${rootId}) ${message}`, ...args);
+      if (debug) {
+        console.log(`SwiftUIContext(${rootId}) ${message}`, ...args);
+      }
     },
-    [rootId],
+    [debug, rootId],
   );
 
   const nodesKey = useMemo(() => {

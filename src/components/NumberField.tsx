@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { useSwiftUINode } from "../hooks";
+import { StyleProp } from "react-native";
+import { useNormalizedStyles, useSwiftUINode } from "../hooks";
 import type { FunctionComponentWithId, NativeTextStyle } from "../types";
 import { NativeKeyboardType, NativeReturnKeyType } from "./TextField";
 
@@ -15,7 +16,7 @@ export type NumberFormatter =
   | "currencyAccounting";
 
 export type NativeNumberFieldProps<T = number> = {
-  value?: T;
+  value?: T | null;
   label?: string;
   placeholder?: string;
   keyboardType?: NativeKeyboardType;
@@ -23,9 +24,9 @@ export type NativeNumberFieldProps<T = number> = {
   min?: number | null;
   max?: number | null;
   disabled?: boolean;
-  style?: NativeTextStyle;
+  style?: StyleProp<NativeTextStyle>;
   formatter?: NumberFormatter;
-  onChange?: (value: T) => void;
+  onChange?: (value: T | null) => void;
   onFocus?: () => void;
   onBlur?: () => void;
 };
@@ -34,19 +35,27 @@ export const NumberField: FunctionComponentWithId<NativeNumberFieldProps> = ({
   onChange: onChangeProp,
   onFocus,
   onBlur,
+  style,
   ...otherProps
 }) => {
   const onChange = useMemo(
     () =>
       onChangeProp
         ? (date: string) => {
-            onChangeProp(parseFloat(date)); // Convert string to number
+            const parsedFloat = parseFloat(date);
+            onChangeProp(!isNaN(parsedFloat) ? parsedFloat : null); // Convert string to number
           }
         : undefined,
     [onChangeProp],
   );
 
-  useSwiftUINode("NumberField", otherProps, { change: onChange, focus: onFocus, blur: onBlur });
+  const normalizedStyle = useNormalizedStyles<NativeTextStyle>(style);
+
+  useSwiftUINode(
+    "NumberField",
+    { style: normalizedStyle, ...otherProps },
+    { change: onChange, focus: onFocus, blur: onBlur },
+  );
 
   return null;
 };

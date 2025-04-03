@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from "react";
-import { StyleProp, StyleSheet } from "react-native";
-import { useSwiftUINode } from "../hooks";
+import { StyleProp } from "react-native";
+import { useNormalizedStyles, useSwiftUINode } from "../hooks";
 import type { NativeTextStyle } from "../types";
 
 // https://developer.apple.com/documentation/swiftui/picker
@@ -20,6 +20,7 @@ export type NativePickerProps<T extends string> = {
 };
 
 export const Picker = <T extends string>({
+  selection,
   options,
   onChange: onChangeProp,
   onFocus,
@@ -37,6 +38,7 @@ export const Picker = <T extends string>({
     [onChangeProp],
   );
 
+  const normalizedSelection = selection ? String(selection) : undefined;
   const normalizedOptions = useMemo(
     () =>
       options.length > 0 && typeof options[0] === "string"
@@ -45,11 +47,11 @@ export const Picker = <T extends string>({
     [options],
   );
 
-  const normalizedStyles = useMemo(() => (Array.isArray(style) ? StyleSheet.flatten(style) : style), [style]);
+  const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
 
   useSwiftUINode(
     "Picker",
-    { options: normalizedOptions, style: normalizedStyles, ...otherProps },
+    { options: normalizedOptions, selection: normalizedSelection, style: normalizedStyles, ...otherProps },
     {
       change: onChange,
       focus: onFocus,

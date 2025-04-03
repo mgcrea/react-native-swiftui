@@ -5,6 +5,16 @@ export type NativeKeyboardType = "default" | "numberPad" | "emailAddress" | "dec
 export type NativeTextContentType = "username" | "password" | "emailAddress";
 export type NativeReturnKeyType = "default" | "done" | "next" | "search";
 export type NativeAutocapitalizationType = "none" | "words" | "sentences" | "allCharacters";
+export type NativeSubmitLabel =
+  | "continue"
+  | "done"
+  | "go"
+  | "join"
+  | "next"
+  | "return"
+  | "route"
+  | "search"
+  | "send";
 
 export type NativeTextFieldProps<T = string> = {
   text?: T;
@@ -15,6 +25,7 @@ export type NativeTextFieldProps<T = string> = {
   returnKeyType?: NativeReturnKeyType;
   secure?: boolean;
   autocapitalizationType?: NativeAutocapitalizationType;
+  submitLabel?: NativeSubmitLabel;
   maxLength?: number | null;
   multiline?: boolean;
   disabled?: boolean;

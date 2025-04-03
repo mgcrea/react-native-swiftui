@@ -29,7 +29,11 @@ export const DatePicker: FunctionComponentWithId<NativeDatePickerProps> = ({
     () =>
       onChangeProp
         ? (date: string) => {
-            onChangeProp(new Date(date)); // Convert string to Date
+            let parsedDate = new Date(date);
+            if (isNaN(parsedDate.getTime())) {
+              parsedDate = new Date();
+            }
+            onChangeProp(parsedDate);
           }
         : undefined,
     [onChangeProp],

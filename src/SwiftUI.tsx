@@ -34,6 +34,7 @@ export type SwiftUIProps = {
   id?: string;
   onEvent?: (event: { nativeEvent: NativeSwiftUIEvent }) => void;
   style?: StyleProp<ViewStyle>;
+  debug?: boolean;
 };
 
 export const SwiftUIRoot = ({
@@ -41,14 +42,17 @@ export const SwiftUIRoot = ({
   children,
   style,
   onEvent: rootOnEvent,
+  debug = false,
 }: PropsWithChildren<SwiftUIProps>): ReactNode => {
   const { nativeRef, getEventHandler, nodesKey, getNodes, renderSequence } = useSwiftUIContext();
 
   const log = useCallback(
     (message: string, ...args: unknown[]) => {
-      console.log(`SwiftUIRoot(${rootId}) ${message}`, ...args);
+      if (debug) {
+        console.log(`SwiftUIRoot(${rootId}) ${message}`, ...args);
+      }
     },
-    [rootId],
+    [rootId, debug],
   );
 
   const nodes = getNodes();
@@ -78,13 +82,13 @@ export const SwiftUIRoot = ({
   );
 };
 
-export const SwiftUI = ({ children, ...props }: PropsWithChildren<SwiftUIProps>): ReactElement => {
+export const SwiftUI = ({ children, debug, ...props }: PropsWithChildren<SwiftUIProps>): ReactElement => {
   // eslint-disable-next-line react-hooks/rules-of-hooks, @typescript-eslint/prefer-nullish-coalescing
   const id = props.id || `root:${useId()}`;
   return (
-    <SwiftUIProvider id={id}>
+    <SwiftUIProvider id={id} debug={debug}>
       <SwiftUIParentIdProvider id="__root">
-        <SwiftUIRoot id={id} {...props}>
+        <SwiftUIRoot id={id} debug={debug} {...props}>
           {children}
         </SwiftUIRoot>
       </SwiftUIParentIdProvider>
