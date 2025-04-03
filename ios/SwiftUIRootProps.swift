@@ -25,6 +25,12 @@ final class SwiftUIRootProps: ObservableObject {
       picker.props.onChange = { [weak self] value in
         self?.onEvent?("change", "Picker", picker.id, value)
       }
+      picker.props.onFocus = { [weak self] in
+        self?.onEvent?("focus", "Picker", picker.id, nil)
+      }
+      picker.props.onBlur = { [weak self] in
+        self?.onEvent?("blur", "Picker", picker.id, nil)
+      }
     } else if let stepper = node as? GenericNode<StepperProps> {
       stepper.props.onChange = { [weak self] value in
         self?.onEvent?("change", "Stepper", stepper.id, value)

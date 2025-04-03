@@ -11,6 +11,8 @@ public final class PickerProps: ObservableObject, Decodable {
   @Published public var style: StyleProps?
   // Events
   public var onChange: ((String) -> Void)?
+  public var onFocus: (() -> Void)?
+  public var onBlur: (() -> Void)?
 
   struct PickerOption: Identifiable, Decodable, Hashable {
     let label: String
@@ -51,8 +53,8 @@ public final class PickerProps: ObservableObject, Decodable {
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
-    selection = try container.decode(String.self, forKey: .selection)
-    options = try container.decode([PickerOption].self, forKey: .options)
+    selection = try container.decodeIfPresent(String.self, forKey: .selection) ?? ""
+    options = try container.decodeIfPresent([PickerOption].self, forKey: .options) ?? []
     if let styleString = try container.decodeIfPresent(String.self, forKey: .pickerStyle),
        let style = PickerStyle(rawValue: styleString)
     {

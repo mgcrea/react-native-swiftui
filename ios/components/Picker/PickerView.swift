@@ -4,6 +4,7 @@ import SwiftUI
 
 public struct PickerView: View {
   @ObservedObject var props: PickerProps
+  @FocusState private var isFocused: Bool
 
   public init(props: PickerProps, onSelectionChanged _: ((String) -> Void)? = nil) {
     self.props = props
@@ -33,7 +34,11 @@ public struct PickerView: View {
         ForEach(props.options) { option in
           Text(option.label).tag(option.value)
         }
-      }.onChange(of: props.selection) { newValue in
+      }
+      .onChange(of: isFocused) { newValue in
+        newValue ? props.onFocus?() : props.onBlur?()
+      }
+      .onChange(of: props.selection) { newValue in
         props.onChange?(newValue)
       }
     )
