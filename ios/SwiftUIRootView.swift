@@ -29,9 +29,9 @@ public class SwiftUIRootView: SwiftUIContainerView {
 
   private func updateSwiftUIView(with node: (any SwiftUINode)?) {
     hostingController.rootView = AnyView(
-//      NavigationView {
+      NavigationView {
         node.map { AnyView(buildSwiftUIView(from: $0)) } ?? AnyView(Text("Invalid view tree"))
-//      }
+      }
     )
   }
 

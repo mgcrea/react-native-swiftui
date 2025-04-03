@@ -40,14 +40,6 @@ public struct TextFieldView: View {
     }
     .keyboardType(props.keyboardType)
     .focused($isFocused)
-//        .toolbar {
-//          ToolbarItemGroup(placement: .keyboard) {
-//            Spacer()
-//            Button("Done") {
-//              isFocused = false
-//            }
-//          }
-//        }
     .applyIf(props.submitLabel != nil) {
       $0.submitLabel(props.submitLabel!)
     }
@@ -58,6 +50,16 @@ public struct TextFieldView: View {
     }
     .onChange(of: props.text) { newValue in
       props.onChange?(newValue)
+    }
+    .toolbar {
+      ToolbarItemGroup(placement: .keyboard) {
+        if isFocused {
+          Spacer()
+          Button("Done") {
+            isFocused = false
+          }
+        }
+      }
     }
   }
 }
