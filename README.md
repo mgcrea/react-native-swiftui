@@ -154,6 +154,45 @@ Below is a list of components currently supported by `@mgcrea/react-native-swift
 | `VStack`     | Vertical stack layout                       | `alignment`, `spacing`, `style`, Children                                  | Alignments: `leading`, `center`, `trailing`                                             |
 | `ZStack`     | Overlapping stack layout                    | `alignment`, `style`, Children                                             | Alignments: `topLeading`, `center`, `bottomTrailing`, etc.                              |
 
+## Contribute
+
+We welcome contributions! If you have ideas for new components, optimizations, or bug fixes, please fork the repository and submit a pull request. We also encourage you to open issues for any bugs or feature requests.
+
+### Prerequisites
+
+- **Xcode**: Ensure you have Xcode installed for iOS development.
+- **CocoaPods**: Install CocoaPods if you haven't already. You can do this by running:
+  ```bash
+  sudo gem install cocoapods
+  ```
+- **pnpm**: Install `pnpm` globally if you haven't already:
+  ```bash
+  npm install --global corepack@latest
+  corepack enable pnpm
+  ```
+
+### Example Project
+
+To run the example project, follow these steps:
+
+```bash
+git clone https://github.com/mgcrea/react-native-swiftui.git
+cd react-native-swiftui
+
+pnpm install # install Node.js dependencies
+npm run codegen:ios # generate codegen files
+
+bundle install # setup Ruby environment
+npm run install:ios # install project native dependencies
+
+cd example
+pnpm install # install example Node.js dependencies
+
+npm run ios # run the example project
+```
+
+If the build fails, you should try to build from XCode directly using `npm run open:ios` and then run the app from XCode.
+
 ### Notes
 
 - **Props**: Most components accept a `style` prop for layout and appearance customization (e.g., `width`, `height`, `backgroundColor`).
@@ -202,3 +241,7 @@ Below is a list of components currently supported by `@mgcrea/react-native-swift
 ## Contributing
 
 Feel free to fork the repo, experiment with new components, or suggest optimizations! Open issues or PRs on [GitHub](https://github.com/mgcrea/react-native-swiftui).
+
+```
+
+```
