@@ -7,12 +7,14 @@ export const LayoutExample: FunctionComponent = () => {
   return (
     <View style={{flex: 1}}>
       <SwiftUI style={{flex: 1}}>
-        <SwiftUI.Text text="LayoutExample" />
-        <SwiftUI.Form>
-          <LazyVGridSection />
-          <ImageSection />
-          <RectangleSection />
-        </SwiftUI.Form>
+        <SwiftUI.VStack>
+          <SwiftUI.Text text="LayoutExample" />
+          <SwiftUI.Form>
+            <LazyVGridSection />
+            <ImageSection />
+            <RectangleSection />
+          </SwiftUI.Form>
+        </SwiftUI.VStack>
       </SwiftUI>
     </View>
   );

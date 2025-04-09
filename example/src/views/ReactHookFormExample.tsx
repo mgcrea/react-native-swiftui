@@ -34,63 +34,65 @@ export const ReactHookFormExample: FunctionComponent = () => {
   return (
     <View style={{flex: 1}}>
       <SwiftUI style={{flex: 1}}>
-        <SwiftUI.Text text="ReactHookFormExample" />
-        <SwiftUI.Form>
-          <SwiftUI.Section header="Personal Information">
-            <Controller
-              name="firstName"
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({field: {onChange, onBlur, value}}) => (
-                <SwiftUI.TextField
-                  placeholder="First name"
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  text={value}
-                  disabled
-                />
-              )}
+        <SwiftUI.VStack>
+          <SwiftUI.Text text="ReactHookFormExample" />
+          <SwiftUI.Form>
+            <SwiftUI.Section header="Personal Information">
+              <Controller
+                name="firstName"
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <SwiftUI.TextField
+                    placeholder="First name"
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    text={value}
+                    disabled
+                  />
+                )}
+              />
+              <Controller
+                name="lastName"
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({field: {onChange, onBlur, value}}) => (
+                  <SwiftUI.TextField
+                    placeholder="Last name"
+                    onBlur={onBlur}
+                    onChange={onChange}
+                    text={value}
+                  />
+                )}
+              />
+              <Controller
+                name="birthDate"
+                control={control}
+                rules={{
+                  required: true,
+                }}
+                render={({field: {onChange, value}}) => (
+                  <SwiftUI.DatePicker
+                    label="Birth Date:"
+                    selection={value}
+                    displayedComponents="date" // Show only date, no time
+                    onChange={onChange}
+                    // disabled
+                    datePickerStyle="automatic"
+                  />
+                )}
+              />
+            </SwiftUI.Section>
+            <SwiftUI.Button
+              title="Submit"
+              onPress={handleSubmit(onValidSubmit, onInvalidSubmit)}
             />
-            <Controller
-              name="lastName"
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({field: {onChange, onBlur, value}}) => (
-                <SwiftUI.TextField
-                  placeholder="Last name"
-                  onBlur={onBlur}
-                  onChange={onChange}
-                  text={value}
-                />
-              )}
-            />
-            <Controller
-              name="birthDate"
-              control={control}
-              rules={{
-                required: true,
-              }}
-              render={({field: {onChange, value}}) => (
-                <SwiftUI.DatePicker
-                  label="Birth Date:"
-                  selection={value}
-                  displayedComponents="date" // Show only date, no time
-                  onChange={onChange}
-                  // disabled
-                  datePickerStyle="automatic"
-                />
-              )}
-            />
-          </SwiftUI.Section>
-          <SwiftUI.Button
-            title="Submit"
-            onPress={handleSubmit(onValidSubmit, onInvalidSubmit)}
-          />
-        </SwiftUI.Form>
+          </SwiftUI.Form>
+        </SwiftUI.VStack>
       </SwiftUI>
     </View>
   );

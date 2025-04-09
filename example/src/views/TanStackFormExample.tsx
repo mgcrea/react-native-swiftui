@@ -31,72 +31,74 @@ export const TanStackFormExample: FunctionComponent = () => {
   return (
     <View style={{flex: 1}}>
       <SwiftUI style={{flex: 1}}>
-        <SwiftUI.Text text="TanStackFormExample" />
-        <SwiftUI.Form>
-          <SwiftUI.Section header="Personal Information">
-            <form.Field
-              name="firstName"
-              validators={{
-                onChange: ({value}) =>
-                  !value
-                    ? 'A first name is required'
-                    : value.length < 3
-                    ? 'First name must be at least 3 characters'
-                    : undefined,
-              }}>
-              {field => (
-                <SwiftUI.TextField
-                  placeholder="First name"
-                  onBlur={field.handleBlur}
-                  onChange={field.handleChange}
-                  text={field.state.value}
-                />
-              )}
-            </form.Field>
-            <form.Field
-              name="lastName"
-              validators={{
-                onChange: ({value}) =>
-                  !value
-                    ? 'A last name is required'
-                    : value.length < 3
-                    ? 'Last name must be at least 3 characters'
-                    : undefined,
-              }}>
-              {field => (
-                <SwiftUI.TextField
-                  placeholder="Last name"
-                  onBlur={field.handleBlur}
-                  onChange={field.handleChange}
-                  text={field.state.value}
-                />
-              )}
-            </form.Field>
-            <form.Field
-              name="birthDate"
-              validators={{
-                onChange: ({value}) =>
-                  !value ? 'A birth date is required' : undefined,
-              }}>
-              {field => (
-                <SwiftUI.DatePicker
-                  label="Birth Date:"
-                  selection={field.state.value}
-                  displayedComponents="date" // Show only date, no time
-                  onBlur={field.handleBlur}
-                  onChange={field.handleChange}
-                  datePickerStyle="automatic"
-                />
-              )}
-            </form.Field>
-          </SwiftUI.Section>
-          <SwiftUI.Button
-            title="Submit"
-            onPress={() => {
-              form.handleSubmit();
-            }}
-          />
-        </SwiftUI.Form>
+        <SwiftUI.VStack>
+          <SwiftUI.Text text="TanStackFormExample" />
+          <SwiftUI.Form>
+            <SwiftUI.Section header="Personal Information">
+              <form.Field
+                name="firstName"
+                validators={{
+                  onChange: ({value}) =>
+                    !value
+                      ? 'A first name is required'
+                      : value.length < 3
+                      ? 'First name must be at least 3 characters'
+                      : undefined,
+                }}>
+                {field => (
+                  <SwiftUI.TextField
+                    placeholder="First name"
+                    onBlur={field.handleBlur}
+                    onChange={field.handleChange}
+                    text={field.state.value}
+                  />
+                )}
+              </form.Field>
+              <form.Field
+                name="lastName"
+                validators={{
+                  onChange: ({value}) =>
+                    !value
+                      ? 'A last name is required'
+                      : value.length < 3
+                      ? 'Last name must be at least 3 characters'
+                      : undefined,
+                }}>
+                {field => (
+                  <SwiftUI.TextField
+                    placeholder="Last name"
+                    onBlur={field.handleBlur}
+                    onChange={field.handleChange}
+                    text={field.state.value}
+                  />
+                )}
+              </form.Field>
+              <form.Field
+                name="birthDate"
+                validators={{
+                  onChange: ({value}) =>
+                    !value ? 'A birth date is required' : undefined,
+                }}>
+                {field => (
+                  <SwiftUI.DatePicker
+                    label="Birth Date:"
+                    selection={field.state.value}
+                    displayedComponents="date" // Show only date, no time
+                    onBlur={field.handleBlur}
+                    onChange={field.handleChange}
+                    datePickerStyle="automatic"
+                  />
+                )}
+              </form.Field>
+            </SwiftUI.Section>
+            <SwiftUI.Button
+              title="Submit"
+              onPress={() => {
+                form.handleSubmit();
+              }}
+            />
+          </SwiftUI.Form>
+        </SwiftUI.VStack>
       </SwiftUI>
     </View>
   );

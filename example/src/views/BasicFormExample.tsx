@@ -21,36 +21,38 @@ export const BasicFormExample: FunctionComponent = () => {
   return (
     <View style={{flex: 1}}>
       <SwiftUI style={{flex: 1}}>
-        <SwiftUI.Text text="BasicFormExample" />
-        <SwiftUI.Form>
-          <SwiftUI.Section header="Personal Information">
-            <SwiftUI.TextField
-              placeholder="First name"
-              onChange={setFirstName}
-              text={firstName}
-            />
-            <SwiftUI.TextField
-              placeholder="Last name"
-              onChange={setLastName}
-              text={lastName}
-            />
-          </SwiftUI.Section>
-          <SwiftUI.Section header="Additional Details">
-            <SwiftUI.Picker
-              options={['Male', 'Female']}
-              label="Gender"
-              onChange={setGender}
-              selection={gender}
-            />
-            <SwiftUI.DatePicker
-              label="Birth date"
-              selection={birthDate}
-              onChange={value => setBirthDate(value)}
-              displayedComponents="date"
-            />
-          </SwiftUI.Section>
-          <SwiftUI.Button title="Submit" onPress={handleSubmit} />
-        </SwiftUI.Form>
+        <SwiftUI.VStack>
+          <SwiftUI.Text text="BasicFormExample" />
+          <SwiftUI.Form>
+            <SwiftUI.Section header="Personal Information">
+              <SwiftUI.TextField
+                placeholder="First name"
+                onChange={setFirstName}
+                text={firstName}
+              />
+              <SwiftUI.TextField
+                placeholder="Last name"
+                onChange={setLastName}
+                text={lastName}
+              />
+            </SwiftUI.Section>
+            <SwiftUI.Section header="Additional Details">
+              <SwiftUI.Picker
+                options={['Male', 'Female']}
+                label="Gender"
+                onChange={setGender}
+                selection={gender}
+              />
+              <SwiftUI.DatePicker
+                label="Birth date"
+                selection={birthDate}
+                onChange={value => setBirthDate(value)}
+                displayedComponents="date"
+              />
+            </SwiftUI.Section>
+            <SwiftUI.Button title="Submit" onPress={handleSubmit} />
+          </SwiftUI.Form>
+        </SwiftUI.VStack>
       </SwiftUI>
     </View>
   );

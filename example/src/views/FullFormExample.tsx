@@ -7,19 +7,21 @@ export const FullFormExample: FunctionComponent = () => {
   return (
     <View style={{flex: 1}}>
       <SwiftUI style={{flex: 1}}>
-        <SwiftUI.Text text="FullFormExample" />
-        <SwiftUI.Form>
-          <LazyVGridSection />
-          <TextFieldSection />
-          <PickerMenuSection />
-          <PickerSegmentedSection />
-          <DatePickerSection />
-          <StepperSection />
-          <SliderSection />
-          <ToggleSection />
-          <ImageSection />
-          <RectangleSection />
-        </SwiftUI.Form>
+        <SwiftUI.VStack>
+          <SwiftUI.Text text="FullFormExample" />
+          <SwiftUI.Form>
+            <LazyVGridSection />
+            <TextFieldSection />
+            <PickerMenuSection />
+            <PickerSegmentedSection />
+            <DatePickerSection />
+            <StepperSection />
+            <SliderSection />
+            <ToggleSection />
+            <ImageSection />
+            <RectangleSection />
+          </SwiftUI.Form>
+        </SwiftUI.VStack>
       </SwiftUI>
     </View>
   );
