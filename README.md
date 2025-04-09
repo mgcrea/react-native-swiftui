@@ -180,15 +180,15 @@ git clone https://github.com/mgcrea/react-native-swiftui.git
 cd react-native-swiftui
 
 pnpm install # install Node.js dependencies
-npm run codegen:ios # generate codegen files
+pnpm run codegen:ios # generate codegen files
 
 bundle install # setup Ruby environment
 
 cd example
 pnpm install # install example Node.js dependencies
-npm run install:ios # install project native dependencies
+pnpm run install:ios # install project native dependencies
 
-npm run ios # run the example project
+pnpm run ios # run the example project
 ```
 
 If the build fails, you should try to build from XCode directly using `npm run open:ios` and then run the app from XCode.
