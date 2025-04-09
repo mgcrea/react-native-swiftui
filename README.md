@@ -183,10 +183,10 @@ pnpm install # install Node.js dependencies
 npm run codegen:ios # generate codegen files
 
 bundle install # setup Ruby environment
-npm run install:ios # install project native dependencies
 
 cd example
 pnpm install # install example Node.js dependencies
+npm run install:ios # install project native dependencies
 
 npm run ios # run the example project
 ```
