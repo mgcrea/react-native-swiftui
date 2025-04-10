@@ -7,8 +7,10 @@ import type { NativeTextStyle } from "../types";
 
 export type NativePickerStyle = "default" | "inline" | "menu" | "segmented" | "wheel";
 
+export type NativePickerOption<T extends string> = { value: T; label: string } | T;
+
 export type NativePickerProps<T extends string> = {
-  options: readonly { value: T; label: string }[] | readonly T[];
+  options: readonly NativePickerOption<T>[];
   selection?: T;
   label?: string;
   pickerStyle?: NativePickerStyle;

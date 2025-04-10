@@ -59,24 +59,41 @@ public final class DatePickerProps: ObservableObject, Decodable {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+
+    // Ensure we have at least one component
+    displayedComponents = try container.decodeDatePickerComponents(forKey: .displayedComponents)
     // Decode selection as ISO8601 date string
-    let selectionString = try container.decode(String.self, forKey: .selection)
-    let formatter = ISO8601DateFormatter()
-    formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-    guard let date = formatter.date(from: selectionString) else {
-      throw DecodingError.dataCorruptedError(
-        forKey: .selection,
-        in: container,
-        debugDescription: "Invalid date format: \(selectionString)"
-      )
+    let selectionString = try container.decodeIfPresent(String.self, forKey: .selection) ?? ""
+    if !selectionString.isEmpty {
+      let formatter = ISO8601DateFormatter()
+      formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+      if let date = formatter.date(from: selectionString) {
+        selection = date
+      } else {
+        // Try more permissive formats if strict ISO8601 fails
+        let fallbackFormatter = DateFormatter()
+        fallbackFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+
+        if let date = fallbackFormatter.date(from: selectionString) {
+          selection = date
+        } else {
+          throw DecodingError.dataCorruptedError(
+            forKey: .selection,
+            in: container,
+            debugDescription: "Invalid date format: \(selectionString)"
+          )
+        }
+      }
+    } else {
+      var calendar = Calendar.current
+//      calendar.timeZone = TimeZone(identifier: "UTC")!
+      selection = calendar.startOfDay(for: Date())
     }
-    selection = date
+
     // Decode datePickerStyle
     let styleString = try container.decodeIfPresent(String.self, forKey: .datePickerStyle) ?? "default"
     datePickerStyle = DatePickerStyle(rawValue: styleString) ?? .default
-    // Decode displayedComponents
-    let componentsString = try container.decodeIfPresent(String.self, forKey: .displayedComponents)
-    displayedComponents = componentsString == "date" ? .date : [.date, .hourAndMinute]
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
   }
 
@@ -86,5 +103,46 @@ public final class DatePickerProps: ObservableObject, Decodable {
     datePickerStyle = other.datePickerStyle
     displayedComponents = other.displayedComponents
     disabled = other.disabled
+  }
+}
+
+extension KeyedDecodingContainer {
+  func decodeDatePickerComponents(forKey key: Key) throws -> DatePickerComponents {
+    var datePickerComponents: DatePickerComponents = .date // Default to date
+    if let componentArray = try? decodeIfPresent([String].self, forKey: key) {
+      // Handle array of components: ["date", "hourAndMinute"]
+      datePickerComponents = []
+      for component in componentArray {
+        switch component.lowercased() {
+        case "date":
+          datePickerComponents.insert(.date)
+        case "hourandminute":
+          datePickerComponents.insert(.hourAndMinute)
+//        case "era", "epoch":
+//          if #available(iOS 16.0, *) {
+//            datePickerComponents.insert(.era)
+//          }
+        default:
+          break
+        }
+      }
+    } else if let singleComponent = try? decodeIfPresent(String.self, forKey: key) {
+      // Simple single string component
+      switch singleComponent.lowercased() {
+      case "date":
+        datePickerComponents = .date
+      case "time":
+        datePickerComponents = .hourAndMinute
+      case "datetime":
+        datePickerComponents = [.date, .hourAndMinute]
+//      case "era", "epoch":
+//        if #available(iOS 16.0, *) {
+//          datePickerComponents = .era
+//        }
+      default:
+        datePickerComponents = .date
+      }
+    }
+    return datePickerComponents
   }
 }

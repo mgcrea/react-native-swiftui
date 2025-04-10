@@ -7,12 +7,13 @@ export type NativeDatePickerStyle = "automatic" | "compact" | "field" | "graphic
 
 // https://developer.apple.com/documentation/swiftui/datepickercomponents
 export type NativeDatePickerComponents = "date" | "hourAndMinute" | "hourMinuteAndSecond";
+export type NativeDatePickerComponentsAliases = "date" | "time" | "datetime";
 
 export type NativeDatePickerProps = {
   selection?: Date;
   label?: string;
   datePickerStyle?: NativeDatePickerStyle;
-  displayedComponents?: NativeDatePickerComponents;
+  displayedComponents?: NativeDatePickerComponents[] | NativeDatePickerComponentsAliases;
   disabled?: boolean;
   onChange?: (value: Date) => void;
   onFocus?: () => void;
