@@ -66,6 +66,8 @@ private struct NodeWrapper: Decodable {
       node = try GenericNode<NumberFieldProps>(from: decoder)
     case "Picker":
       node = try GenericNode<PickerProps>(from: decoder)
+    case "MultiPicker":
+      node = try GenericNode<MultiPickerProps>(from: decoder)
     case "Stepper":
       node = try GenericNode<StepperProps>(from: decoder)
     case "Text":

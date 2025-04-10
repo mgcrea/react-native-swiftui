@@ -31,6 +31,16 @@ final class SwiftUIRootProps: ObservableObject {
       picker.props.onBlur = { [weak self] in
         self?.onEvent?("blur", "Picker", picker.id, nil)
       }
+    } else if let multiPicker = node as? GenericNode<MultiPickerProps> {
+      multiPicker.props.onChange = { [weak self] value in
+        self?.onEvent?("change", "MultiPicker", multiPicker.id, value)
+      }
+      multiPicker.props.onFocus = { [weak self] in
+        self?.onEvent?("focus", "MultiPicker", multiPicker.id, nil)
+      }
+      multiPicker.props.onBlur = { [weak self] in
+        self?.onEvent?("blur", "MultiPicker", multiPicker.id, nil)
+      }
     } else if let stepper = node as? GenericNode<StepperProps> {
       stepper.props.onChange = { [weak self] value in
         self?.onEvent?("change", "Stepper", stepper.id, value)

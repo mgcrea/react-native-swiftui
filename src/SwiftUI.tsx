@@ -8,6 +8,7 @@ import {
   HStack,
   Image,
   LazyVGrid,
+  MultiPicker,
   NumberField,
   Picker,
   Rectangle,
@@ -105,6 +106,7 @@ SwiftUI.HStack = HStack;
 SwiftUI.Image = Image;
 SwiftUI.LazyVGrid = LazyVGrid;
 SwiftUI.Picker = Picker;
+SwiftUI.MultiPicker = MultiPicker;
 SwiftUI.Rectangle = Rectangle;
 SwiftUI.Section = Section;
 SwiftUI.Sheet = Sheet;

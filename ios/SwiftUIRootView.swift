@@ -133,6 +133,8 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(NumberFieldView(props: numberField.props))
     case let picker as GenericNode<PickerProps>:
       AnyView(PickerView(props: picker.props))
+    case let multiPicker as GenericNode<MultiPickerProps>:
+      AnyView(MultiPickerView(props: multiPicker.props))
     case let datePicker as GenericNode<DatePickerProps>:
       AnyView(DatePickerView(props: datePicker.props))
     case let toggle as GenericNode<ToggleProps>:
@@ -194,6 +196,10 @@ public class SwiftUIRootView: SwiftUIContainerView {
         let updatedProps = try decoder.decode(PickerProps.self, from: updatedPropsData)
         picker.props.merge(from: updatedProps)
 
+      case let multiPicker as GenericNode<MultiPickerProps>:
+        let updatedProps = try decoder.decode(MultiPickerProps.self, from: updatedPropsData)
+        multiPicker.props.merge(from: updatedProps)
+        
       case let form as GenericNode<FormProps>:
         let updatedProps = try decoder.decode(FormProps.self, from: updatedPropsData)
         form.props.merge(from: updatedProps)

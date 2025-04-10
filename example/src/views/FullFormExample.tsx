@@ -1,6 +1,6 @@
 import {SwiftUI} from '@mgcrea/react-native-swiftui/src';
 import {useState, type FunctionComponent} from 'react';
-import {View} from 'react-native';
+import {PlatformColor, View} from 'react-native';
 import logoImage from '../assets/logo.png';
 
 export const FullFormExample: FunctionComponent = () => {
@@ -15,6 +15,7 @@ export const FullFormExample: FunctionComponent = () => {
             <PickerMenuSection />
             <PickerSegmentedSection />
             <DatePickerSection />
+            <MultiPickerSection />
             <StepperSection />
             <SliderSection />
             <ToggleSection />
@@ -45,11 +46,11 @@ const TextFieldSection: FunctionComponent = () => {
   );
 };
 
-const PickerMenuSection: FunctionComponent = () => {
+const PickerSegmentedSection: FunctionComponent = () => {
   const [options, setOptions] = useState(['x1', 'x2', 'x3']);
   const [selectedOption, setSelectedOption] = useState(options[0]);
   return (
-    <SwiftUI.Section header="Picker Menu Example">
+    <SwiftUI.Section header="Picker Segmented Example">
       <SwiftUI.Picker
         label="Scale"
         selection={selectedOption}
@@ -67,22 +68,58 @@ const PickerMenuSection: FunctionComponent = () => {
   );
 };
 
-const PickerSegmentedSection: FunctionComponent = () => {
+const PickerMenuSection: FunctionComponent = () => {
   const [options, setOptions] = useState(['Option 1', 'Option 2', 'Option 3']);
   const [selectedOption, setSelectedOption] = useState(options[0]);
   return (
-    <SwiftUI.Section header="Picker Segmented Example">
+    <SwiftUI.Section header="Picker Menu Example">
       <SwiftUI.Picker
         label="Option"
         selection={selectedOption}
         options={options}
         onChange={value => setSelectedOption(value)}
+        pickerStyle="menu"
       />
       <SwiftUI.Button
         title={`Add a new option 'Option ${options.length + 1}'`}
         onPress={() => {
           setOptions([...options, `Option ${options.length + 1}`]);
         }}
+      />
+    </SwiftUI.Section>
+  );
+};
+const HOURS = Array.from({length: 24}, (_, i) => i.toString());
+const MINUTES = Array.from({length: 60}, (_, i) => i.toString());
+const SECONDS = Array.from({length: 60}, (_, i) => i.toString());
+
+const MultiPickerSection: FunctionComponent = () => {
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([
+    '0',
+    '0',
+    '0',
+  ]);
+  const components = [
+    {label: 'hour', options: HOURS, width: 50},
+    {label: 'min', options: MINUTES},
+    {label: 'sec', options: SECONDS},
+  ];
+  return (
+    <SwiftUI.Section header="MultiPicker Example">
+      <SwiftUI.Text
+        text={`Selected options: ${selectedOptions.join(', ')}`}
+        style={{color: PlatformColor('systemGray2')}}
+      />
+      <SwiftUI.MultiPicker
+        label="Duration"
+        components={components}
+        selections={selectedOptions}
+        onChange={value => setSelectedOptions(value)}
+        style={{height: 216}}
+      />
+      <SwiftUI.Button
+        title={`Set to 1h 30m 45s`}
+        onPress={() => setSelectedOptions(['1', '30', '45'])}
       />
     </SwiftUI.Section>
   );

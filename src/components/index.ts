@@ -5,6 +5,7 @@ export * from "./Group";
 export * from "./HStack";
 export * from "./Image";
 export * from "./LazyVGrid";
+export * from "./MultiPicker";
 export * from "./NumberField";
 export * from "./Picker";
 export * from "./Rectangle";
