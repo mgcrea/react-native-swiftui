@@ -31,7 +31,7 @@ public struct PickerView: View {
   private func pickerContent() -> some View {
     props.pickerStyle.applyStyle(
       Picker(props.label, selection: $props.selection) {
-        ForEach(props.options) { option in
+        ForEach(props.computedOptions) { option in
           Text(option.label).tag(option.value)
         }
       }

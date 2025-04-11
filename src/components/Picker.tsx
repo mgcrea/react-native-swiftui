@@ -9,8 +9,25 @@ export type NativePickerStyle = "default" | "inline" | "menu" | "segmented" | "w
 
 export type NativePickerOption<T extends string> = { value: T; label: string } | T;
 
+export type NativePickerConfig = {
+  min: number;
+  max: number;
+  step?: number;
+  prefix?: string;
+  suffix?: string;
+};
+
+const DEFAULT_PICKER_CONFIG = {
+  min: 0,
+  max: 100,
+  step: 1,
+  prefix: "",
+  suffix: "",
+} satisfies NativePickerConfig;
+
 export type NativePickerProps<T extends string> = {
-  options: readonly NativePickerOption<T>[];
+  options?: readonly NativePickerOption<T>[];
+  config?: NativePickerConfig;
   selection?: T;
   label?: string;
   pickerStyle?: NativePickerStyle;
@@ -24,6 +41,7 @@ export type NativePickerProps<T extends string> = {
 export const Picker = <T extends string>({
   selection,
   options,
+  config,
   onChange: onChangeProp,
   onFocus,
   onBlur,
@@ -41,11 +59,23 @@ export const Picker = <T extends string>({
   );
 
   const normalizedSelection = selection ? String(selection) : undefined;
+  const normalizedConfig = useMemo(
+    () =>
+      config
+        ? {
+            ...DEFAULT_PICKER_CONFIG,
+            ...config,
+          }
+        : undefined,
+    [config],
+  );
   const normalizedOptions = useMemo(
     () =>
-      options.length > 0 && typeof options[0] === "string"
-        ? options.map((value) => ({ value, label: value }))
-        : options,
+      options
+        ? options.length > 0 && typeof options[0] === "string"
+          ? options.map((value) => ({ value, label: value }))
+          : options
+        : [],
     [options],
   );
 
@@ -53,7 +83,13 @@ export const Picker = <T extends string>({
 
   useSwiftUINode(
     "Picker",
-    { options: normalizedOptions, selection: normalizedSelection, style: normalizedStyles, ...otherProps },
+    {
+      selection: normalizedSelection,
+      options: normalizedOptions,
+      config: normalizedConfig,
+      style: normalizedStyles,
+      ...otherProps,
+    },
     {
       change: onChange,
       focus: onFocus,
