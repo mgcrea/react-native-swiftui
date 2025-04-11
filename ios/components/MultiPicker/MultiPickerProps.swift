@@ -17,12 +17,43 @@ public final class MultiPickerProps: ObservableObject, Decodable {
     let label: String
     let options: [MultiPickerOption]
     let width: CGFloat?
+    let config: MultiPickerComponentConfig?
+
+    var computedOptions: [MultiPickerOption] {
+      if config != nil {
+        return config!.generateOptions()
+      }
+      return options
+    }
   }
 
   struct MultiPickerOption: Identifiable, Decodable, Hashable {
     let label: String
     let value: String
     var id: String { value } // Use value as the unique identifier
+  }
+
+  struct MultiPickerComponentConfig: Decodable, Hashable {
+    let min: Int
+    let max: Int
+    let step: Int
+    let prefix: String
+    let suffix: String
+
+    // Generate options based on numeric configuration
+    func generateOptions() -> [MultiPickerOption] {
+      var options: [MultiPickerOption] = []
+      var current = min
+
+      while current <= max {
+        let valueString = "\(current)"
+        let labelString = "\(prefix)\(current)\(suffix)"
+        options.append(MultiPickerOption(label: labelString, value: valueString))
+        current += step
+      }
+
+      return options
+    }
   }
 
   // Coding keys for decoding

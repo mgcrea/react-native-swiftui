@@ -39,13 +39,13 @@ public struct MultiPickerView: View {
           ForEach(0 ..< props.components.count, id: \.self) { index in
             let component = props.components[index]
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .center)) {
-              if !component.label.isEmpty && !component.options.isEmpty {
-                  Text(component.label)
-                    .padding(.trailing, 16)
-                    .font(.caption)
+              if !component.label.isEmpty && !component.computedOptions.isEmpty {
+                Text(component.label)
+                  .padding(.trailing, 16)
+                  .font(.caption)
               }
               Picker(component.label, selection: $props.selections[index]) {
-                ForEach(component.options, id: \.value) { option in
+                ForEach(component.computedOptions, id: \.value) { option in
                   Text(option.label).tag(option.value)
                 }
               }

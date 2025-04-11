@@ -8,9 +8,26 @@ import { fillArray } from "../utils";
 
 export type NativeMultiPickerOption<T extends string> = { value: T; label: string } | T;
 
+export type NativeMultiPickerComponentConfig = {
+  min: number;
+  max: number;
+  step?: number;
+  prefix?: string;
+  suffix?: string;
+};
+
+const DEFAULT_COMPONENT_CONFIG = {
+  min: 0,
+  max: 100,
+  step: 1,
+  prefix: "",
+  suffix: "",
+} satisfies NativeMultiPickerComponentConfig;
+
 export type NativeMultiPickerComponent<T extends string> = {
   label?: string;
-  options: readonly NativeMultiPickerOption<T>[];
+  options?: readonly NativeMultiPickerOption<T>[];
+  config?: NativeMultiPickerComponentConfig;
   // width?: number; // @TODO
 };
 
@@ -51,12 +68,14 @@ export const MultiPicker = <T extends string>({
   const normalizedComponents = useMemo(
     () =>
       components.map((component) => {
-        const { options, ...rest } = component;
-        const normalizedOptions =
-          options.length > 0 && typeof options[0] === "string"
+        const { options, config, ...rest } = component;
+        const normalizedConfig = config ? { ...DEFAULT_COMPONENT_CONFIG, ...config } : undefined;
+        const normalizedOptions = options
+          ? options.length > 0 && typeof options[0] === "string"
             ? options.map((value) => ({ value, label: value }))
-            : options;
-        return { ...rest, options: normalizedOptions };
+            : options
+          : [];
+        return { ...rest, config: normalizedConfig, options: normalizedOptions };
       }),
     [components],
   );
