@@ -188,7 +188,7 @@ const StepperSection: FunctionComponent = () => {
   return (
     <SwiftUI.Section header="Stepper Example">
       <SwiftUI.Stepper
-        label="Value"
+        label={`Value: ${value}`}
         value={value}
         step={1}
         onChange={value => setValue(value)}
