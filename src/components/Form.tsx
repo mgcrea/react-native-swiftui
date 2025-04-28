@@ -8,6 +8,8 @@ import type { FunctionComponentWithId, NativeViewStyle } from "../types";
 
 export type NativeFormProps = {
   style?: StyleProp<NativeViewStyle>;
+  disabled?: boolean;
+  scrollDisabled?: boolean;
 };
 
 export const Form: FunctionComponentWithId<PropsWithChildren<NativeFormProps>> = ({
