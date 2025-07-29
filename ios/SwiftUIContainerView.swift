@@ -58,21 +58,32 @@ public class SwiftUIContainerView: UIView {
   override public func didMoveToWindow() {
     super.didMoveToWindow()
 
-    if hostingController.parent == nil, let parentViewController = parentViewController {
-      parentViewController.addChild(hostingController)
-      #if os(iOS) || os(tvOS)
-        hostingController.didMove(toParent: parentViewController)
-      #endif
+    if window != nil {
+      // Add hosting controller to parent view controller hierarchy when view enters window
+      if hostingController.parent == nil, let parentViewController = parentViewController {
+        parentViewController.addChild(hostingController)
+        #if os(iOS) || os(tvOS)
+          hostingController.didMove(toParent: parentViewController)
+        #endif
+      }
     } else {
-      // hostingController.view.removeFromSuperview()
-      // hostingController.removeFromParent()
+      // Intentionally NOT removing hosting controller when view leaves window.
+      // This preserves SwiftUI view state and avoids expensive view tree reconstruction
+      // when the view temporarily moves out of hierarchy (e.g., during navigation).
+      // The hosting controller will be properly cleaned up when the container view is deallocated.
     }
   }
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-    // Ensure the hosting controller's view fills the bounds.
-    hostingController.view.frame = bounds
+    // Auto Layout constraints handle the hosting controller's view sizing automatically
+  }
+
+  deinit {
+    // Properly clean up the hosting controller when container view is deallocated
+    hostingController.willMove(toParent: nil)
+    hostingController.view.removeFromSuperview()
+    hostingController.removeFromParent()
   }
 }
 

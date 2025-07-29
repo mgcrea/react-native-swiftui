@@ -258,4 +258,9 @@ public class SwiftUIRootView: SwiftUIContainerView {
     }
     return nil
   }
+
+  deinit {
+    // Clean up Combine subscriptions to prevent memory leaks
+    cancellables.removeAll()
+  }
 }
