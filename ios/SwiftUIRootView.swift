@@ -29,9 +29,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
 
   private func updateSwiftUIView(with node: (any SwiftUINode)?) {
     hostingController.rootView = AnyView(
-      NavigationView {
-        node.map { AnyView(buildSwiftUIView(from: $0)) } ?? AnyView(Text("Invalid view tree"))
-      }
+      node.map { AnyView(buildSwiftUIView(from: $0)) } ?? AnyView(Text("Invalid view tree"))
     )
   }
 
@@ -199,7 +197,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
       case let multiPicker as GenericNode<MultiPickerProps>:
         let updatedProps = try decoder.decode(MultiPickerProps.self, from: updatedPropsData)
         multiPicker.props.merge(from: updatedProps)
-        
+
       case let form as GenericNode<FormProps>:
         let updatedProps = try decoder.decode(FormProps.self, from: updatedPropsData)
         form.props.merge(from: updatedProps)
