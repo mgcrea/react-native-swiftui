@@ -1,6 +1,6 @@
-import {SwiftUI} from '@mgcrea/react-native-swiftui/src';
-import {useState, type FunctionComponent} from 'react';
-import {Alert, View} from 'react-native';
+import { SwiftUI } from '@mgcrea/react-native-swiftui/src';
+import { useState, type FunctionComponent } from 'react';
+import { Alert, View } from 'react-native';
 
 export const BasicFormExample: FunctionComponent = () => {
   const [firstName, setFirstName] = useState('John');
@@ -19,8 +19,8 @@ export const BasicFormExample: FunctionComponent = () => {
   };
 
   return (
-    <View style={{flex: 1}}>
-      <SwiftUI style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
+      <SwiftUI style={{ flex: 1 }}>
         <SwiftUI.VStack>
           <SwiftUI.Text text="BasicFormExample" />
           <SwiftUI.Form>

@@ -5,10 +5,10 @@
 //   SubmitErrorHandler,
 // } from 'react-hook-form';
 
-import {useForm} from '@tanstack/react-form';
-import {SwiftUI} from '@mgcrea/react-native-swiftui/src';
-import {Alert, Text, TextInput, View} from 'react-native';
-import {type FunctionComponent} from 'react';
+import { useForm } from '@tanstack/react-form';
+import { SwiftUI } from '@mgcrea/react-native-swiftui/src';
+import { Alert, Text, TextInput, View } from 'react-native';
+import { type FunctionComponent } from 'react';
 
 type FormData = {
   firstName: string;
@@ -23,14 +23,14 @@ export const TanStackFormExample: FunctionComponent = () => {
       lastName: '',
       birthDate: new Date('1990-02-22T00:00:00Z'),
     },
-    onSubmit: ({value}) => {
+    onSubmit: ({ value }) => {
       console.log('Submitted with data:', JSON.stringify(value, null, 2));
     },
   });
 
   return (
-    <View style={{flex: 1}}>
-      <SwiftUI style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
+      <SwiftUI style={{ flex: 1 }}>
         <SwiftUI.VStack>
           <SwiftUI.Text text="TanStackFormExample" />
           <SwiftUI.Form>
@@ -38,13 +38,14 @@ export const TanStackFormExample: FunctionComponent = () => {
               <form.Field
                 name="firstName"
                 validators={{
-                  onChange: ({value}) =>
+                  onChange: ({ value }) =>
                     !value
                       ? 'A first name is required'
                       : value.length < 3
                       ? 'First name must be at least 3 characters'
                       : undefined,
-                }}>
+                }}
+              >
                 {field => (
                   <SwiftUI.TextField
                     placeholder="First name"
@@ -57,13 +58,14 @@ export const TanStackFormExample: FunctionComponent = () => {
               <form.Field
                 name="lastName"
                 validators={{
-                  onChange: ({value}) =>
+                  onChange: ({ value }) =>
                     !value
                       ? 'A last name is required'
                       : value.length < 3
                       ? 'Last name must be at least 3 characters'
                       : undefined,
-                }}>
+                }}
+              >
                 {field => (
                   <SwiftUI.TextField
                     placeholder="Last name"
@@ -76,9 +78,10 @@ export const TanStackFormExample: FunctionComponent = () => {
               <form.Field
                 name="birthDate"
                 validators={{
-                  onChange: ({value}) =>
+                  onChange: ({ value }) =>
                     !value ? 'A birth date is required' : undefined,
-                }}>
+                }}
+              >
                 {field => (
                   <SwiftUI.DatePicker
                     label="Birth Date:"

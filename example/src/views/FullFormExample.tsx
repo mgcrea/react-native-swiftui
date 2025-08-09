@@ -1,12 +1,12 @@
-import {SwiftUI} from '@mgcrea/react-native-swiftui/src';
-import {useState, type FunctionComponent} from 'react';
-import {PlatformColor, View} from 'react-native';
+import { SwiftUI } from '@mgcrea/react-native-swiftui/src';
+import { useState, type FunctionComponent } from 'react';
+import { PlatformColor, View } from 'react-native';
 import logoImage from '../assets/logo.png';
 
 export const FullFormExample: FunctionComponent = () => {
   return (
-    <View style={{flex: 1}}>
-      <SwiftUI style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
+      <SwiftUI style={{ flex: 1 }}>
         <SwiftUI.VStack>
           <SwiftUI.Text text="FullFormExample" />
           <SwiftUI.Form>
@@ -89,9 +89,9 @@ const PickerMenuSection: FunctionComponent = () => {
     </SwiftUI.Section>
   );
 };
-const HOURS = Array.from({length: 24}, (_, i) => i.toString());
-const MINUTES = Array.from({length: 60}, (_, i) => i.toString());
-const SECONDS = Array.from({length: 60}, (_, i) => i.toString());
+const HOURS = Array.from({ length: 24 }, (_, i) => i.toString());
+const MINUTES = Array.from({ length: 60 }, (_, i) => i.toString());
+const SECONDS = Array.from({ length: 60 }, (_, i) => i.toString());
 
 const MultiPickerSection: FunctionComponent = () => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([
@@ -100,22 +100,22 @@ const MultiPickerSection: FunctionComponent = () => {
     '0',
   ]);
   const components = [
-    {label: 'hour', options: HOURS, width: 50},
-    {label: 'min', options: MINUTES},
-    {label: 'sec', options: SECONDS},
+    { label: 'hour', options: HOURS, width: 50 },
+    { label: 'min', options: MINUTES },
+    { label: 'sec', options: SECONDS },
   ];
   return (
     <SwiftUI.Section header="MultiPicker Example">
       <SwiftUI.Text
         text={`Selected options: ${selectedOptions.join(', ')}`}
-        style={{color: PlatformColor('systemGray2')}}
+        style={{ color: PlatformColor('systemGray2') }}
       />
       <SwiftUI.MultiPicker
         label="Duration"
         components={components}
         selections={selectedOptions}
         onChange={value => setSelectedOptions(value)}
-        style={{height: 216}}
+        style={{ height: 216 }}
       />
       <SwiftUI.Button
         title={`Set to 1h 30m 45s`}
@@ -188,7 +188,7 @@ const StepperSection: FunctionComponent = () => {
   return (
     <SwiftUI.Section header="Stepper Example">
       <SwiftUI.Stepper
-        label={`Value: ${value}`}
+        label="Value"
         value={value}
         step={1}
         onChange={value => setValue(value)}
@@ -212,12 +212,13 @@ const RectangleSection: FunctionComponent = () => {
           backgroundColor: 'white',
           borderWidth: 1,
           borderColor: 'black',
-        }}>
+        }}
+      >
         <SwiftUI.Rectangle
-          style={{backgroundColor: color, width: 25, height: 50}}
+          style={{ backgroundColor: color, width: 25, height: 50 }}
         />
         <SwiftUI.Rectangle
-          style={{backgroundColor: 'red', width: 25, height: 50}}
+          style={{ backgroundColor: 'red', width: 25, height: 50 }}
         />
       </SwiftUI.HStack>
 
@@ -249,7 +250,7 @@ const ImageSection: FunctionComponent = () => {
         <SwiftUI.Image
           name={`system:${icon}`}
           // tintColor="#FF0000"
-          style={{width: 128, height: 128, fontSize: 64, color: 'blue'}}
+          style={{ width: 128, height: 128, fontSize: 64, color: 'blue' }}
         />
       </SwiftUI.HStack>
       <SwiftUI.Button
@@ -265,11 +266,12 @@ const LazyVGridSection: FunctionComponent = () => {
     <SwiftUI.Section header="LazyVGrid Example">
       <SwiftUI.LazyVGrid
         columns={[
-          {type: 'flexible', minimum: 100},
-          {type: 'flexible', minimum: 100},
+          { type: 'flexible', minimum: 100 },
+          { type: 'flexible', minimum: 100 },
         ]}
         spacing={10}
-        alignment="center">
+        alignment="center"
+      >
         <SwiftUI.Text text="Item 1" />
         <SwiftUI.Text text="Item 2" />
         <SwiftUI.Text text="Item 3" />

@@ -1,12 +1,15 @@
-import {NativeLazyVGridProps, SwiftUI} from '@mgcrea/react-native-swiftui/src';
-import {useState, type FunctionComponent} from 'react';
-import {View} from 'react-native';
+import {
+  NativeLazyVGridProps,
+  SwiftUI,
+} from '@mgcrea/react-native-swiftui/src';
+import { useState, type FunctionComponent } from 'react';
+import { View } from 'react-native';
 import logoImage from '../assets/logo.png';
 
 export const LayoutExample: FunctionComponent = () => {
   return (
-    <View style={{flex: 1}}>
-      <SwiftUI style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
+      <SwiftUI style={{ flex: 1 }}>
         <SwiftUI.VStack>
           <SwiftUI.Text text="LayoutExample" />
           <SwiftUI.Form>
@@ -31,12 +34,13 @@ const RectangleSection: FunctionComponent = () => {
           backgroundColor: 'white',
           borderWidth: 1,
           borderColor: 'black',
-        }}>
+        }}
+      >
         <SwiftUI.Rectangle
-          style={{backgroundColor: color, width: 25, height: 50}}
+          style={{ backgroundColor: color, width: 25, height: 50 }}
         />
         <SwiftUI.Rectangle
-          style={{backgroundColor: 'red', width: 25, height: 50}}
+          style={{ backgroundColor: 'red', width: 25, height: 50 }}
         />
       </SwiftUI.HStack>
 
@@ -68,7 +72,7 @@ const ImageSection: FunctionComponent = () => {
         <SwiftUI.Image
           name={`system:${icon}`}
           // tintColor="#FF0000"
-          style={{width: 128, height: 128, fontSize: 64, color: 'blue'}}
+          style={{ width: 128, height: 128, fontSize: 64, color: 'blue' }}
         />
       </SwiftUI.HStack>
       <SwiftUI.Button
@@ -91,11 +95,12 @@ const LazyVGridSection: FunctionComponent = () => {
     <SwiftUI.Section header="LazyVGrid Example">
       <SwiftUI.LazyVGrid
         columns={[
-          {type: 'flexible', minimum: 100},
-          {type: 'flexible', minimum: 100},
+          { type: 'flexible', minimum: 100 },
+          { type: 'flexible', minimum: 100 },
         ]}
         spacing={10}
-        alignment={alignmentValues[index]}>
+        alignment={alignmentValues[index]}
+      >
         <SwiftUI.Text text="Item 1" />
         <SwiftUI.Text text="Item 2" />
         <SwiftUI.Text text="Item 3" />

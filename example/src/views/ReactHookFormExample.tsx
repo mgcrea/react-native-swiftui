@@ -4,9 +4,9 @@ import {
   SubmitHandler,
   SubmitErrorHandler,
 } from 'react-hook-form';
-import {SwiftUI} from '@mgcrea/react-native-swiftui/src';
-import {Alert, TextInput, View} from 'react-native';
-import {type FunctionComponent} from 'react';
+import { SwiftUI } from '@mgcrea/react-native-swiftui/src';
+import { Alert, TextInput, View } from 'react-native';
+import { type FunctionComponent } from 'react';
 
 type FormData = {
   firstName: string;
@@ -15,7 +15,7 @@ type FormData = {
 };
 
 export const ReactHookFormExample: FunctionComponent = () => {
-  const {control, handleSubmit} = useForm<FormData>({
+  const { control, handleSubmit } = useForm<FormData>({
     defaultValues: {
       firstName: 'Olivier',
       lastName: '',
@@ -32,8 +32,8 @@ export const ReactHookFormExample: FunctionComponent = () => {
   };
 
   return (
-    <View style={{flex: 1}}>
-      <SwiftUI style={{flex: 1}}>
+    <View style={{ flex: 1 }}>
+      <SwiftUI style={{ flex: 1 }}>
         <SwiftUI.VStack>
           <SwiftUI.Text text="ReactHookFormExample" />
           <SwiftUI.Form>
@@ -44,7 +44,7 @@ export const ReactHookFormExample: FunctionComponent = () => {
                 rules={{
                   required: true,
                 }}
-                render={({field: {onChange, onBlur, value}}) => (
+                render={({ field: { onChange, onBlur, value } }) => (
                   <SwiftUI.TextField
                     placeholder="First name"
                     onBlur={onBlur}
@@ -60,7 +60,7 @@ export const ReactHookFormExample: FunctionComponent = () => {
                 rules={{
                   required: true,
                 }}
-                render={({field: {onChange, onBlur, value}}) => (
+                render={({ field: { onChange, onBlur, value } }) => (
                   <SwiftUI.TextField
                     placeholder="Last name"
                     onBlur={onBlur}
@@ -75,7 +75,7 @@ export const ReactHookFormExample: FunctionComponent = () => {
                 rules={{
                   required: true,
                 }}
-                render={({field: {onChange, value}}) => (
+                render={({ field: { onChange, value } }) => (
                   <SwiftUI.DatePicker
                     label="Birth Date:"
                     selection={value}
