@@ -10,19 +10,42 @@ import { SwiftUI } from '@mgcrea/react-native-swiftui/src';
 import { Alert, Text, TextInput, View } from 'react-native';
 import { type FunctionComponent } from 'react';
 
+export const GENDERS = {
+  male: 'Male',
+  female: 'Female',
+} as const;
+export const GENDER_OPTIONS = toLabelledOptions(GENDERS);
+export type Gender = keyof typeof GENDERS;
+
+export const LEVELS = {
+  B: 'Beginner',
+  N: 'Novice',
+  I: 'Intermediate',
+  A: 'Advanced',
+  E: 'Elite',
+} as const;
+export const LEVEL_OPTIONS = toLabelledOptions(LEVELS);
+export type Level = keyof typeof LEVELS;
+
 type FormData = {
   firstName: string;
   lastName: string;
+  gender: Gender;
+  level: Level;
   birthDate: Date;
+};
+
+const defaultValues: FormData = {
+  firstName: 'Olivier',
+  lastName: '',
+  gender: 'male',
+  level: 'B',
+  birthDate: new Date('1990-02-22T00:00:00Z'),
 };
 
 export const TanStackFormExample: FunctionComponent = () => {
   const form = useForm({
-    defaultValues: {
-      firstName: 'Olivier',
-      lastName: '',
-      birthDate: new Date('1990-02-22T00:00:00Z'),
-    },
+    defaultValues,
     onSubmit: ({ value }) => {
       console.log('Submitted with data:', JSON.stringify(value, null, 2));
     },
@@ -30,7 +53,7 @@ export const TanStackFormExample: FunctionComponent = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <SwiftUI style={{ flex: 1 }}>
+      <SwiftUI style={{ flex: 1 }} debug>
         <SwiftUI.VStack>
           <SwiftUI.Text text="TanStackFormExample" />
           <SwiftUI.Form>
@@ -75,6 +98,30 @@ export const TanStackFormExample: FunctionComponent = () => {
                   />
                 )}
               </form.Field>
+              <form.Field name="gender">
+                {field => (
+                  <SwiftUI.Picker
+                    label="Gender"
+                    options={GENDER_OPTIONS}
+                    pickerStyle="menu"
+                    onBlur={field.handleBlur}
+                    onChange={field.handleChange}
+                    selection={field.state.value}
+                  />
+                )}
+              </form.Field>
+              <form.Field name="level">
+                {field => (
+                  <SwiftUI.Picker
+                    label="Level"
+                    options={LEVEL_OPTIONS}
+                    pickerStyle="menu"
+                    onBlur={field.handleBlur}
+                    onChange={field.handleChange}
+                    selection={field.state.value}
+                  />
+                )}
+              </form.Field>
               <form.Field
                 name="birthDate"
                 validators={{
@@ -106,3 +153,13 @@ export const TanStackFormExample: FunctionComponent = () => {
     </View>
   );
 };
+
+function toLabelledOptions<
+  K extends keyof T,
+  T extends Record<string | number, string>,
+>(options: T) {
+  return Object.entries(options).map(([value, label]) => ({
+    value: value as K,
+    label,
+  }));
+}
