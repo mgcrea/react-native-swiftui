@@ -16,3 +16,4 @@ link-assets-manifest.json
 *.ttf
 
 CLAUDE.md
+.claude/
