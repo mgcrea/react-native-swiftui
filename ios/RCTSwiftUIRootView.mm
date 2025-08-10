@@ -53,6 +53,15 @@ using namespace facebook::react;
           oldProps ? oldProps : _props);
   const auto &newViewProps =
       *std::static_pointer_cast<NativeSwiftUIRootProps const>(props);
+
+  // Only update if viewTree actually changed
+  if (oldProps && oldViewProps.viewTree == newViewProps.viewTree) {
+    NSLog(@"[RCTSwiftUIRootView] Skipping updateProps - viewTree unchanged");
+    [super updateProps:props oldProps:oldProps];
+    return;
+  }
+
+  NSLog(@"[RCTSwiftUIRootView] ViewTree changed, updating props");
   NSDictionary *oldViewPropsDict = convertProps(oldViewProps);
   NSDictionary *newViewPropsDict = convertProps(newViewProps);
 
