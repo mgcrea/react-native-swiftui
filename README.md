@@ -43,6 +43,8 @@ Ideal for developers seeking native iOS aesthetics and behavior within a React N
 
 ![demo](./.github/assets/demo.gif)
 
+You can try it yourself using the [Rxd AppStore application](https://apps.apple.com/fr/app/rxd/id6745904823?l=en-GB)
+
 ## Features
 
 - **Supported Components**: We plan to support as many SwiftUI components as possible.
