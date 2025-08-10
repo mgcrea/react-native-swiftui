@@ -9,6 +9,7 @@ import { useForm } from '@tanstack/react-form';
 import { SwiftUI } from '@mgcrea/react-native-swiftui/src';
 import { Alert, Text, TextInput, View } from 'react-native';
 import { type FunctionComponent } from 'react';
+import { AnimatedButton } from '../components';
 
 export const GENDERS = {
   male: 'Male',
@@ -150,6 +151,7 @@ export const TanStackFormExample: FunctionComponent = () => {
           </SwiftUI.Form>
         </SwiftUI.VStack>
       </SwiftUI>
+      <AnimatedButton title="Pulse Animation" variant="pulse" />
     </View>
   );
 };

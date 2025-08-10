@@ -17,7 +17,10 @@
     "@tanstack/react-form": "^1.19.0",
     "react": "19.1.1",
     "react-hook-form": "^7.62.0",
-    "react-native": "0.80.2"
+    "react-native": "0.80.2",
+    "react-native-gesture-handler": "^2.28.0",
+    "react-native-reanimated": "^4.0.2",
+    "react-native-worklets": "^0.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

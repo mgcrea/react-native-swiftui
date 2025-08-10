@@ -1,6 +1,7 @@
 import { SwiftUI } from '@mgcrea/react-native-swiftui/src';
 import { useState, type FunctionComponent } from 'react';
 import { Alert, View } from 'react-native';
+import { AnimatedButton } from '../components';
 
 export const BasicFormExample: FunctionComponent = () => {
   const [firstName, setFirstName] = useState('John');
@@ -54,6 +55,7 @@ export const BasicFormExample: FunctionComponent = () => {
           </SwiftUI.Form>
         </SwiftUI.VStack>
       </SwiftUI>
+      <AnimatedButton title="Pulse Animation" variant="pulse" />
     </View>
   );
 };

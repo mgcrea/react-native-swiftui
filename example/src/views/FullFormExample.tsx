@@ -2,6 +2,7 @@ import { SwiftUI } from '@mgcrea/react-native-swiftui/src';
 import { useState, type FunctionComponent } from 'react';
 import { PlatformColor, View } from 'react-native';
 import logoImage from '../assets/logo.png';
+import { AnimatedButton } from '../components';
 
 export const FullFormExample: FunctionComponent = () => {
   return (
@@ -24,6 +25,7 @@ export const FullFormExample: FunctionComponent = () => {
           </SwiftUI.Form>
         </SwiftUI.VStack>
       </SwiftUI>
+      <AnimatedButton title="Pulse Animation" variant="pulse" />
     </View>
   );
 };
