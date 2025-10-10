@@ -6,6 +6,7 @@ import { LayoutExample } from './src/views/LayoutExample';
 import { WorkoutExample } from './src/views/WorkoutExample.private';
 import { StandalonePickerExample } from './src/views/StandalonePickerExample';
 import { StandaloneSheetExample } from './src/views/StandaloneSheetExample';
+import { StandaloneSheetPickerExample } from './src/views/StandaloneSheetPickerExample';
 import { ReactHookFormExample } from './src/views/ReactHookFormExample';
 import { TanStackFormExample } from './src/views/TanStackFormExample';
 import { AdvancedFormExample } from './src/views/AdvancedFormExample.private';
@@ -17,7 +18,8 @@ function App(): React.JSX.Element {
   // return <BasicFormExample />; // Basic form with picker issue test
   // return <TanStackFormExample />; // Original working example
   // return <StandalonePickerExample />;
-  return <StandaloneSheetExample />;
+  // return <StandaloneSheetExample />;
+  return <StandaloneSheetPickerExample />;
 }
 
 export default App;
