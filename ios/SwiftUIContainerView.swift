@@ -79,6 +79,22 @@ public class SwiftUIContainerView: UIView {
     // Auto Layout constraints handle the hosting controller's view sizing automatically
   }
 
+  // Forward React Native measurement pass to the SwiftUI hosting controller.
+  override public func sizeThatFits(_ size: CGSize) -> CGSize {
+    let proposedSize = CGSize(
+      width: size.width == 0 ? UIView.noIntrinsicMetric : size.width,
+      height: size.height == 0 ? UIView.noIntrinsicMetric : size.height
+    )
+    return hostingController.sizeThatFits(in: proposedSize)
+  }
+
+  // Expose the SwiftUI view's intrinsic size to Auto Layout / Fabric.
+  override public var intrinsicContentSize: CGSize {
+    hostingController.sizeThatFits(
+      in: CGSize(width: UIView.noIntrinsicMetric, height: UIView.noIntrinsicMetric)
+    )
+  }
+
   deinit {
     // Properly clean up the hosting controller when container view is deallocated
     hostingController.willMove(toParent: nil)
