@@ -9,6 +9,7 @@ public final class PickerProps: ObservableObject, Decodable {
   @Published var label: String = ""
   @Published var labelColor: ColorValue?
   @Published var pickerStyle: PickerStyle = .default
+  @Published var isRootView: Bool = false
   @Published var disabled: Bool = false
   @Published public var style: StyleProps?
   // Events

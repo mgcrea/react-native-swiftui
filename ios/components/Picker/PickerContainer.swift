@@ -12,6 +12,7 @@ public class PickerContainer: SwiftUIContainerView {
     props = PickerProps()
     super.init(rootView: AnyView(EmptyView())) // Temporary rootView
 
+    props.isRootView = true
     props.onChange = { [weak self] newValue in
       self?.onChange?(newValue as NSString)
     }

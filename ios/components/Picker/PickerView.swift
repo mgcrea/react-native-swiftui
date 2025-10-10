@@ -12,7 +12,8 @@ public struct PickerView: View {
 
   public var body: some View {
     Group {
-      if props.label.isEmpty {
+      // Only segmented standalone pickers need an explicit external label
+      if props.label.isEmpty || (!props.isRootView && props.pickerStyle != .segmented) {
         pickerContent()
       } else {
         labeledPicker()
@@ -23,7 +24,7 @@ public struct PickerView: View {
   @ViewBuilder
   private func pickerContent() -> some View {
     props.pickerStyle.applyStyle(
-      Picker(props.label, selection: $props.selection) {
+      Picker(selection: $props.selection, label: labelView()) {
         ForEach(props.computedOptions) { option in
           Text(option.label).tag(option.value)
         }
