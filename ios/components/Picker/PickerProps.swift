@@ -104,13 +104,25 @@ public final class PickerProps: ObservableObject, Decodable {
   public init() {}
 
   public func merge(from other: PickerProps) {
-    options = other.options
-    selection = other.selection
-    config = other.config
-    label = other.label
+    if options != other.options {
+      options = other.options
+    }
+    if selection != other.selection {
+      selection = other.selection
+    }
+    if config != other.config {
+      config = other.config
+    }
+    if label != other.label {
+      label = other.label
+    }
     labelColor = other.labelColor
-    pickerStyle = other.pickerStyle
-    disabled = other.disabled
+    if pickerStyle != other.pickerStyle {
+      pickerStyle = other.pickerStyle
+    }
+    if disabled != other.disabled {
+      disabled = other.disabled
+    }
     style = other.style
   }
 }

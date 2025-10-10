@@ -42,10 +42,8 @@ export const StandalonePickerExample: FunctionComponent = () => {
             selection={pickerStyle}
             options={['default', 'inline', 'menu', 'segmented', 'wheel']}
             pickerStyle="segmented"
-            onNativeChange={event =>
-              setPickerStyle(event.nativeEvent.value as typeof pickerStyle)
-            }
-            style={styles.picker}
+            onChange={value => setPickerStyle(value as typeof pickerStyle)}
+            style={[styles.picker, { tint: '#fb7185' }]}
           />
         </View>
 
@@ -57,8 +55,8 @@ export const StandalonePickerExample: FunctionComponent = () => {
             selection={selectedFruit}
             options={['Apple', 'Banana', 'Orange', 'Grape', 'Mango']}
             pickerStyle={pickerStyle}
-            onNativeChange={event => setSelectedFruit(event.nativeEvent.value)}
-            style={styles.picker}
+            onChange={value => setSelectedFruit(value)}
+            style={[styles.picker, { tint: '#22d3ee' }]}
           />
         </View>
 
@@ -70,8 +68,8 @@ export const StandalonePickerExample: FunctionComponent = () => {
             selection={selectedColor}
             options={['Red', 'Blue', 'Green', 'Yellow', 'Purple']}
             pickerStyle={pickerStyle}
-            onNativeChange={event => setSelectedColor(event.nativeEvent.value)}
-            style={styles.picker}
+            onChange={value => setSelectedColor(value)}
+            style={[styles.picker, { tint: '#a855f7' }]}
           />
         </View>
 
@@ -83,7 +81,7 @@ export const StandalonePickerExample: FunctionComponent = () => {
             selection={selectedSize}
             options={['Small', 'Medium', 'Large', 'Extra Large']}
             pickerStyle={pickerStyle}
-            onNativeChange={event => setSelectedSize(event.nativeEvent.value)}
+            onChange={value => setSelectedSize(value)}
             style={styles.picker}
           />
         </View>

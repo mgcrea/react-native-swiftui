@@ -4,6 +4,7 @@ public struct StyleProps: Decodable {
   // ViewStyle
   public var color: ColorValue? // alias for foregroundColor
   public var accentColor: ColorValue?
+  public var tint: ColorValue?
   public var tintColor: ColorValue?
   public var foregroundColor: ColorValue?
   public var backgroundColor: ColorValue?
@@ -42,7 +43,7 @@ public struct StyleProps: Decodable {
   public var textAlign: TextAlignment?
 
   enum CodingKeys: String, CodingKey {
-    case color, accentColor, tintColor, backgroundColor, preferredColorScheme, foregroundColor, width, minWidth, maxWidth, height, minHeight, maxHeight, position, top, left, bottom, right, padding, paddingHorizontal, paddingVertical, paddingLeft, paddingRight, paddingTop, paddingBottom, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font, fontFamily, textAlign
+    case color, accentColor, tint, tintColor, backgroundColor, preferredColorScheme, foregroundColor, width, minWidth, maxWidth, height, minHeight, maxHeight, position, top, left, bottom, right, padding, paddingHorizontal, paddingVertical, paddingLeft, paddingRight, paddingTop, paddingBottom, borderColor, borderWidth, borderRadius, cornerRadius, fontWeight, fontSize, font, fontFamily, textAlign
   }
 
   public init(from decoder: Decoder) throws {
@@ -51,6 +52,7 @@ public struct StyleProps: Decodable {
     // ViewStyle
     color = try container.decodeIfPresent(ColorValue.self, forKey: .color) // alias for foregroundColor
     accentColor = try container.decodeIfPresent(ColorValue.self, forKey: .accentColor)
+    tint = try container.decodeIfPresent(ColorValue.self, forKey: .tint)
     tintColor = try container.decodeIfPresent(ColorValue.self, forKey: .tintColor)
     foregroundColor = try container.decodeIfPresent(ColorValue.self, forKey: .foregroundColor)
     backgroundColor = try container.decodeIfPresent(ColorValue.self, forKey: .backgroundColor)

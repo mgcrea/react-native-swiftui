@@ -81,7 +81,9 @@ extension View {
           .applyIf(style.backgroundColor != nil) { $0.background(Color(value: style.backgroundColor!)) }
           .applyIf(style.color != nil || style.foregroundColor != nil) { $0.foregroundStyle(Color(value: style.color ?? style.foregroundColor!)) }
           .applyIf(style.accentColor != nil) { $0.accentColor(Color(value: style.accentColor!)) }
-          .applyIf(style.tintColor != nil) { $0.tint(Color(value: style.tintColor!)) }
+          .applyIf(style.tint != nil || style.tintColor != nil) {
+            $0.tint(Color(value: style.tint ?? style.tintColor!))
+          }
           .applyIf(style.preferredColorScheme != nil) { $0.preferredColorScheme(style.preferredColorScheme!) }
           .applyIf(style.borderWidth != nil) { view in
             view.overlay(
