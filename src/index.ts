@@ -11,4 +11,7 @@ export { default as NativeContainerView } from "./native/SwiftUIRootNativeCompon
 export * from "./styles";
 export * from "./SwiftUI";
 export * from "./SwiftUIPicker";
+export { default as SwiftUIPicker } from "./SwiftUIPicker";
+export * from "./SwiftUISheet";
+export { default as SwiftUISheet } from "./SwiftUISheet";
 export * from "./types";

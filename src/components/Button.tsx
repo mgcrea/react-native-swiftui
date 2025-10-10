@@ -28,7 +28,7 @@ export const Button: FunctionComponentWithId<PropsWithChildren<NativeButtonProps
   style,
   ...otherProps
 }) => {
-  const normalizedTitle = title ? String(title) : undefined;
+  const normalizedTitle = title ?? undefined;
   const normalizedStyle = useNormalizedStyles<NativeTextStyle>(style);
 
   const { id } = useSwiftUINode(

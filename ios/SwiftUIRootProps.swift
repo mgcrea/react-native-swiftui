@@ -93,6 +93,12 @@ final class SwiftUIRootProps: ObservableObject {
       sheet.props.onDismiss = { [weak self] in
         self?.onEvent?("dismiss", "Sheet", sheet.id, nil)
       }
+      sheet.props.onPrimaryAction = { [weak self] in
+        self?.onEvent?("primaryAction", "Sheet", sheet.id, nil)
+      }
+      sheet.props.onSecondaryAction = { [weak self] in
+        self?.onEvent?("secondaryAction", "Sheet", sheet.id, nil)
+      }
     }
     if let children = node.children {
       children.forEach { bindEventHandlers(from: $0) }
