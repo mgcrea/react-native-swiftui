@@ -16,7 +16,7 @@ const DEFAULT_HEIGHTS: Record<NativePickerStyle, number> = {
   wheel: 216,
 };
 
-const SwiftUIPicker = forwardRef<NativePickerComponentRef, NativePickerProps>(
+export const SwiftUIPicker = forwardRef<NativePickerComponentRef, NativePickerProps>(
   ({ pickerStyle, style, ...restProps }, ref) => {
     const defaultHeight = DEFAULT_HEIGHTS[pickerStyle ?? "default"];
     const composedStyle: StyleProp<ViewStyle> = [{ minHeight: defaultHeight }, style];
@@ -35,4 +35,3 @@ const SwiftUIPicker = forwardRef<NativePickerComponentRef, NativePickerProps>(
 SwiftUIPicker.displayName = "SwiftUIPicker";
 
 export default SwiftUIPicker;
-export type { NativePickerProps, NativePickerStyle } from "./native/PickerViewNativeComponent";

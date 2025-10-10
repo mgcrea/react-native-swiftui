@@ -58,6 +58,7 @@ export const Picker = <T extends string>({
     [onChangeProp],
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-conversion
   const normalizedSelection = selection ? String(selection) : undefined;
   const normalizedConfig = useMemo(
     () =>

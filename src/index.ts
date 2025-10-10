@@ -10,5 +10,5 @@ export type { NativePickerProps, NativePickerStyle } from "./native/PickerViewNa
 export { default as NativeContainerView } from "./native/SwiftUIRootNativeComponent";
 export * from "./styles";
 export * from "./SwiftUI";
-export { default as SwiftUIPicker } from "./SwiftUIPicker";
+export * from "./SwiftUIPicker";
 export * from "./types";
