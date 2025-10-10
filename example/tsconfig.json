@@ -1,3 +1,4 @@
 {
-  "extends": "@react-native/typescript-config"
+  "extends": "@react-native/typescript-config",
+  "include": ["src"]
 }
