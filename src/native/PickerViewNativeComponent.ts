@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type { HostComponent, ViewProps } from "react-native";
-import type { DirectEventHandler, WithDefault } from "react-native/Libraries/Types/CodegenTypes";
 import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
+import type { DirectEventHandler, WithDefault } from "react-native/Libraries/Types/CodegenTypes";
 
-type NativePickerStyle = "default" | "inline" | "menu" | "segmented" | "wheel";
+export type NativePickerStyle = "default" | "inline" | "menu" | "segmented" | "wheel";
 
 type NativePickerChangeEvent = {
   value: string;
@@ -15,12 +15,13 @@ type NativePickerBlurEvent = {};
 export interface NativePickerProps extends ViewProps {
   selection?: string;
   label?: string;
+  labelColor?: string;
   options?: string[];
   pickerStyle?: WithDefault<NativePickerStyle, "default">;
   disabled?: boolean;
-  onChange?: DirectEventHandler<Readonly<NativePickerChangeEvent>>;
-  onFocus?: DirectEventHandler<Readonly<NativePickerFocusEvent>>;
-  onBlur?: DirectEventHandler<Readonly<NativePickerBlurEvent>>;
+  onNativeChange?: DirectEventHandler<Readonly<NativePickerChangeEvent>>;
+  onNativeFocus?: DirectEventHandler<Readonly<NativePickerFocusEvent>>;
+  onNativeBlur?: DirectEventHandler<Readonly<NativePickerBlurEvent>>;
 }
 
 export default codegenNativeComponent<NativePickerProps>(

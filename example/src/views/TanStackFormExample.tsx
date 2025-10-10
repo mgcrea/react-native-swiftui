@@ -10,6 +10,7 @@ import { SwiftUI } from '@mgcrea/react-native-swiftui/src';
 import { Alert, Text, TextInput, View } from 'react-native';
 import { type FunctionComponent } from 'react';
 import { AnimatedButton } from '../components';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const GENDERS = {
   male: 'Male',
@@ -53,7 +54,7 @@ export const TanStackFormExample: FunctionComponent = () => {
   });
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <SwiftUI style={{ flex: 1 }} debug>
         <SwiftUI.VStack>
           <SwiftUI.Text text="TanStackFormExample" />
@@ -152,7 +153,7 @@ export const TanStackFormExample: FunctionComponent = () => {
         </SwiftUI.VStack>
       </SwiftUI>
       <AnimatedButton title="Pulse Animation" variant="pulse" />
-    </View>
+    </SafeAreaView>
   );
 };
 

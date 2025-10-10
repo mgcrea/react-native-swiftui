@@ -11,18 +11,11 @@ public struct PickerView: View {
   }
 
   public var body: some View {
-    if props.label.isEmpty || props.pickerStyle != .segmented {
-      pickerContent()
-    } else {
-      if #available(iOS 16.0, *) {
-        LabeledContent(props.label) {
-          pickerContent()
-        }
+    Group {
+      if props.label.isEmpty {
+        pickerContent()
       } else {
-        HStack {
-          Text(props.label)
-          pickerContent()
-        }
+        labeledPicker()
       }
     }
   }
@@ -43,5 +36,43 @@ public struct PickerView: View {
       }
     )
     .applyStyles(props.style)
+  }
+
+  @ViewBuilder
+  private func labeledPicker() -> some View {
+    if #available(iOS 16.0, *) {
+      LabeledContent {
+        pickerContent()
+      } label: {
+        labelView()
+      }
+    } else {
+      HStack(alignment: .firstTextBaseline) {
+        labelView()
+          .font(.body)
+        Spacer()
+        pickerContent()
+          .foregroundColor(.secondary)
+      }
+      .padding(.vertical, 4)
+    }
+  }
+
+  @ViewBuilder
+  private func labelView() -> some View {
+    if let color = resolvedLabelColor {
+      Text(props.label)
+        .foregroundColor(color)
+    } else {
+      Text(props.label)
+        .foregroundColor(.primary)
+    }
+  }
+
+  private var resolvedLabelColor: Color? {
+    guard let colorValue = props.labelColor else {
+      return nil
+    }
+    return Color(value: colorValue)
   }
 }

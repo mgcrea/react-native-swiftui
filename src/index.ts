@@ -5,7 +5,10 @@
 // export { default as NativeSectionView } from "./SectionNativeComponent";
 // export * from "./native/SwiftUIRootNativeComponent";
 export * from "./components";
+export { default as PickerViewNativeComponent } from "./native/PickerViewNativeComponent";
+export type { NativePickerProps, NativePickerStyle } from "./native/PickerViewNativeComponent";
 export { default as NativeContainerView } from "./native/SwiftUIRootNativeComponent";
 export * from "./styles";
 export * from "./SwiftUI";
+export { default as SwiftUIPicker } from "./SwiftUIPicker";
 export * from "./types";

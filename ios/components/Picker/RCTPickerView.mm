@@ -12,18 +12,32 @@ using namespace facebook::react;
 static NSDictionary *convertProps(const NativePickerViewProps &props) {
   NSMutableArray *optionsArray = [NSMutableArray array];
   for (const auto &option : props.options) {
-    [optionsArray addObject:[NSString stringWithUTF8String:option.c_str()]];
+    NSString *optionValue = [NSString stringWithUTF8String:option.c_str()];
+    [optionsArray addObject:@{
+      @"label" : optionValue,
+      @"value" : optionValue,
+    }];
   }
   NSLog(@"pickerStyle: %d", props.pickerStyle);
   std::string styleString = toString(props.pickerStyle);
   NSString *pickerStyle = [NSString stringWithUTF8String:styleString.c_str()];
   NSLog(@"pickerStyle: %@", pickerStyle);
 
-  return @{
+  NSMutableDictionary *propsDictionary = [@{
     @"selection" : [NSString stringWithUTF8String:props.selection.c_str()],
+    @"label" : [NSString stringWithUTF8String:props.label.c_str()],
     @"options" : optionsArray,
-    @"pickerStyle" : pickerStyle
-  };
+    @"pickerStyle" : pickerStyle,
+    @"disabled" : @(props.disabled),
+  } mutableCopy];
+
+  if (!props.labelColor.empty()) {
+    NSString *labelColor =
+        [NSString stringWithUTF8String:props.labelColor.c_str()];
+    propsDictionary[@"labelColor"] = labelColor;
+  }
+
+  return propsDictionary;
 }
 
 @interface RCTPickerView () <RCTComponentViewProtocol>
@@ -77,10 +91,10 @@ static NSDictionary *convertProps(const NativePickerViewProps &props) {
 // MARK: - Event Emitter
 
 - (void)emitChangeEventWithValue:(NSString *)value {
-  NativePickerViewEventEmitter::OnChange event = {
+  NativePickerViewEventEmitter::OnNativeChange event = {
       .value = value.UTF8String,
   };
-  self.eventEmitter.onChange(event);
+  self.eventEmitter.onNativeChange(event);
 }
 
 - (const NativePickerViewEventEmitter &)eventEmitter {
