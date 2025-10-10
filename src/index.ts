@@ -14,4 +14,6 @@ export * from "./SwiftUIPicker";
 export { default as SwiftUIPicker } from "./SwiftUIPicker";
 export * from "./SwiftUISheet";
 export { default as SwiftUISheet } from "./SwiftUISheet";
+export * from "./SwiftUISheetPicker";
+export { default as SwiftUISheetPicker } from "./SwiftUISheetPicker";
 export * from "./types";
