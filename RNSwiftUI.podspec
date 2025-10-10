@@ -20,6 +20,7 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = {
     "DEFINES_MODULE" => "YES",
     'SWIFT_COMPILATION_MODE' => 'wholemodule',
+    # 'SWIFT_INSTALL_OBJC_HEADER' => 'YES',
   }
 
   s.source_files = "ios/**/*.{h,m,mm,cpp,swift}"
