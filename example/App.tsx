@@ -14,8 +14,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 function App(): React.JSX.Element {
   // Switch between these to test different scenarios:
   // return <BasicFormExample />; // Basic form with picker issue test
-  return <TanStackFormExample />; // Original working example
-  // return <StandalonePickerExample />;
+  // return <TanStackFormExample />; // Original working example
+  return <StandalonePickerExample />;
 }
 
 export default App;
