@@ -39,8 +39,9 @@
     "@babel/runtime": "^7.26.9",
     "@jest/globals": "^29.7.0",
     "@mgcrea/eslint-config-react-native": "^0.13.0",
-    "@react-native/babel-preset": "0.80.2",
-    "@react-native/typescript-config": "0.80.2",
+    "@react-native-community/cli": "^20.0.2",
+    "@react-native/babel-preset": "0.82.0",
+    "@react-native/typescript-config": "0.82.0",
     "@testing-library/react-native": "^13.2.2",
     "@types/react": "^19.0.10",
     "babel-plugin-module-resolver": "^5.0.2",
@@ -71,5 +72,5 @@
     },
     "includesGeneratedCode": true
   },
-  "packageManager": "pnpm@10.14.0"
+  "packageManager": "pnpm@10.18.2"
 }
