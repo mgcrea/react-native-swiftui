@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-import type { HostComponent, ViewProps } from "react-native";
+import { codegenNativeComponent, type HostComponent, type ViewProps } from "react-native";
 import type { DirectEventHandler, WithDefault } from "react-native/Libraries/Types/CodegenTypes";
-import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
 
 export type NativeSheetPickerOption = Readonly<{
   label?: string;

@@ -1,5 +1,5 @@
-import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId } from "../types";
+import { useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/spacer
 export type NativeSpacerProps = {

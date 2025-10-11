@@ -1,7 +1,7 @@
 import { type PropsWithChildren, useMemo } from "react";
-import { SwiftUIParentIdProvider } from "../contexts";
-import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId, NativeTextStyle } from "../types";
+import { SwiftUIParentIdProvider } from "../../contexts";
+import { useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/stepper
 

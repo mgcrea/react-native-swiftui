@@ -1,5 +1,12 @@
 import { PropsWithChildren, ReactElement, ReactNode, useCallback, useEffect, useId } from "react";
 import { StyleProp, ViewStyle } from "react-native";
+import { SwiftUIParentIdProvider } from "./../contexts";
+import { SwiftUIProvider, useSwiftUIContext } from "./../contexts/SwiftUIContext";
+import {
+  NativeSwiftUIEvent,
+  default as SwiftUIRootNativeComponent,
+} from "./../native/SwiftUIRootNativeComponent";
+import { buildViewTree } from "./../utils/viewTree";
 import {
   Button,
   DatePicker,
@@ -22,14 +29,7 @@ import {
   Toggle,
   VStack,
   ZStack,
-} from "./components";
-import { SwiftUIParentIdProvider } from "./contexts";
-import { SwiftUIProvider, useSwiftUIContext } from "./contexts/SwiftUIContext";
-import {
-  NativeSwiftUIEvent,
-  default as SwiftUIRootNativeComponent,
-} from "./native/SwiftUIRootNativeComponent";
-import { buildViewTree } from "./utils/viewTree";
+} from "./SwiftUI/index";
 
 export type SwiftUIProps = {
   id?: string;

@@ -1,7 +1,7 @@
 import { type PropsWithChildren } from "react";
-import { SwiftUIParentIdProvider } from "../contexts";
-import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId, NativeViewStyle } from "../types";
+import { SwiftUIParentIdProvider } from "../../contexts";
+import { useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeViewStyle } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/vstack
 export type NativeVStackProps = {

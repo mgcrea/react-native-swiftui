@@ -1,6 +1,6 @@
 import { type StyleProp } from "react-native";
-import { useNormalizedStyles, useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId, NativeTextStyle } from "../types";
+import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
 
 export type NativeTextProps = {
   text: string;

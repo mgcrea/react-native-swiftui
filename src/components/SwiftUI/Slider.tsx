@@ -1,7 +1,7 @@
 import { PropsWithChildren, useMemo } from "react";
-import { SwiftUIParentIdProvider } from "../contexts";
-import { useDebounce, useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId } from "../types";
+import { SwiftUIParentIdProvider } from "../../contexts";
+import { useDebounce, useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId } from "../../types";
 
 export type NativeSliderProps = {
   value?: number;

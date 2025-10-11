@@ -4,8 +4,8 @@ import type { StyleProp, ViewStyle } from "react-native";
 import NativePickerViewNativeComponent, {
   type NativePickerProps,
   type NativePickerStyle,
-} from "./native/PickerViewNativeComponent";
-import { NativeTextStyle } from "./types";
+} from "../native/PickerViewNativeComponent";
+import { NativeTextStyle } from "../types";
 
 type NativePickerComponentRef = React.ComponentRef<typeof NativePickerViewNativeComponent>;
 
@@ -55,5 +55,3 @@ export const SwiftUIPicker = forwardRef<NativePickerComponentRef, SwiftUIPickerP
 );
 
 SwiftUIPicker.displayName = "SwiftUIPicker";
-
-export default SwiftUIPicker;

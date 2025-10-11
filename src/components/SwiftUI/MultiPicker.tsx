@@ -1,8 +1,8 @@
 import { ReactNode, useMemo } from "react";
 import { StyleProp } from "react-native";
-import { useNormalizedStyles, useSwiftUINode } from "../hooks";
-import type { NativeTextStyle } from "../types";
-import { fillArray } from "../utils";
+import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import type { NativeTextStyle } from "../../types";
+import { fillArray } from "../../utils";
 
 // https://developer.apple.com/documentation/swiftui/picker
 

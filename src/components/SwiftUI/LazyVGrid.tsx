@@ -1,7 +1,7 @@
 import { type PropsWithChildren } from "react";
-import { SwiftUIParentIdProvider } from "../contexts";
-import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId, NativeLazyVGridProps } from "../types";
+import { SwiftUIParentIdProvider } from "../../contexts";
+import { useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeLazyVGridProps } from "../../types";
 
 export const LazyVGrid: FunctionComponentWithId<PropsWithChildren<NativeLazyVGridProps>> = ({
   children,

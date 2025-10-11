@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { StyleProp } from "react-native";
-import { useNormalizedStyles, useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId, NativeTextStyle } from "../types";
+import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
 import { NativeKeyboardType, NativeReturnKeyType } from "./TextField";
 
 export type NumberFormatter =

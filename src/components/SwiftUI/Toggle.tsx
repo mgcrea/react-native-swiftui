@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId } from "../types";
+import { useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId } from "../../types";
 
 export type NativeToggleProps = {
   isOn: boolean;

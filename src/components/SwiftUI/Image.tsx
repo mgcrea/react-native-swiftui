@@ -1,6 +1,6 @@
 import { Image as BaseImage, type ImageSourcePropType } from "react-native";
-import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId, NativeTextStyle } from "../types";
+import { useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
 
 export type NativeImageProps = {
   name?: string;

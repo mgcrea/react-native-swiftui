@@ -1,8 +1,8 @@
 import { type PropsWithChildren } from "react";
 import { StyleProp } from "react-native";
-import { SwiftUIParentIdProvider } from "../contexts";
-import { useNormalizedStyles, useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId, NativeViewStyle } from "../types";
+import { SwiftUIParentIdProvider } from "../../contexts";
+import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeViewStyle } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/form
 

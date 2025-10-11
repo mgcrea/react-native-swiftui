@@ -1,5 +1,5 @@
-import { useSwiftUINode } from "../hooks";
-import type { FunctionComponentWithId, NativeTextStyle } from "../types";
+import { useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
 
 export type NativeKeyboardType = "default" | "numberPad" | "emailAddress" | "decimalPad";
 export type NativeTextContentType = "username" | "password" | "emailAddress";
