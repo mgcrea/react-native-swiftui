@@ -135,6 +135,10 @@ export const BasicFormExample: FunctionComponent = () => {
 
 Below is a list of components currently supported by `@mgcrea/react-native-swiftui`. These components leverage SwiftUI's native iOS capabilities while being controlled via React Native's JSX syntax.
 
+### SwiftUI Tree Components
+
+These components are used within the `<SwiftUI>` tree and accessed via `SwiftUI.*`:
+
 | Component    | Description                                 | Key Props                                                                  | Notes                                                                                   |
 | ------------ | ------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | `Button`     | A clickable button with customizable styles | `title`, `buttonStyle`, `disabled`, `style`, `onPress`                     | Supports styles like `default`, `plain`, `bordered`, etc.                               |
@@ -155,6 +159,16 @@ Below is a list of components currently supported by `@mgcrea/react-native-swift
 | `Toggle`     | A switch for boolean values                 | `isOn`, `label`, `onChange`                                                | Simple on/off control                                                                   |
 | `VStack`     | Vertical stack layout                       | `alignment`, `spacing`, `style`, Children                                  | Alignments: `leading`, `center`, `trailing`                                             |
 | `ZStack`     | Overlapping stack layout                    | `alignment`, `style`, Children                                             | Alignments: `topLeading`, `center`, `bottomTrailing`, etc.                              |
+
+### Standalone Native Components
+
+These components are standalone native views that can be used anywhere in your React Native app:
+
+| Component             | Description                                          | Key Props                                                                                          | Notes                                                                           |
+| --------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `SwiftUIPicker`       | A native picker modal with search functionality      | `isPresented`, `title`, `searchPlaceholder`, `options`, `selectedValue`, `autoDismiss`, `onSelect` | Full-screen native picker with search and categorization support                |
+| `SwiftUISheet`        | A native modal sheet presentation                    | `isPresented`, `detents`, `onDismiss`, Children                                                    | Standalone sheet that can be used outside of SwiftUI tree                       |
+| `SwiftUISheetPicker`  | A native picker presented as a bottom sheet          | `isPresented`, `title`, `searchPlaceholder`, `options`, `selectedValue`, `autoDismiss`, `onSelect` | Combines sheet presentation with picker functionality for a native iOS experience |
 
 ## Contribute
 
