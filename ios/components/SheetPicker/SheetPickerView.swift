@@ -50,21 +50,30 @@ private struct SheetPickerContentView: View {
   }
 
   private var listView: some View {
+    Group {
+      if #available(iOS 16.0, *) {
+        baseList
+          .scrollContentBackground(.hidden)
+      } else {
+        baseList
+      }
+    }
+  }
+
+  private var baseList: some View {
     List(props.filteredOptions) { option in
       SheetPickerRow(option: option, props: props)
         .listRowInsets(EdgeInsets())
         .listRowBackground(Color.clear)
     }
     .listStyle(.plain)
-    .cornerRadius(12)
-    // .scrollContentBackground(.hidden)
+    .background(Color.clear)
   }
 }
 
 private struct SheetPickerRow: View {
   let option: SheetPickerOption
   @ObservedObject var props: SheetPickerProps
-  @State private var isPressed = false
 
   var body: some View {
     Button {
@@ -84,55 +93,28 @@ private struct SheetPickerRow: View {
             .frame(width: 20, height: 20)
         }
       }
-      .padding(.vertical, 10)
+    }
+    .buttonStyle(HighlightableRowButtonStyle(isSelected: option.value == props.selectedValue))
+  }
+}
+
+private struct HighlightableRowButtonStyle: ButtonStyle {
+  let isSelected: Bool
+
+  func makeBody(configuration: Configuration) -> some View {
+    configuration.label
+      .padding(.vertical, 12)
       .padding(.horizontal, 8)
-      .background(rowBackgroundColor)
+      .frame(maxWidth: .infinity, alignment: .leading)
+      .background(backgroundColor(isPressed: configuration.isPressed))
       .cornerRadius(10)
       .contentShape(Rectangle())
-    }
-    .buttonStyle(.plain)
-    .onChange(of: props.selectedValue) { _ in
-      isPressed = false
-    }
-    .pressAction {
-      isPressed = true
-    } onRelease: {
-      isPressed = false
-    }
   }
 
-  private var rowBackgroundColor: Color {
-    if option.value == props.selectedValue {
+  private func backgroundColor(isPressed: Bool) -> Color {
+    if isSelected {
       return Color.accentColor.opacity(0.12)
     }
     return isPressed ? Color.gray.opacity(0.15) : Color.clear
-  }
-}
-
-private extension View {
-  func pressAction(onPress: @escaping () -> Void, onRelease: @escaping () -> Void) -> some View {
-    modifier(PressActionModifier(onPress: onPress, onRelease: onRelease))
-  }
-}
-
-private struct PressActionModifier: ViewModifier {
-  let onPress: () -> Void
-  let onRelease: () -> Void
-
-  @State private var isPressed = false
-
-  func body(content: Content) -> some View {
-    content
-      .simultaneousGesture(DragGesture(minimumDistance: 0)
-        .onChanged { _ in
-          if !isPressed {
-            isPressed = true
-            onPress()
-          }
-        }
-        .onEnded { _ in
-          isPressed = false
-          onRelease()
-        })
   }
 }
