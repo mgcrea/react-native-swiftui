@@ -1,12 +1,16 @@
-import { SwiftUI } from '@mgcrea/react-native-swiftui/src';
+import {
+  SwiftUI,
+  type SheetPickerOption,
+} from '@mgcrea/react-native-swiftui/src';
 import { useState, type FunctionComponent } from 'react';
-import { PlatformColor, View } from 'react-native';
+import { PlatformColor } from 'react-native';
 import logoImage from '../assets/logo.png';
 import { AnimatedButton } from '../components';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const FullFormExample: FunctionComponent = () => {
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <SwiftUI style={{ flex: 1 }}>
         <SwiftUI.VStack>
           <SwiftUI.Text text="FullFormExample" />
@@ -14,6 +18,7 @@ export const FullFormExample: FunctionComponent = () => {
             <LazyVGridSection />
             <TextFieldSection />
             <PickerMenuSection />
+            <SheetPickerSection />
             <PickerSegmentedSection />
             <DatePickerSection />
             <MultiPickerSection />
@@ -26,7 +31,7 @@ export const FullFormExample: FunctionComponent = () => {
         </SwiftUI.VStack>
       </SwiftUI>
       <AnimatedButton title="Pulse Animation" variant="pulse" />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -86,6 +91,54 @@ const PickerMenuSection: FunctionComponent = () => {
         title={`Add a new option 'Option ${options.length + 1}'`}
         onPress={() => {
           setOptions([...options, `Option ${options.length + 1}`]);
+        }}
+      />
+    </SwiftUI.Section>
+  );
+};
+
+const INITIAL_SHEET_PICKER_OPTIONS: SheetPickerOption[] = [
+  { label: 'Apple', value: 'apple' },
+  { label: 'Banana', value: 'banana' },
+  { label: 'Cherry', value: 'cherry' },
+];
+
+const SheetPickerSection: FunctionComponent = () => {
+  const [options, setOptions] = useState<SheetPickerOption[]>(() => [
+    ...INITIAL_SHEET_PICKER_OPTIONS,
+  ]);
+  const [selectedValue, setSelectedValue] = useState(
+    () => INITIAL_SHEET_PICKER_OPTIONS[0]?.value ?? '',
+  );
+
+  const selectedLabel =
+    options.find(option => option.value === selectedValue)?.label ?? 'None';
+
+  return (
+    <SwiftUI.Section header="SheetPicker Example">
+      {/* <SwiftUI.Text
+        text={`Selected fruit: ${selectedLabel}`}
+        style={{ color: PlatformColor('systemGray2') }}
+      /> */}
+      <SwiftUI.SheetPicker
+        label="Fruit"
+        selectedValue={selectedValue}
+        options={options}
+        title="Choose a fruit"
+        searchPlaceholder="Search fruits"
+        placeholder="Select a fruit"
+        onChange={value => setSelectedValue(value)}
+      />
+      <SwiftUI.Button
+        title={`Add fruit ${options.length + 1}`}
+        onPress={() => {
+          const nextIndex = options.length + 1;
+          const nextOption = {
+            label: `Fruit ${nextIndex}`,
+            value: `fruit-${nextIndex}`,
+          };
+          setOptions([...options, nextOption]);
+          setSelectedValue(nextOption.value);
         }}
       />
     </SwiftUI.Section>
@@ -179,7 +232,9 @@ const SliderSection: FunctionComponent = () => {
         maximum={100}
         step={1}
         onChange={value => setVolume(value)}
-      />
+      >
+        <SwiftUI.Text text={volume.toFixed(0)} style={{ color: '#007aff' }} />
+      </SwiftUI.Slider>
       <SwiftUI.Button title="Set volume to 75" onPress={() => setVolume(75)} />
     </SwiftUI.Section>
   );
@@ -194,7 +249,9 @@ const StepperSection: FunctionComponent = () => {
         value={value}
         step={1}
         onChange={value => setValue(value)}
-      />
+      >
+        <SwiftUI.Text text={value.toString()} style={{ color: '#007aff' }} />
+      </SwiftUI.Stepper>
       <SwiftUI.Button
         title="Increment"
         onPress={() => setValue(value => value + 1)}
