@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 public struct SheetPickerView: View {
   @ObservedObject var props: SheetPickerProps
@@ -8,7 +9,7 @@ public struct SheetPickerView: View {
   }
 
   public var body: some View {
-    HStack {}
+    triggerView
       .sheet(isPresented: $props.isPresented, onDismiss: props.onDismiss) {
         if #available(iOS 16.0, *) {
           SheetPickerContentView(props: props)
@@ -18,6 +19,63 @@ public struct SheetPickerView: View {
         }
       }
   }
+
+  @ViewBuilder
+  private var triggerView: some View {
+    switch props.displayMode {
+    case .embedded:
+      embeddedTrigger
+    case .standalone:
+      Color.clear
+        .frame(width: 0, height: 0)
+        .accessibilityHidden(true)
+    }
+  }
+
+  private var embeddedTrigger: some View {
+    Button {
+      guard !props.disabled else { return }
+      props.isPresented = true
+    } label: {
+      embeddedLabel
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .contentShape(Rectangle())
+    }
+    .buttonStyle(.plain)
+    .disabled(props.disabled)
+  }
+
+  @ViewBuilder
+  private var embeddedLabel: some View {
+    if props.label.isEmpty {
+      selectionLabel
+        .frame(maxWidth: .infinity, alignment: .leading)
+    } else if #available(iOS 16.0, *) {
+      LabeledContent {
+        selectionLabel
+      } label: {
+        Text(props.label)
+      }
+    } else {
+      HStack(alignment: .firstTextBaseline, spacing: 8) {
+        Text(props.label)
+          .foregroundColor(.primary)
+        Spacer()
+        selectionLabel
+      }
+      .padding(.vertical, 4)
+    }
+  }
+
+  private var selectionLabel: some View {
+    HStack(spacing: 6) {
+      Text(props.resolvedSelectedLabel)
+        .foregroundColor(props.hasSelection ? .accentColor : Color(.placeholderText))
+      Image(systemName: "chevron.up.chevron.down")
+        .font(.footnote)
+        .foregroundColor(props.hasSelection ? .accentColor : Color(.placeholderText))
+    }
+  }
 }
 
 private struct SheetPickerContentView: View {
@@ -26,8 +84,8 @@ private struct SheetPickerContentView: View {
   var body: some View {
     NavigationView {
       VStack(spacing: 16) {
-        if !props.title.isEmpty {
-          Text(props.title)
+        if !headerTitle.isEmpty {
+          Text(headerTitle)
             .font(.title2)
             .bold()
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -68,6 +126,11 @@ private struct SheetPickerContentView: View {
     }
     .listStyle(.plain)
     .background(Color.clear)
+  }
+
+  private var headerTitle: String {
+    let candidate = props.title.isEmpty ? props.label : props.title
+    return candidate
   }
 }
 

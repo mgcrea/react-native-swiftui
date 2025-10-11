@@ -99,6 +99,13 @@ final class SwiftUIRootProps: ObservableObject {
       sheet.props.onSecondaryAction = { [weak self] in
         self?.onEvent?("secondaryAction", "Sheet", sheet.id, nil)
       }
+    } else if let sheetPicker = node as? GenericNode<SheetPickerProps> {
+      sheetPicker.props.onSelect = { [weak self] value in
+        self?.onEvent?("change", "SheetPicker", sheetPicker.id, value)
+      }
+      sheetPicker.props.onDismiss = { [weak self] in
+        self?.onEvent?("dismiss", "SheetPicker", sheetPicker.id, nil)
+      }
     }
     if let children = node.children {
       children.forEach { bindEventHandlers(from: $0) }

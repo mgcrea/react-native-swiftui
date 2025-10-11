@@ -1,5 +1,10 @@
 import SwiftUI
 
+public enum SheetPickerDisplayMode: String, Decodable {
+  case standalone
+  case embedded
+}
+
 public struct SheetPickerOption: Identifiable, Decodable, Hashable {
   public let label: String
   public let value: String
@@ -30,6 +35,10 @@ public final class SheetPickerProps: ObservableObject, Decodable {
   @Published public var options: [SheetPickerOption] = []
   @Published public var searchText: String = ""
   @Published public var autoDismiss: Bool = true
+  @Published public var label: String = ""
+  @Published public var placeholder: String = ""
+  @Published public var disabled: Bool = false
+  @Published public var displayMode: SheetPickerDisplayMode = .standalone
 
   public var onSelect: ((String) -> Void)?
   public var onDismiss: (() -> Void)?
@@ -41,6 +50,10 @@ public final class SheetPickerProps: ObservableObject, Decodable {
     case selectedValue
     case options
     case autoDismiss
+    case label
+    case placeholder
+    case disabled
+    case displayMode
   }
 
   public required init(from decoder: Decoder) throws {
@@ -51,6 +64,16 @@ public final class SheetPickerProps: ObservableObject, Decodable {
     selectedValue = try container.decodeIfPresent(String.self, forKey: .selectedValue) ?? ""
     options = try container.decodeIfPresent([SheetPickerOption].self, forKey: .options) ?? []
     autoDismiss = try container.decodeIfPresent(Bool.self, forKey: .autoDismiss) ?? true
+    label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+    placeholder = try container.decodeIfPresent(String.self, forKey: .placeholder) ?? ""
+    disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
+    if let displayModeString = try container.decodeIfPresent(String.self, forKey: .displayMode),
+       let parsedDisplayMode = SheetPickerDisplayMode(rawValue: displayModeString)
+    {
+      displayMode = parsedDisplayMode
+    } else {
+      displayMode = .standalone
+    }
   }
 
   public init() {}
@@ -74,6 +97,18 @@ public final class SheetPickerProps: ObservableObject, Decodable {
     if autoDismiss != other.autoDismiss {
       autoDismiss = other.autoDismiss
     }
+    if label != other.label {
+      label = other.label
+    }
+    if placeholder != other.placeholder {
+      placeholder = other.placeholder
+    }
+    if disabled != other.disabled {
+      disabled = other.disabled
+    }
+    if displayMode != other.displayMode {
+      displayMode = other.displayMode
+    }
   }
 
   public var filteredOptions: [SheetPickerOption] {
@@ -82,6 +117,23 @@ public final class SheetPickerProps: ObservableObject, Decodable {
     return options.filter { option in
       option.label.localizedCaseInsensitiveContains(trimmed) || option.value.localizedCaseInsensitiveContains(trimmed)
     }
+  }
+
+  public var hasSelection: Bool {
+    !selectedValue.isEmpty
+  }
+
+  public var resolvedSelectedLabel: String {
+    if let option = options.first(where: { $0.value == selectedValue }) {
+      return option.label
+    }
+    if !selectedValue.isEmpty {
+      return selectedValue
+    }
+    if !placeholder.isEmpty {
+      return placeholder
+    }
+    return "Select"
   }
 
   public func select(value: String) {
