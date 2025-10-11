@@ -25,6 +25,7 @@ export const StandaloneSheetExample: FunctionComponent = () => {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.content}
+        contentInsetAdjustmentBehavior="automatic"
       >
         <Text style={styles.title}>StandaloneSheetExample</Text>
         <Text style={styles.subtitle}>Using SwiftUISheet directly</Text>

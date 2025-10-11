@@ -1,13 +1,13 @@
 import {
   SwiftUIPicker,
-  type NativePickerProps,
+  type SwiftUIPickerProps,
 } from '@mgcrea/react-native-swiftui/src';
 import { useState, type FunctionComponent } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { AnimatedButton } from '../components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-type PickerStyle = NonNullable<NativePickerProps['pickerStyle']>;
+type PickerStyle = NonNullable<SwiftUIPickerProps['pickerStyle']>;
 
 export const StandalonePickerExample: FunctionComponent = () => {
   const [pickerStyle, setPickerStyle] = useState<PickerStyle>('default');
@@ -30,6 +30,7 @@ export const StandalonePickerExample: FunctionComponent = () => {
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.content}
+        contentInsetAdjustmentBehavior="automatic"
       >
         <Text style={styles.title}>StandalonePickerExample</Text>
         <Text style={styles.subtitle}>Using SwiftUIPicker directly</Text>
