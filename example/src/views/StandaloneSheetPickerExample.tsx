@@ -33,7 +33,7 @@ const FRUITS: SheetPickerOption[] = [
 export const StandaloneSheetPickerExample: FunctionComponent = () => {
   const [isPresented, setIsPresented] = useState(false);
   const [selectedValue, setSelectedValue] = useState('apple');
-  const [fruits, setFruits] = useState<SheetPickerOption[]>(FRUITS);
+  const [fruits, setFruits] = useState<SheetPickerOption[]>(() => [...FRUITS]);
 
   const selectedLabel = useMemo(
     () =>
@@ -52,6 +52,7 @@ export const StandaloneSheetPickerExample: FunctionComponent = () => {
       value: `custom_${Date.now()}`,
     };
     setFruits(prevFruits => [...prevFruits, newFruit]);
+    setSelectedValue(newFruit.value);
   };
 
   return (
@@ -76,7 +77,7 @@ export const StandaloneSheetPickerExample: FunctionComponent = () => {
           <AnimatedButton
             title="Add a fruit"
             onPress={handleAddFruit}
-            variant="pulse"
+            variant="bounce"
           />
         </View>
       </ScrollView>

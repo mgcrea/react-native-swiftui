@@ -19,7 +19,8 @@ function App(): React.JSX.Element {
   // return <TanStackFormExample />; // Original working example
   // return <StandalonePickerExample />;
   // return <StandaloneSheetExample />;
-  return <StandaloneSheetPickerExample />;
+  // return <StandaloneSheetPickerExample />;
+  return <FullFormExample />;
 }
 
 export default App;
