@@ -11,6 +11,7 @@ export * from "./Picker";
 export * from "./Rectangle";
 export * from "./Section";
 export * from "./Sheet";
+export * from "./SheetPicker";
 export * from "./Slider";
 export * from "./Spacer";
 export * from "./Stepper";

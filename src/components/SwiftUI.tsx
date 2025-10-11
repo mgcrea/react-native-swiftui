@@ -21,6 +21,7 @@ import {
   Rectangle,
   Section,
   Sheet,
+  SheetPicker,
   Slider,
   Spacer,
   Stepper,
@@ -110,6 +111,7 @@ SwiftUI.MultiPicker = MultiPicker;
 SwiftUI.Rectangle = Rectangle;
 SwiftUI.Section = Section;
 SwiftUI.Sheet = Sheet;
+SwiftUI.SheetPicker = SheetPicker;
 SwiftUI.Slider = Slider;
 SwiftUI.Spacer = Spacer;
 SwiftUI.Stepper = Stepper;
