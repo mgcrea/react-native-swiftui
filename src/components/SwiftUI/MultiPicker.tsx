@@ -63,8 +63,10 @@ export const MultiPicker = <T extends string>({
     [onChangeProp],
   );
 
-  // .map((selection) => String(selection) as T)
-  const normalizedSelections = selections ? fillArray(selections, components.length, "" as T) : undefined;
+  // Ensure selections array matches components length by truncating first, then padding
+  const normalizedSelections = selections
+    ? fillArray(selections.slice(0, components.length), components.length, "" as T)
+    : undefined;
   const normalizedComponents = useMemo(
     () =>
       components.map((component) => {
