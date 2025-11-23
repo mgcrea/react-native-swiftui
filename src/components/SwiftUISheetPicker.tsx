@@ -38,9 +38,8 @@ export const SwiftUISheetPicker = forwardRef<SwiftUISheetPickerHandle, SwiftUISh
           if (onSelect) {
             onSelect(event.nativeEvent.value);
           }
-          if (autoDismiss) {
-            onDismiss?.();
-          }
+          // Don't call onDismiss here - let native handle it via onNativeDismiss
+          // The native side auto-dismisses when autoDismiss is true
         }}
         onNativeDismiss={onDismiss}
         {...props}
