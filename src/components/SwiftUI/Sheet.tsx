@@ -10,15 +10,32 @@ export type NativeSheetDetent = "medium" | "large" | `fraction:${number}` | `hei
 export type NativeSheetProps = {
   isPresented?: boolean;
   detents?: NativeSheetDetent[];
-  onDismiss?: () => void;
+  title?: string;
+  message?: string;
+  primaryButtonTitle?: string;
+  secondaryButtonTitle?: string;
 };
 
-export const Sheet: FunctionComponentWithId<PropsWithChildren<NativeSheetProps>> = ({
+export type NativeSheetEvents = {
+  onDismiss?: () => void;
+  onPrimaryAction?: () => void;
+  onSecondaryAction?: () => void;
+};
+
+export type SheetProps = NativeSheetProps & NativeSheetEvents;
+
+export const Sheet: FunctionComponentWithId<PropsWithChildren<SheetProps>> = ({
   children,
   onDismiss,
+  onPrimaryAction,
+  onSecondaryAction,
   ...otherProps
 }) => {
-  const { id } = useSwiftUINode("Sheet", otherProps, { dismiss: onDismiss });
+  const { id } = useSwiftUINode("Sheet", otherProps, {
+    dismiss: onDismiss,
+    primaryAction: onPrimaryAction,
+    secondaryAction: onSecondaryAction,
+  });
   return <SwiftUIParentIdProvider id={id}>{children}</SwiftUIParentIdProvider>;
 };
 Sheet.displayName = "Sheet";
