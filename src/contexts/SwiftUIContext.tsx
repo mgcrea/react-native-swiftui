@@ -23,9 +23,11 @@ export type NodeRegistry = Map<string, { node: ViewTreeNode; parentId?: string }
 export type SwiftUIContextValue = {
   getEventHandler: (id: string, name: string) => EventHandler | undefined;
   nodesKey: string;
+  renderSequenceKey: string;
   getNodes: () => NodeRegistry;
   nativeRef: RefObject<React.ComponentRef<typeof SwiftUIRootNativeComponent> | null>;
   recordRenderOrder: (id: string) => void;
+  commitRenderSequence: () => void;
   registerEvents: (id: string, events: Record<string, EventHandler | undefined>) => void;
   registerEvent: (id: string, name: string, handler: EventHandler) => void;
   registerNode: (node: ViewTreeNode, parentId: string) => void;
@@ -49,7 +51,9 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
   const eventRegistry = useRef<EventRegistry>(new Map());
   const nodeRegistry = useRef<NodeRegistry>(new Map());
   const [nodeRegistryVersion, setNodeRegistryVersion] = useState(0);
+  const [renderSequenceVersion, setRenderSequenceVersion] = useState(0);
   const renderSequence = useRef<string[]>([]);
+  const previousRenderSequence = useRef<string[]>([]);
   const nativeRef = useRef<React.ComponentRef<typeof SwiftUIRootNativeComponent> | null>(null);
 
   const log = useCallback(
@@ -66,6 +70,11 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
     return JSON.stringify(keys);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nodeRegistryVersion]);
+
+  const renderSequenceKey = useMemo(() => {
+    return JSON.stringify(renderSequence.current);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [renderSequenceVersion]);
 
   const getEventHandler = (id: string, name: string) => {
     return eventRegistry.current.get(id)?.get(name);
@@ -127,8 +136,23 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
   const getNodes = useCallback(() => nodeRegistry.current, []);
 
   const recordRenderOrder = useCallback((id: string) => {
-    if (!renderSequence.current.includes(id)) {
-      renderSequence.current.push(id);
+    // During render, just append to the sequence - don't trigger state updates
+    // The sequence will be reset before each render pass in SwiftUIRoot
+    renderSequence.current.push(id);
+  }, []);
+
+  const commitRenderSequence = useCallback(() => {
+    // After render, check if order actually changed and only then bump version
+    const currentSequence = renderSequence.current;
+    const prevSequence = previousRenderSequence.current;
+
+    // Compare sequences - only update if they differ
+    if (
+      currentSequence.length !== prevSequence.length ||
+      currentSequence.some((id, index) => id !== prevSequence[index])
+    ) {
+      previousRenderSequence.current = [...currentSequence];
+      setRenderSequenceVersion((prev) => prev + 1);
     }
   }, []);
 
@@ -153,9 +177,11 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
   const context = {
     getEventHandler,
     nodesKey,
+    renderSequenceKey,
     getNodes,
     nativeRef,
     recordRenderOrder,
+    commitRenderSequence,
     registerEvents,
     registerEvent,
     registerNode,

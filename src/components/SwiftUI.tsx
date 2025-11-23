@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactElement, ReactNode, useCallback, useEffect, useId } from "react";
+import { PropsWithChildren, ReactElement, ReactNode, useCallback, useEffect, useId, useLayoutEffect } from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { SwiftUIParentIdProvider } from "./../contexts";
 import { SwiftUIProvider, useSwiftUIContext } from "./../contexts/SwiftUIContext";
@@ -46,7 +46,15 @@ export const SwiftUIRoot = ({
   onEvent: rootOnEvent,
   debug = false,
 }: PropsWithChildren<SwiftUIProps>): ReactNode => {
-  const { nativeRef, getEventHandler, nodesKey, getNodes, renderSequence } = useSwiftUIContext();
+  const {
+    nativeRef,
+    getEventHandler,
+    nodesKey,
+    renderSequenceKey,
+    getNodes,
+    renderSequence,
+    commitRenderSequence,
+  } = useSwiftUIContext();
 
   const log = useCallback(
     (message: string, ...args: unknown[]) => {
@@ -59,13 +67,22 @@ export const SwiftUIRoot = ({
 
   const nodes = getNodes();
   log(`rendering with ${nodes.size} nodes`);
-  renderSequence.current = []; // Reset render sequence
+
+  // Reset sequence before children render so it's rebuilt fresh each time
+  renderSequence.current = [];
+
+  // After render, commit the sequence - use layout effect to run synchronously
+  useLayoutEffect(() => {
+    commitRenderSequence();
+  });
+
+  // Rebuild view tree when nodes or order changes
   useEffect(() => {
     const viewTree = buildViewTree(nodes, renderSequence.current);
     log(`updating view tree`, viewTree);
     nativeRef.current?.setNativeProps({ viewTree: JSON.stringify(viewTree) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nativeRef, nodesKey]);
+  }, [nativeRef, nodesKey, renderSequenceKey]);
 
   const handleEvent: SwiftUIProps["onEvent"] = (event) => {
     const { id, name, value } = event.nativeEvent;
