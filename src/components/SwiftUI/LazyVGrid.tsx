@@ -1,13 +1,15 @@
 import { type PropsWithChildren } from "react";
 import { SwiftUIParentIdProvider } from "../../contexts";
-import { useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeLazyVGridProps } from "../../types";
+import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeLazyVGridProps, NativeViewStyle } from "../../types";
 
 export const LazyVGrid: FunctionComponentWithId<PropsWithChildren<NativeLazyVGridProps>> = ({
   children,
+  style,
   ...otherProps
 }) => {
-  const { id } = useSwiftUINode("LazyVGrid", otherProps);
+  const normalizedStyles = useNormalizedStyles<NativeViewStyle>(style);
+  const { id } = useSwiftUINode("LazyVGrid", { style: normalizedStyles, ...otherProps });
   return <SwiftUIParentIdProvider id={id}>{children}</SwiftUIParentIdProvider>;
 };
 LazyVGrid.displayName = "LazyVGrid";

@@ -1,3 +1,4 @@
+import { type StyleProp } from "react-native";
 import type { NativeViewStyle } from "./style";
 
 export type GridItemConfig = {
@@ -13,5 +14,5 @@ export type NativeLazyVGridProps = {
   columns: GridItemConfig[];
   spacing?: number;
   alignment?: "leading" | "center" | "trailing";
-  style?: NativeViewStyle;
+  style?: StyleProp<NativeViewStyle>;
 };

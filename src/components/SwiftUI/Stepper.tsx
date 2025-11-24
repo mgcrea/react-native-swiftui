@@ -1,6 +1,7 @@
 import { type PropsWithChildren, useMemo } from "react";
+import { type StyleProp } from "react-native";
 import { SwiftUIParentIdProvider } from "../../contexts";
-import { useSwiftUINode } from "../../hooks";
+import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
 import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/stepper
@@ -11,7 +12,7 @@ export type NativeStepperProps = {
   minimum?: number;
   maximum?: number;
   step?: number;
-  style?: NativeTextStyle;
+  style?: StyleProp<NativeTextStyle>;
   onChange?: (value: number) => void;
   onFocus?: () => void;
   onBlur?: () => void;
@@ -22,8 +23,10 @@ export const Stepper: FunctionComponentWithId<PropsWithChildren<NativeStepperPro
   onChange: onChangeProp,
   onFocus,
   onBlur,
+  style,
   ...otherProps
 }) => {
+  const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
   const onChange = useMemo(
     () =>
       onChangeProp
@@ -34,7 +37,7 @@ export const Stepper: FunctionComponentWithId<PropsWithChildren<NativeStepperPro
     [onChangeProp],
   );
 
-  const { id } = useSwiftUINode("Stepper", otherProps, {
+  const { id } = useSwiftUINode("Stepper", { style: normalizedStyles, ...otherProps }, {
     change: onChange,
     focus: onFocus,
     blur: onBlur,

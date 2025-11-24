@@ -1,5 +1,5 @@
-import { Image as BaseImage, type ImageSourcePropType } from "react-native";
-import { useSwiftUINode } from "../../hooks";
+import { Image as BaseImage, type ImageSourcePropType, type StyleProp } from "react-native";
+import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
 import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
 
 export type NativeImageProps = {
@@ -7,12 +7,13 @@ export type NativeImageProps = {
   source?: ImageSourcePropType;
   resizeMode?: "cover" | "contain" | "stretch" | "center";
   tintColor?: string;
-  style?: NativeTextStyle;
+  style?: StyleProp<NativeTextStyle>;
 };
 
-export const Image: FunctionComponentWithId<NativeImageProps> = ({ source, ...props }) => {
+export const Image: FunctionComponentWithId<NativeImageProps> = ({ source, style, ...props }) => {
+  const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
   const sourceUri = source ? BaseImage.resolveAssetSource(source).uri : undefined;
-  useSwiftUINode("Image", { sourceUri, ...props });
+  useSwiftUINode("Image", { sourceUri, style: normalizedStyles, ...props });
   return null;
 };
 

@@ -1,4 +1,5 @@
-import { useSwiftUINode } from "../../hooks";
+import { type StyleProp } from "react-native";
+import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
 import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
 
 export type NativeKeyboardType = "default" | "numberPad" | "emailAddress" | "decimalPad";
@@ -29,7 +30,7 @@ export type NativeTextFieldProps<T = string> = {
   maxLength?: number | null;
   multiline?: boolean;
   disabled?: boolean;
-  style?: NativeTextStyle;
+  style?: StyleProp<NativeTextStyle>;
   onChange?: (value: T) => void;
   onFocus?: () => void;
   onBlur?: () => void;
@@ -39,9 +40,11 @@ export const TextField: FunctionComponentWithId<NativeTextFieldProps> = ({
   onChange,
   onFocus,
   onBlur,
+  style,
   ...otherProps
 }) => {
-  useSwiftUINode("TextField", otherProps, { change: onChange, focus: onFocus, blur: onBlur });
+  const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
+  useSwiftUINode("TextField", { style: normalizedStyles, ...otherProps }, { change: onChange, focus: onFocus, blur: onBlur });
 
   return null;
 };
