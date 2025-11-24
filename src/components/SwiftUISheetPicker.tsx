@@ -43,6 +43,7 @@ export const SwiftUISheetPicker = forwardRef<SwiftUISheetPickerHandle, SwiftUISh
         }}
         onNativeDismiss={onDismiss}
         {...props}
+        autoDismiss={autoDismiss}
       />
     );
   },
