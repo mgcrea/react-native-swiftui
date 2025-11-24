@@ -6,7 +6,6 @@
   "homepage": "https://github.com/mgcrea/react-native-swiftui#readme",
   "repository": "github:mgcrea/react-native-swiftui",
   "license": "MIT",
-  "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -19,7 +18,7 @@
     "dev": "cd example; npm run dev",
     "build": "npm run build:babel && npm run build:types; npm run codegen:ios",
     "build:babel": "babel src --out-dir dist --extensions \".ts,.tsx,.js,.jsx\" --copy-files",
-    "build:types": "tsc --emitDeclarationOnly",
+    "build:types": "tsc --emitDeclarationOnly && tsc-alias",
     "install:ios": "cd example; npm run install:ios",
     "open:ios": "cd example; npm run open:ios",
     "codegen:ios": "rm -rf ios/generated; node node_modules/react-native/scripts/generate-codegen-artifacts.js -p . -t ios -s library",
@@ -51,6 +50,7 @@
     "prettier-plugin-organize-imports": "^4.1.0",
     "react": "^19.0.0",
     "react-native": "0.80.2",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.8.2"
   },
   "engines": {
