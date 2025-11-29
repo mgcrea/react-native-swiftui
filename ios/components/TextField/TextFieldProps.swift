@@ -93,6 +93,7 @@ public final class TextFieldProps: ObservableObject, Decodable {
     keyboardType = other.keyboardType
     textContentType = other.textContentType
     returnKeyType = other.returnKeyType
+    submitLabel = other.submitLabel
     autocapitalizationType = other.autocapitalizationType
     maxLength = other.maxLength
     secure = other.secure
