@@ -11,7 +11,7 @@ public class SFSymbolContainer: SwiftUIContainerView {
     props = SFSymbolProps()
     super.init(rootView: AnyView(EmptyView()))
 
-    hostingController.rootView = AnyView(SFSymbolView(props: props))
+    hostingController.rootView = AnyView(SFSymbolView(props: props).fixedSize())
   }
 
   @objc
@@ -21,6 +21,8 @@ public class SFSymbolContainer: SwiftUIContainerView {
       let decoder = JSONDecoder()
       let updatedProps = try decoder.decode(SFSymbolProps.self, from: jsonData)
       props.merge(from: updatedProps)
+      // Notify the layout system that our intrinsic size may have changed
+      invalidateIntrinsicContentSize()
     } catch {
       print("Failed to update SFSymbolProps: \(error)")
     }

@@ -76,4 +76,13 @@ static NSDictionary *convertProps(const NativeSFSymbolViewProps &props) {
   [super updateProps:props oldProps:oldProps];
 }
 
+// Forward sizing to the SwiftUI container for intrinsic content sizing
+- (CGSize)sizeThatFits:(CGSize)size {
+  return [_containerView sizeThatFits:size];
+}
+
+- (CGSize)intrinsicContentSize {
+  return [_containerView intrinsicContentSize];
+}
+
 @end
