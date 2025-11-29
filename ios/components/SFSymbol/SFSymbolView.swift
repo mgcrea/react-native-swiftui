@@ -20,7 +20,41 @@ public struct SFSymbolView: View {
       image = Image(systemName: props.name)
     }
 
-    return applyModifiers(to: image)
+    // When an explicit size is provided, use resizable + frame to constrain the symbol
+    // Otherwise use fixedSize to let the symbol take its natural size based on textStyle
+    if let size = props.size {
+      let dimension = CGFloat(size)
+      return AnyView(
+        applyResizeMode(to: applyModifiers(to: image.resizable()), dimension: dimension)
+      )
+    } else {
+      return AnyView(
+        applyModifiers(to: image)
+          .fixedSize()
+      )
+    }
+  }
+
+  @ViewBuilder
+  private func applyResizeMode(to image: some View, dimension: CGFloat) -> some View {
+    switch props.resizeModeValue {
+    case .contain:
+      image
+        .scaledToFit()
+        .frame(width: dimension, height: dimension)
+    case .cover:
+      image
+        .scaledToFill()
+        .frame(width: dimension, height: dimension)
+        .clipped()
+    case .stretch:
+      image
+        .frame(width: dimension, height: dimension)
+    case .center:
+      image
+        .scaledToFit()
+        .frame(width: dimension, height: dimension, alignment: .center)
+    }
   }
 
   @ViewBuilder
