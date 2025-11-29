@@ -1,4 +1,58 @@
 ---
 title: Introduction
-description: SwiftUI components for React Native
+description: Native SwiftUI components for React Native with the Fabric renderer
 ---
+
+import { Image } from "astro:assets";
+import logo from "../../assets/logo.svg";
+
+Native SwiftUI components for React Native with the Fabric renderer. Build beautiful iOS interfaces using SwiftUI components directly in your React Native app.
+
+## Features
+
+- **🍎 Native SwiftUI** - Authentic iOS components with native look and feel
+- **⚡ Fabric Renderer** - Built for React Native's New Architecture for optimal performance
+- **🎯 Type-Safe** - Full TypeScript support with comprehensive type definitions
+- **📝 Declarative** - Familiar React patterns with JSX syntax
+- **🔧 Form Integration** - Works seamlessly with react-hook-form and TanStack Form
+- **📱 iOS 15.1+** - Leverages modern SwiftUI APIs
+- **🎨 Apple Design** - Access to SF Symbols, system colors, and native fonts
+- **📦 Zero Config** - No complex setup, just install and use
+
+## Quick Example
+
+```tsx
+import { SwiftUI } from "@mgcrea/react-native-swiftui";
+import { useState } from "react";
+import { View } from "react-native";
+
+export function MyForm() {
+  const [name, setName] = useState("");
+  const [notifications, setNotifications] = useState(true);
+
+  return (
+    <View style={{ flex: 1 }}>
+      <SwiftUI style={{ flex: 1 }}>
+        <SwiftUI.Form>
+          <SwiftUI.Section header="Settings">
+            <SwiftUI.TextField label="Name" text={name} onChange={setName} />
+            <SwiftUI.Toggle label="Enable Notifications" isOn={notifications} onChange={setNotifications} />
+          </SwiftUI.Section>
+        </SwiftUI.Form>
+      </SwiftUI>
+    </View>
+  );
+}
+```
+
+**Renders native SwiftUI:**
+
+- Native iOS Form with grouped styling
+- Native TextField with label
+- Native Toggle switch
+- Automatic keyboard handling
+- Platform-appropriate animations
+
+## Getting Started
+
+Follow the [installation guide](/getting-started/installation/) to set up React Native SwiftUI in your project, then check out the [quick start](/getting-started/quick-start/) to learn the basics, or dive into [how it works](/getting-started/how-it-works/) to understand the architecture.
