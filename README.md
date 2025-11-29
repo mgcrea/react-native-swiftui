@@ -22,7 +22,7 @@
     <img src="https://img.shields.io/github/actions/workflow/status/mgcrea/react-native-swiftui/main.yaml?style=for-the-badge&branch=main" alt="build status" />
   </a>
   <a href="https://depfu.com/github/mgcrea/react-native-swiftui">
-    <img src="https://img.shields.io/depfu/dependencies/github/mgcrea/react-native-swiftui?style=for-the-badge" alt="dependencies status" />
+    <img src="https://img.shields.io/badge/dependencies-none-brightgreen?style=for-the-badge" alt="dependencies status" />
   </a>
 </p>
 <!-- markdownlint-enable MD033 -->
@@ -34,6 +34,7 @@ Native SwiftUI components for React Native using the Fabric renderer. Build iOS 
 ## Features
 
 - **🍎 Native SwiftUI** - Real SwiftUI components, not web views or custom drawings
+- **🔧 No Dependencies** - Safe from supply chain attacks
 - **⚡ Fabric Renderer** - Built on React Native's modern architecture
 - **📝 TypeScript-first** - Full type safety and autocomplete support
 - **🔄 Two-Way Binding** - State syncs between JavaScript and SwiftUI
