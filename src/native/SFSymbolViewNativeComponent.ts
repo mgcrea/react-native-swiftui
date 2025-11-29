@@ -16,6 +16,8 @@ export type NativeSFSymbolScale = "small" | "medium" | "large";
 
 export type NativeSFSymbolRenderingMode = "monochrome" | "hierarchical" | "palette" | "multicolor";
 
+export type NativeSFSymbolResizeMode = "contain" | "cover" | "stretch" | "center";
+
 export type NativeSFSymbolTextStyle =
   | "largeTitle"
   | "title"
@@ -29,6 +31,7 @@ export type NativeSFSymbolTextStyle =
   | "caption"
   | "caption2";
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface NativeSFSymbolProps extends ViewProps {
   name: string;
   size?: Double;
@@ -36,10 +39,11 @@ export interface NativeSFSymbolProps extends ViewProps {
   weight?: WithDefault<NativeSFSymbolWeight, "regular">;
   scale?: WithDefault<NativeSFSymbolScale, "medium">;
   renderingMode?: WithDefault<NativeSFSymbolRenderingMode, "monochrome">;
+  resizeMode?: WithDefault<NativeSFSymbolResizeMode, "contain">;
   variableValue?: Double;
   colors?: readonly string[];
 }
 
-export default codegenNativeComponent<NativeSFSymbolProps>(
-  "NativeSFSymbolView",
-) as HostComponent<NativeSFSymbolProps>;
+export default codegenNativeComponent<NativeSFSymbolProps>("NativeSFSymbolView", {
+  interfaceOnly: false,
+}) as HostComponent<NativeSFSymbolProps>;

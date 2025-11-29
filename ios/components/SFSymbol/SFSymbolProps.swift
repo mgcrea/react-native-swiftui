@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 public final class SFSymbolProps: ObservableObject, Decodable {
   @Published var name: String = ""
@@ -7,11 +8,12 @@ public final class SFSymbolProps: ObservableObject, Decodable {
   @Published var weight: String?
   @Published var scale: String?
   @Published var renderingMode: String?
+  @Published var resizeMode: String?
   @Published var variableValue: Double?
   @Published var colors: [String]?
 
   enum CodingKeys: String, CodingKey {
-    case name, size, textStyle, weight, scale, renderingMode, variableValue, colors
+    case name, size, textStyle, weight, scale, renderingMode, resizeMode, variableValue, colors
   }
 
   public init() {}
@@ -24,6 +26,7 @@ public final class SFSymbolProps: ObservableObject, Decodable {
     weight = try container.decodeIfPresent(String.self, forKey: .weight)
     scale = try container.decodeIfPresent(String.self, forKey: .scale)
     renderingMode = try container.decodeIfPresent(String.self, forKey: .renderingMode)
+    resizeMode = try container.decodeIfPresent(String.self, forKey: .resizeMode)
     variableValue = try container.decodeIfPresent(Double.self, forKey: .variableValue)
     colors = try container.decodeIfPresent([String].self, forKey: .colors)
   }
@@ -35,6 +38,7 @@ public final class SFSymbolProps: ObservableObject, Decodable {
     weight = other.weight
     scale = other.scale
     renderingMode = other.renderingMode
+    resizeMode = other.resizeMode
     variableValue = other.variableValue
     colors = other.colors
   }
@@ -88,6 +92,24 @@ public final class SFSymbolProps: ObservableObject, Decodable {
     }
   }
 
+  enum ResizeMode {
+    case contain
+    case cover
+    case stretch
+    case center
+  }
+
+  var resizeModeValue: ResizeMode {
+    guard let resizeMode = resizeMode else { return .contain }
+    switch resizeMode {
+    case "contain": return .contain
+    case "cover": return .cover
+    case "stretch": return .stretch
+    case "center": return .center
+    default: return .contain
+    }
+  }
+
   var colorValues: [Color] {
     guard let colors = colors else { return [] }
     return colors.compactMap { Color(fromCSSName: $0) }
@@ -107,6 +129,68 @@ public final class SFSymbolProps: ObservableObject, Decodable {
     case "caption": return .caption
     case "caption2": return .caption2
     default: return .body
+    }
+  }
+
+  // MARK: - Computed Properties for UIKit (intrinsic size calculation)
+
+  /// Calculate the intrinsic size using UIKit's UIImage
+  var calculatedSize: CGSize {
+    let pointSize: CGFloat
+    if let size = size {
+      pointSize = CGFloat(size)
+    } else {
+      pointSize = textStyleToPointSize(textStyle)
+    }
+
+    let config = UIImage.SymbolConfiguration(pointSize: pointSize, weight: uiImageWeight, scale: uiImageScale)
+    guard let uiImage = UIImage(systemName: name, withConfiguration: config) else {
+      return CGSize(width: pointSize, height: pointSize)
+    }
+    return uiImage.size
+  }
+
+  private var uiImageWeight: UIImage.SymbolWeight {
+    guard let weight = weight else { return .regular }
+    switch weight {
+    case "ultraLight": return .ultraLight
+    case "thin": return .thin
+    case "light": return .light
+    case "regular": return .regular
+    case "medium": return .medium
+    case "semibold": return .semibold
+    case "bold": return .bold
+    case "heavy": return .heavy
+    case "black": return .black
+    default: return .regular
+    }
+  }
+
+  private var uiImageScale: UIImage.SymbolScale {
+    guard let scale = scale else { return .default }
+    switch scale {
+    case "small": return .small
+    case "medium": return .medium
+    case "large": return .large
+    default: return .default
+    }
+  }
+
+  private func textStyleToPointSize(_ style: String?) -> CGFloat {
+    guard let style = style else { return UIFont.systemFontSize }
+    switch style {
+    case "largeTitle": return 34
+    case "title": return 28
+    case "title2": return 22
+    case "title3": return 20
+    case "headline": return 17
+    case "body": return 17
+    case "callout": return 16
+    case "subheadline": return 15
+    case "footnote": return 13
+    case "caption": return 12
+    case "caption2": return 11
+    default: return UIFont.systemFontSize
     }
   }
 }
