@@ -45,10 +45,22 @@ final class SwiftUIRootProps: ObservableObject {
       stepper.props.onChange = { [weak self] value in
         self?.onEvent?("change", "Stepper", stepper.id, value)
       }
+      stepper.props.onFocus = { [weak self] in
+        self?.onEvent?("focus", "Stepper", stepper.id, nil)
+      }
+      stepper.props.onBlur = { [weak self] in
+        self?.onEvent?("blur", "Stepper", stepper.id, nil)
+      }
     } else if let datePicker = node as? GenericNode<DatePickerProps> {
       datePicker.props.onChange = { [weak self] rawValue in
         let value = ISO8601DateFormatter().string(from: rawValue)
         self?.onEvent?("change", "DatePicker", datePicker.id, value)
+      }
+      datePicker.props.onFocus = { [weak self] in
+        self?.onEvent?("focus", "DatePicker", datePicker.id, nil)
+      }
+      datePicker.props.onBlur = { [weak self] in
+        self?.onEvent?("blur", "DatePicker", datePicker.id, nil)
       }
     } else if let textField = node as? GenericNode<TextFieldProps> {
       textField.props.onChange = { [weak self] value in
