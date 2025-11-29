@@ -2528,7 +2528,7 @@ PODS:
     - RNWorklets
     - SocketRocket
     - Yoga
-  - RNSwiftUI (0.9.1):
+  - RNSwiftUI (0.11.0):
     - boost
     - DoubleConversion
     - fast_float
@@ -2969,7 +2969,7 @@ SPEC CHECKSUMS:
   ReactCommon: 25c7f94aee74ddd93a8287756a8ac0830a309544
   RNGestureHandler: f1dd7f92a0faa2868a919ab53bb9d66eb4ebfcf5
   RNReanimated: d331374033e3c3de0e339126660451b22a6e4f24
-  RNSwiftUI: 16ba8b443e9bb6c5624909d3831aacddd8fad761
+  RNSwiftUI: 72f4374758b8e446013f060cf121e5a4d1092d79
   RNWorklets: f1f3b3e66fe5003ea71d8d8ac1e1d6f9da56cedd
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: edeb9900b9e5bb5b27b9a6a2d5914e4fe4033c1b

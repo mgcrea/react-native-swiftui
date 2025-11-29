@@ -1,7 +1,4 @@
-import {
-  SFSymbol,
-  type SFSymbolProps,
-} from '@mgcrea/react-native-swiftui/src';
+import { SFSymbol, type SFSymbolProps } from '@mgcrea/react-native-swiftui/src';
 import { useState, type FunctionComponent } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -133,9 +130,7 @@ export const SFSymbolExample: FunctionComponent = () => {
               />
             ))}
           </View>
-          <Text style={styles.caption}>
-            ultraLight → black
-          </Text>
+          <Text style={styles.caption}>ultraLight → black</Text>
         </View>
 
         {/* Scales */}
@@ -322,11 +317,7 @@ export const SFSymbolExample: FunctionComponent = () => {
           <Text style={styles.caption}>Tab bar icons</Text>
 
           <View style={styles.listItem}>
-            <SFSymbol
-              name="checkmark.circle.fill"
-              size={22}
-              color="#34C759"
-            />
+            <SFSymbol name="checkmark.circle.fill" size={22} color="#34C759" />
             <Text style={styles.listItemText}>Completed task</Text>
           </View>
           <View style={styles.listItem}>
@@ -394,8 +385,10 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   symbol: {
-    width: 32,
-    height: 32,
+    // backgroundColor: 'red',
+    // height: 50,
+    // width: 50,
+    // No fixed width/height so intrinsic sizing from native can take effect
   },
   symbolRow: {
     flexDirection: 'row',
