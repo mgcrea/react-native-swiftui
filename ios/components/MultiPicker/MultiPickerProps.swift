@@ -69,6 +69,21 @@ public final class MultiPickerProps: ObservableObject, Decodable {
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
+    normalizeSelectionsToMatchComponents()
+  }
+
+  /// Ensures selections array matches components count by padding or truncating as needed
+  private func normalizeSelectionsToMatchComponents() {
+    // Pad selections if shorter than components
+    while selections.count < components.count {
+      let component = components[selections.count]
+      let defaultValue = component.computedOptions.first?.value ?? ""
+      selections.append(defaultValue)
+    }
+    // Truncate selections if longer than components
+    if selections.count > components.count {
+      selections = Array(selections.prefix(components.count))
+    }
   }
 
   public init() {}
@@ -79,5 +94,6 @@ public final class MultiPickerProps: ObservableObject, Decodable {
     label = other.label
     disabled = other.disabled
     style = other.style
+    normalizeSelectionsToMatchComponents()
   }
 }
