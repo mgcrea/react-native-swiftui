@@ -82,11 +82,7 @@ export const SFSymbol = forwardRef<NativeSFSymbolComponentRef, SFSymbolProps>(
   ({ size, color, colors, style, ...restProps }, ref) => {
     // Determine if size is a number (point size) or string (text style)
     const sizeProps: Pick<NativeSFSymbolProps, "size" | "textStyle"> =
-      typeof size === "number"
-        ? { size }
-        : typeof size === "string"
-          ? { textStyle: size }
-          : {};
+      typeof size === "number" ? { size } : typeof size === "string" ? { textStyle: size } : {};
 
     // Resolve colors: colors prop > color prop > style.color
     const resolvedColors = useMemo(() => {
