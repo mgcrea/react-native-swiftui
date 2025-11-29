@@ -13,6 +13,9 @@ export default defineConfig({
       logo: {
         src: "./src/assets/logo.svg",
       },
+      expressiveCode: {
+        themes: ["github-dark"],
+      },
       social: [
         {
           icon: "github",

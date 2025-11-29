@@ -25,268 +25,139 @@
     <img src="https://img.shields.io/depfu/dependencies/github/mgcrea/react-native-swiftui?style=for-the-badge" alt="dependencies status" />
   </a>
 </p>
-<!-- markdownlint-enable MD037 -->
+<!-- markdownlint-enable MD033 -->
 
-This library integrates SwiftUI components into React Native using the Fabric renderer. This project enables developers to define native iOS UI elements with SwiftUI, controlled via React Native’s JSX syntax, creating a hybrid UI where React drives a dynamic SwiftUI view hierarchy.
+## Overview
 
-## Motivation
+Native SwiftUI components for React Native using the Fabric renderer. Build iOS forms and interfaces with SwiftUI's declarative syntax while maintaining a familiar React workflow.
 
-React Native excels at cross-platform development, but its UI components can sometimes lack the polish and performance of native iOS frameworks like SwiftUI. This PoC bridges that gap by:
+## Features
 
-- Leveraging SwiftUI’s declarative, high-performance UI toolkit for iOS.
-- Using React Native’s Fabric renderer for modern, efficient native integration.
-- Enabling a familiar JSX workflow to manage native views.
-
-Ideal for developers seeking native iOS aesthetics and behavior within a React Native app, this project explores a hybrid paradigm for enhanced UI flexibility.
+- **🍎 Native SwiftUI** - Real SwiftUI components, not web views or custom drawings
+- **⚡ Fabric Renderer** - Built on React Native's modern architecture
+- **📝 TypeScript-first** - Full type safety and autocomplete support
+- **🔄 Two-Way Binding** - State syncs between JavaScript and SwiftUI
+- **📋 Form Components** - TextField, Picker, DatePicker, Toggle, Stepper, Slider
+- **📐 Layout Components** - Form, Section, HStack, VStack, ZStack, Spacer
+- **🎨 SF Symbols** - Full SF Symbol support with rendering modes and variable values
+- **📱 Sheet Presentation** - Native modal sheets with detent support
+- **🔌 Form Libraries** - Works with react-hook-form, TanStack Form, and more
 
 ## Demo
 
 ![demo](./.github/assets/demo.gif)
 
-You can try it yourself using the [Rxd AppStore application](https://apps.apple.com/fr/app/rxd/id6745904823?l=en-GB)
+Try it yourself with the [Rxd AppStore application](https://apps.apple.com/fr/app/rxd/id6745904823?l=en-GB)
 
-## Features
+## Quick Start
 
-- **Supported Components**: We plan to support as many SwiftUI components as possible.
-- **Two-Way Data Binding**: Syncs state between JavaScript and SwiftUI (e.g., text input updates via `onChange`).
-- **Event Support**: Handles events like `change`, `focus`, `blur`, `press` across the JS-native boundary.
-- **Visual Feedback**: Disabled fields (e.g., `TextField` with `disabled={true}`) are grayed out and faded for clarity.
-- **Type Safety**: TypeScript definitions for props and events, ensuring a robust developer experience.
-- **Form Library Compatibility**: Works seamlessly with libraries like `react-hook-form` and `formik` via passthrough component support.
-
-## Installation
-
-### Prerequisites
-
-- Node.js ≥ 18
-- React Native 0.78.0+
-- iOS 15.1+ (SwiftUI requirement)
-- `pnpm` (package manager, version 10.5.2 recommended per `package.json`)
-
-### Steps
-
-Installation steps:
+### Installation
 
 ```bash
-npm install @mgcrea/react-native-swiftui --save
+npm install @mgcrea/react-native-swiftui
 # or
 pnpm add @mgcrea/react-native-swiftui
 # or
 yarn add @mgcrea/react-native-swiftui
 ```
 
-## Usage Example
+### Requirements
 
-### Basic Example
+- React Native 0.78.0+ (New Architecture required)
+- iOS 15.1+
+
+### Basic Usage
 
 ```tsx
 import { SwiftUI } from "@mgcrea/react-native-swiftui";
-import { useState, type FunctionComponent } from "react";
-import { Alert, View } from "react-native";
+import { useState } from "react";
+import { View } from "react-native";
 
-export const BasicFormExample: FunctionComponent = () => {
-  const [firstName, setFirstName] = useState("John");
-  const [lastName, setLastName] = useState("Doe");
-  const [birthDate, setBirthDate] = useState(new Date("2019-06-03T00:00:00Z"));
-  const [gender, setGender] = useState<"Male" | "Female">("Male");
-
-  const handleSubmit = () => {
-    const data = {
-      firstName,
-      lastName,
-      birthDate,
-      gender,
-    };
-    Alert.alert("Submitted", JSON.stringify(data, null, 2));
-  };
+export function ProfileForm() {
+  const [name, setName] = useState("");
+  const [active, setActive] = useState(false);
 
   return (
     <View style={{ flex: 1 }}>
       <SwiftUI style={{ flex: 1 }}>
-        <SwiftUI.Text text="BasicFormExample" />
         <SwiftUI.Form>
-          <SwiftUI.Section header="Personal Information">
-            <SwiftUI.TextField placeholder="First name" onChange={setFirstName} text={firstName} />
-            <SwiftUI.TextField placeholder="Last name" onChange={setLastName} text={lastName} />
+          <SwiftUI.Section header="Profile">
+            <SwiftUI.TextField label="Name" text={name} onChange={setName} />
+            <SwiftUI.Toggle label="Active" isOn={active} onChange={setActive} />
           </SwiftUI.Section>
-          <SwiftUI.Section header="Additional Details">
-            <SwiftUI.Picker
-              options={["Male", "Female"]}
-              label="Gender"
-              onChange={setGender}
-              selection={gender}
-            />
-            <SwiftUI.DatePicker
-              label="Birth date"
-              selection={birthDate}
-              onChange={(value) => setBirthDate(value)}
-              displayedComponents="date"
-            />
-          </SwiftUI.Section>
-          <SwiftUI.Button title="Submit" onPress={handleSubmit} />
         </SwiftUI.Form>
       </SwiftUI>
     </View>
   );
-};
+}
 ```
 
-## Supported Components
+## How It Works
 
-Below is a list of components currently supported by `@mgcrea/react-native-swiftui`. These components leverage SwiftUI's native iOS capabilities while being controlled via React Native's JSX syntax.
+SwiftUI components register themselves in a virtual tree that's rendered natively:
 
-### SwiftUI Tree Components
+1. **React renders JSX** - Components return `null`, registering nodes in a tree
+2. **Tree serialization** - The view tree is passed to native code as JSON
+3. **SwiftUI renders** - Native SwiftUI renders the entire tree
+4. **Events bridge back** - User interactions trigger React callbacks
 
-These components are used within the `<SwiftUI>` tree and accessed via `SwiftUI.*`:
+This means 60fps native performance with no JavaScript layout overhead.
 
-| Component    | Description                                 | Key Props                                                                  | Notes                                                                                   |
-| ------------ | ------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `Button`     | A clickable button with customizable styles | `title`, `buttonStyle`, `disabled`, `style`, `onPress`                     | Supports styles like `default`, `plain`, `bordered`, etc.                               |
-| `DatePicker` | A date/time selection picker                | `selection`, `label`, `datePickerStyle`, `displayedComponents`, `onChange` | Options include `compact`, `wheel`, etc.; supports `date`, `hourAndMinute` components   |
-| `Form`       | A container for grouping form elements      | Children (nested components)                                               | No specific props; acts as a layout container                                           |
-| `Group`      | A logical grouping of views                 | Children (nested components)                                               | No specific props; used for hierarchy organization                                      |
-| `HStack`     | Horizontal stack layout                     | `alignment`, `spacing`, `style`, Children                                  | Alignments: `top`, `center`, `bottom`, etc.                                             |
-| `Image`      | Displays an image (named, system, or local) | `name`, `source`, `sourceUri`, `resizeMode`, `style`                       | Supports `system:` prefix for SF Symbols, asset names, and bundled assets via `require` |
-| `Picker`     | A dropdown or segmented selection           | `options`, `selection`, `label`, `pickerStyle`, `onChange`                 | Styles: `menu`, `segmented`, `wheel`, etc.                                              |
-| `Rectangle`  | A simple rectangular shape                  | `style`                                                                    | Used for basic shapes with customizable styling                                         |
-| `Section`    | A collapsible section within a form         | `header`, `footer`, `isCollapsed`, Children                                | Useful for organizing form content                                                      |
-| `Sheet`      | A modal sheet presentation                  | `isPresented`, `detents`, `onDismiss`, Children                            | Detents: `medium`, `large`, or custom values                                            |
-| `Slider`     | A continuous value slider                   | `value`, `minimum`, `maximum`, `step`, `label`, `onChange`                 | Adjustable range with step increments                                                   |
-| `Spacer`     | A flexible space filler                     | `minLength`                                                                | Expands to fill available space                                                         |
-| `Stepper`    | An increment/decrement control              | `value`, `label`, `minimum`, `maximum`, `step`, `onChange`                 | For numeric adjustments                                                                 |
-| `Text`       | Displays static text                        | `text`, `alignment`, `style`                                               | Alignments: `leading`, `center`, `trailing`                                             |
-| `TextField`  | An editable text input                      | `text`, `label`, `placeholder`, `keyboardType`, `onChange`                 | Supports various keyboard types and text content types                                  |
-| `Toggle`     | A switch for boolean values                 | `isOn`, `label`, `onChange`                                                | Simple on/off control                                                                   |
-| `VStack`     | Vertical stack layout                       | `alignment`, `spacing`, `style`, Children                                  | Alignments: `leading`, `center`, `trailing`                                             |
-| `ZStack`     | Overlapping stack layout                    | `alignment`, `style`, Children                                             | Alignments: `topLeading`, `center`, `bottomTrailing`, etc.                              |
+## Documentation
 
-### Standalone Native Components
+📚 **[Full Documentation](https://mgcrea.github.io/react-native-swiftui/)**
 
-These components are standalone native views that can be used anywhere in your React Native app:
+- **[Getting Started](https://mgcrea.github.io/react-native-swiftui/getting-started/installation/)** - Installation and setup
+- **[Components](https://mgcrea.github.io/react-native-swiftui/components/overview/)** - SwiftUI tree components
+- **[Standalone](https://mgcrea.github.io/react-native-swiftui/standalone/sfsymbol/)** - Native components like SFSymbol
+- **[Guides](https://mgcrea.github.io/react-native-swiftui/guides/styling/)** - Styling, events, and form integration
+- **[Examples](https://mgcrea.github.io/react-native-swiftui/examples/basic-form/)** - Complete working examples
 
-| Component             | Description                                          | Key Props                                                                                          | Notes                                                                           |
-| --------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `SFSymbol`            | Renders SF Symbols with full customization           | `name`, `size`, `color`, `weight`, `scale`, `renderingMode`, `variableValue`, `colors`             | Supports all SF Symbol features including hierarchical and palette rendering    |
-| `SwiftUIPicker`       | A native picker modal with search functionality      | `isPresented`, `title`, `searchPlaceholder`, `options`, `selectedValue`, `autoDismiss`, `onSelect` | Full-screen native picker with search and categorization support                |
-| `SwiftUISheet`        | A native modal sheet presentation                    | `isPresented`, `detents`, `onDismiss`, Children                                                    | Standalone sheet that can be used outside of SwiftUI tree                       |
-| `SwiftUISheetPicker`  | A native picker presented as a bottom sheet          | `isPresented`, `title`, `searchPlaceholder`, `options`, `selectedValue`, `autoDismiss`, `onSelect` | Combines sheet presentation with picker functionality for a native iOS experience |
+## Contributing
 
-#### SFSymbol Examples
-
-```tsx
-import { SFSymbol } from "@mgcrea/react-native-swiftui";
-
-// Basic usage
-<SFSymbol name="star.fill" />
-
-// With color and size
-<SFSymbol name="heart.fill" color="#FF3B30" size={24} weight="semibold" />
-
-// With text style sizing
-<SFSymbol name="gear" size="title" style={{ color: "#007AFF" }} />
-
-// Hierarchical rendering (automatic shading)
-<SFSymbol name="folder.fill.badge.plus" renderingMode="hierarchical" color="#007AFF" />
-
-// Palette rendering (multiple colors)
-<SFSymbol
-  name="person.crop.circle.badge.checkmark"
-  renderingMode="palette"
-  colors={["#FF3B30", "#34C759", "#007AFF"]}
-/>
-
-// Variable value (for symbols that support it)
-<SFSymbol name="speaker.wave.3.fill" variableValue={0.5} />
-```
-
-## Contribute
-
-We welcome contributions! If you have ideas for new components, optimizations, or bug fixes, please fork the repository and submit a pull request. We also encourage you to open issues for any bugs or feature requests.
-
-### Prerequisites
-
-- **Xcode**: Ensure you have Xcode installed for iOS development.
-- **CocoaPods**: Install CocoaPods if you haven't already. You can do this by running:
-  ```bash
-  sudo gem install cocoapods
-  ```
-- **pnpm**: Install `pnpm` globally if you haven't already:
-  ```bash
-  npm install --global corepack@latest
-  corepack enable pnpm
-  ```
-
-### Example Project
-
-To run the example project, follow these steps:
+Contributions are welcome! To run the example project:
 
 ```bash
 git clone https://github.com/mgcrea/react-native-swiftui.git
 cd react-native-swiftui
-
-pnpm install # install Node.js dependencies
-pnpm run codegen:ios # generate codegen files
-
-bundle install # setup Ruby environment
+pnpm install
+pnpm run codegen:ios
 
 cd example
-pnpm install # install example Node.js dependencies
-pnpm run install:ios # install project native dependencies
-
-pnpm run ios # run the example project
+pnpm install
+pnpm run install:ios
+pnpm run ios
 ```
 
-If the build fails, you should try to build from XCode directly using `npm run open:ios` and then run the app from XCode.
+## Credits
 
-### Notes
+- [SwiftUI](https://developer.apple.com/xcode/swiftui/) - Apple's declarative UI framework
+- [React Native](https://reactnative.dev/) - Build native apps using React
 
-- **Props**: Most components accept a `style` prop for layout and appearance customization (e.g., `width`, `height`, `backgroundColor`).
-- **Events**: Components like `Button`, `TextField`, and `Picker` support event handlers (e.g., `onPress`, `onChange`) for interactivity.
-- **Children**: Layout components (`Form`, `HStack`, `VStack`, etc.) accept nested components as children.
-- **Image Sources**: The `Image` component supports:
-  - Named assets from `Assets.xcassets` (e.g., `name="logo"`).
-  - System images with a `system:` prefix (e.g., `name="system:star.fill"`).
-  - Local bundled assets via `source={require('../path/to/image.png')}`.
+## Authors
 
-## How It Works
+- [Olivier Louvignes](https://github.com/mgcrea) - [@mgcrea](https://twitter.com/mgcrea)
 
-1. **Component-Level Tree Building**: Each `SwiftUI.*` component (e.g., `<SwiftUI.TextField>`) registers itself with a `viewTree` during React’s render phase, using a context-based system.
-2. **Native Rendering**: The aggregated `viewTree` is serialized as JSON and sent to iOS, where SwiftUI renders it via Fabric’s native bridge. Components use a unified `Decodable` approach for prop initialization.
-3. **Two-Way Binding**: State updates (e.g., text input) sync between React and SwiftUI via event handlers, with props merged efficiently on updates.
-4. **Event Handling**: Native events (e.g., `onChange`, `onPress`) are bubbled back to JavaScript through a custom event system.
+```text
+MIT License
 
-### Architecture
+Copyright (c) 2025 Olivier Louvignes <olivier@mgcrea.io>
 
-- **React Native (JS/TS)**:
-  - Defines UI structure in JSX.
-  - Uses `SwiftUIContext` for event handling and node registration.
-  - Uses `SwiftUIParentContext` to maintain parent-child hierarchy.
-  - Components register their `ViewTreeNode` dynamically during render.
-- **Fabric**: Facilitates communication between JavaScript and native code.
-- **SwiftUI (iOS)**:
-  - Renders the UI using native components (e.g., `TextField`, `Button`) based on the `viewTree`.
-  - `Props` classes (e.g., `PickerProps`) conform to `Decodable` for initialization and use `merge(from:)` for updates, unifying prop handling.
-- **Bridge**: Custom Objective-C++ and Swift files (e.g., `RCTSwiftUIRootView.mm`, `SwiftUIRootView.swift`) manage data flow and event propagation.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-### Key Implementation Details
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-- **Dynamic `viewTree` Generation**: Components register themselves via `SwiftUIContext.registerNode`, with hierarchy tracked using `SwiftUIParentContext`. This supports passthrough components (e.g., `<Controller />` from `react-hook-form`) without explicit prop forwarding.
-- **Context System**:
-  - `SwiftUIContext`: Manages event handlers and the `nodeRegistry`.
-  - `SwiftUIParentContext`: Provides `parentId` to child components via `ParentIdProvider`, ensuring correct tree structure.
-- **Prop Initialization**: Native `Props` classes use `Decodable` to initialize from JSON, reducing redundancy and ensuring consistency across `viewTree` and Fabric flows.
-- **Rendering**: Components return `null` in JSX, as the UI is fully handled by SwiftUI on the native side.
-
-### Notes
-
-- **State Management**: The library is agnostic to state management. Use React state, `react-hook-form`, `formik`, or any other library to manage form values.
-- **Events**: Pass callbacks like `onChange` or `onPress` to handle native events in JavaScript.
-- **Disabled Fields**: Set `disabled={true}` on components like `TextField` to disable interaction, with visual feedback (grayed-out text and reduced opacity).
-
-## Contributing
-
-Feel free to fork the repo, experiment with new components, or suggest optimizations! Open issues or PRs on [GitHub](https://github.com/mgcrea/react-native-swiftui).
-
-```
-
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```
