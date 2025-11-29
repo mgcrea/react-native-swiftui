@@ -21,10 +21,13 @@ public class SFSymbolContainer: SwiftUIContainerView {
       let decoder = JSONDecoder()
       let updatedProps = try decoder.decode(SFSymbolProps.self, from: jsonData)
       props.merge(from: updatedProps)
-      // Notify the layout system that our intrinsic size may have changed
-      invalidateIntrinsicContentSize()
     } catch {
       print("Failed to update SFSymbolProps: \(error)")
     }
+  }
+
+  // Expose intrinsic size to React Native layout using UIKit's UIImage sizing
+  override public var intrinsicContentSize: CGSize {
+    return props.calculatedSize
   }
 }
