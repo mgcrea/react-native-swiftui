@@ -1,3 +1,4 @@
+export * from "./components/SFSymbol";
 export * from "./components/SwiftUI";
 export * from "./components/SwiftUIPicker";
 export * from "./components/SwiftUISheet";

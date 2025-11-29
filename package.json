@@ -67,6 +67,7 @@
     "ios": {
       "componentProvider": {
         "NativePickerView": "RCTPickerView",
+        "NativeSFSymbolView": "RCTSFSymbolView",
         "NativeSheetPickerView": "RCTSheetPickerView",
         "NativeSheetView": "RCTSheetView",
         "NativeSwiftUIRoot": "RCTSwiftUIRootView"
