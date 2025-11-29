@@ -3,14 +3,12 @@ import { BasicFormExample } from './src/views/BasicFormExample';
 import { DynamicFormExample } from './src/views/DynamicFormExample';
 import { FullFormExample } from './src/views/FullFormExample';
 import { LayoutExample } from './src/views/LayoutExample';
-import { WorkoutExample } from './src/views/WorkoutExample.private';
+import { SFSymbolExample } from './src/views/SFSymbolExample';
 import { StandalonePickerExample } from './src/views/StandalonePickerExample';
 import { StandaloneSheetExample } from './src/views/StandaloneSheetExample';
 import { StandaloneSheetPickerExample } from './src/views/StandaloneSheetPickerExample';
 import { ReactHookFormExample } from './src/views/ReactHookFormExample';
 import { TanStackFormExample } from './src/views/TanStackFormExample';
-import { AdvancedFormExample } from './src/views/AdvancedFormExample.private';
-import { ReanimatedConflictTest } from './src/views/ReanimatedConflictTest';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 function App(): React.JSX.Element {
@@ -20,7 +18,8 @@ function App(): React.JSX.Element {
   // return <StandalonePickerExample />;
   // return <StandaloneSheetExample />;
   // return <StandaloneSheetPickerExample />;
-  return <FullFormExample />;
+  return <SFSymbolExample />;
+  // return <FullFormExample />;
 }
 
 export default App;
