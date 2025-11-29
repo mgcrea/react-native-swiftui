@@ -4,6 +4,7 @@ import { StyleSheet, type ColorValue, type StyleProp, type TextStyle } from "rea
 import NativeSFSymbolViewNativeComponent, {
   type NativeSFSymbolProps,
   type NativeSFSymbolRenderingMode,
+  type NativeSFSymbolResizeMode,
   type NativeSFSymbolScale,
   type NativeSFSymbolTextStyle,
   type NativeSFSymbolWeight,
@@ -14,7 +15,22 @@ type NativeSFSymbolComponentRef = React.ComponentRef<typeof NativeSFSymbolViewNa
 export type SFSymbolWeight = NativeSFSymbolWeight;
 export type SFSymbolScale = NativeSFSymbolScale;
 export type SFSymbolRenderingMode = NativeSFSymbolRenderingMode;
+export type SFSymbolResizeMode = NativeSFSymbolResizeMode;
 export type SFSymbolTextStyle = NativeSFSymbolTextStyle;
+
+const TEXT_STYLE_TO_POINTS: Record<SFSymbolTextStyle, number> = {
+  largeTitle: 34,
+  title: 28,
+  title2: 22,
+  title3: 20,
+  headline: 17,
+  subheadline: 15,
+  body: 17,
+  callout: 16,
+  footnote: 13,
+  caption: 12,
+  caption2: 11,
+};
 
 export type SFSymbolProps = Omit<NativeSFSymbolProps, "size" | "textStyle" | "style" | "colors"> & {
   /**
@@ -79,10 +95,18 @@ export type SFSymbolProps = Omit<NativeSFSymbolProps, "size" | "textStyle" | "st
  * ```
  */
 export const SFSymbol = forwardRef<NativeSFSymbolComponentRef, SFSymbolProps>(
-  ({ size, color, colors, style, ...restProps }, ref) => {
+  ({ size = "body", color, colors, style, ...restProps }, ref) => {
     // Determine if size is a number (point size) or string (text style)
     const sizeProps: Pick<NativeSFSymbolProps, "size" | "textStyle"> =
       typeof size === "number" ? { size } : typeof size === "string" ? { textStyle: size } : {};
+
+    // Calculate dimension for explicit sizing
+    const dimension = useMemo(() => {
+      if (typeof size === "number") {
+        return size;
+      }
+      return TEXT_STYLE_TO_POINTS[size in TEXT_STYLE_TO_POINTS ? size : "body"];
+    }, [size]);
 
     // Resolve colors: colors prop > color prop > style.color
     const resolvedColors = useMemo(() => {
@@ -99,12 +123,17 @@ export const SFSymbol = forwardRef<NativeSFSymbolComponentRef, SFSymbolProps>(
       return undefined;
     }, [colors, color, style]);
 
+    // Combine user style with explicit sizing
+    const combinedStyle = useMemo(() => {
+      return [{ width: dimension, height: dimension }, style];
+    }, [dimension, style]);
+
     return (
       <NativeSFSymbolViewNativeComponent
         {...restProps}
         {...sizeProps}
         colors={resolvedColors}
-        style={style}
+        style={combinedStyle}
         ref={ref}
       />
     );
