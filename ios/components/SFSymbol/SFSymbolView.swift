@@ -10,7 +10,12 @@ public struct SFSymbolView: View {
   public var body: some View {
     let image: Image
     if let variableValue = props.variableValue {
-      image = Image(systemName: props.name, variableValue: variableValue)
+      if #available(iOS 16.0, *) {
+        image = Image(systemName: props.name, variableValue: variableValue)
+      } else {
+        // Fallback: variableValue is not supported prior to iOS 16
+        image = Image(systemName: props.name)
+      }
     } else {
       image = Image(systemName: props.name)
     }
@@ -20,39 +25,88 @@ public struct SFSymbolView: View {
 
   @ViewBuilder
   private func applyModifiers(to image: Image) -> some View {
-    let styled = image
-      .imageScale(props.scaleValue)
-      .font(props.fontValue)
-
-    let weighted: some View = {
+    // Compute effective font outside of builder-friendly chain
+    let baseFont = props.fontValue
+    let effectiveFont: Font = {
+      // If we have an explicit weight
       if let weight = props.weightValue {
-        return AnyView(styled.fontWeight(weight))
+        if #available(iOS 16.0, *) {
+          // iOS 16+: we can apply .fontWeight on Image
+          return baseFont
+        } else {
+          // Pre-iOS 16: best-effort only if we know an explicit size from props
+          if let size = props.size {
+            return .system(size: CGFloat(size), weight: weight)
+          } else {
+            // We cannot reliably merge a dynamic textStyle font with weight on Image pre-iOS16
+            return baseFont
+          }
+        }
+      } else {
+        return baseFont
       }
-      return AnyView(styled)
     }()
 
-    let rendered: some View = {
-      if let renderingMode = props.renderingModeValue {
-        return AnyView(weighted.symbolRenderingMode(renderingMode))
-      }
-      return AnyView(weighted)
-    }()
+    // Build a single expression so the opaque type stays consistent
+    let view = image
+      .imageScale(props.scaleValue)
+      .font(effectiveFont)
+      .modifier(ConditionalFontWeight(weight: props.weightValue))
+      .modifier(ConditionalRenderingMode(renderingMode: props.renderingModeValue))
+      .modifier(ConditionalForegroundStyle(colors: props.colorValues))
 
-    applyColors(to: rendered)
+    view
   }
+}
 
-  @ViewBuilder
-  private func applyColors(to view: some View) -> some View {
-    let colors = props.colorValues
+private struct ConditionalFontWeight: ViewModifier {
+  let weight: Font.Weight?
 
-    if colors.isEmpty {
-      view
-    } else if colors.count == 1 {
-      view.foregroundStyle(colors[0])
-    } else if colors.count == 2 {
-      view.foregroundStyle(colors[0], colors[1])
+  func body(content: Content) -> some View {
+    if let weight {
+      if #available(iOS 16.0, *) {
+        return AnyView(content.fontWeight(weight))
+      } else {
+        // Pre-iOS 16: weight is already folded into the effective font when possible.
+        return AnyView(content)
+      }
     } else {
-      view.foregroundStyle(colors[0], colors[1], colors[2])
+      return AnyView(content)
+    }
+  }
+}
+
+private struct ConditionalRenderingMode: ViewModifier {
+  let renderingMode: SymbolRenderingMode?
+
+  func body(content: Content) -> some View {
+    guard let renderingMode else { return AnyView(content) }
+    if #available(iOS 15.0, *) {
+      return AnyView(content.symbolRenderingMode(renderingMode))
+    } else {
+      return AnyView(content)
+    }
+  }
+}
+
+private struct ConditionalForegroundStyle: ViewModifier {
+  let colors: [Color]
+
+  func body(content: Content) -> some View {
+    guard !colors.isEmpty else { return AnyView(content) }
+
+    if #available(iOS 15.0, *) {
+      switch colors.count {
+      case 1:
+        return AnyView(content.foregroundStyle(colors[0]))
+      case 2:
+        return AnyView(content.foregroundStyle(colors[0], colors[1]))
+      default:
+        return AnyView(content.foregroundStyle(colors[0], colors[1], colors[2]))
+      }
+    } else {
+      // Fallback to a single color on older iOS
+      return AnyView(content.foregroundColor(colors[0]))
     }
   }
 }
