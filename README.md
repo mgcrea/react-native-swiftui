@@ -166,9 +166,38 @@ These components are standalone native views that can be used anywhere in your R
 
 | Component             | Description                                          | Key Props                                                                                          | Notes                                                                           |
 | --------------------- | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `SFSymbol`            | Renders SF Symbols with full customization           | `name`, `size`, `color`, `weight`, `scale`, `renderingMode`, `variableValue`, `colors`             | Supports all SF Symbol features including hierarchical and palette rendering    |
 | `SwiftUIPicker`       | A native picker modal with search functionality      | `isPresented`, `title`, `searchPlaceholder`, `options`, `selectedValue`, `autoDismiss`, `onSelect` | Full-screen native picker with search and categorization support                |
 | `SwiftUISheet`        | A native modal sheet presentation                    | `isPresented`, `detents`, `onDismiss`, Children                                                    | Standalone sheet that can be used outside of SwiftUI tree                       |
 | `SwiftUISheetPicker`  | A native picker presented as a bottom sheet          | `isPresented`, `title`, `searchPlaceholder`, `options`, `selectedValue`, `autoDismiss`, `onSelect` | Combines sheet presentation with picker functionality for a native iOS experience |
+
+#### SFSymbol Examples
+
+```tsx
+import { SFSymbol } from "@mgcrea/react-native-swiftui";
+
+// Basic usage
+<SFSymbol name="star.fill" />
+
+// With color and size
+<SFSymbol name="heart.fill" color="#FF3B30" size={24} weight="semibold" />
+
+// With text style sizing
+<SFSymbol name="gear" size="title" style={{ color: "#007AFF" }} />
+
+// Hierarchical rendering (automatic shading)
+<SFSymbol name="folder.fill.badge.plus" renderingMode="hierarchical" color="#007AFF" />
+
+// Palette rendering (multiple colors)
+<SFSymbol
+  name="person.crop.circle.badge.checkmark"
+  renderingMode="palette"
+  colors={["#FF3B30", "#34C759", "#007AFF"]}
+/>
+
+// Variable value (for symbols that support it)
+<SFSymbol name="speaker.wave.3.fill" variableValue={0.5} />
+```
 
 ## Contribute
 
