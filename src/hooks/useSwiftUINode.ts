@@ -32,13 +32,14 @@ export function useSwiftUINode<T extends SwiftUINodeProps, U extends SwiftUINode
   }, [type, id, parentId, registerNode, unregisterNode]);
 
   // Register the events on mount
+  const eventsKeys = events ? Object.keys(events) : [];
   const eventsValues = events ? Object.values(events) : [];
   useEffect(() => {
     if (events) {
       registerEvents(id, events);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, registerEvents, ...eventsValues]);
+  }, [id, registerEvents, ...eventsKeys, ...eventsValues]);
 
   const memoizedProps = useJsonMemo(props);
   useEffect(() => {
