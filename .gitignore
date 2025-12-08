@@ -10,8 +10,7 @@ dist/
 tmp/
 *.private.tsx
 
-example/src/components
-example/assets/fonts
+example/
 link-assets-manifest.json
 *.ttf
 
