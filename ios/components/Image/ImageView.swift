@@ -4,24 +4,37 @@ public struct ImageView: View {
   @ObservedObject public var props: ImageProps
 
   public var body: some View {
-    let image: Image
-    if let sourceUri = props.sourceUri, // Check for URI-based image first
-       let url = URL(string: sourceUri),
-       let data = try? Data(contentsOf: url),
-       let uiImage = UIImage(data: data)
-    {
-      image = Image(uiImage: uiImage) // Load from URI
-    } else if let name = props.name { // Fall back to named image
+    if let sourceUri = props.sourceUri, let url = URL(string: sourceUri) {
+      // Use AsyncImage for URL-based images to avoid blocking the main thread
+      AsyncImage(url: url) { phase in
+        switch phase {
+        case .empty:
+          ProgressView()
+            .applyStyles(props.style)
+        case let .success(image):
+          props.resizeMode.applyResizeMode(image)
+            .applyStyles(props.style)
+        case .failure:
+          Image(systemName: "exclamationmark.triangle")
+            .applyStyles(props.style)
+        @unknown default:
+          EmptyView()
+        }
+      }
+    } else if let name = props.name {
+      // Named images (system or asset) can be loaded synchronously
       if name.hasPrefix("system:") {
         let systemName = String(name.dropFirst("system:".count))
-        image = Image(systemName: systemName) // Load system image
+        props.resizeMode
+          .applyResizeMode(Image(systemName: systemName))
+          .applyStyles(props.style)
       } else {
-        image = Image(name) // Load named asset
+        props.resizeMode
+          .applyResizeMode(Image(name))
+          .applyStyles(props.style)
       }
     } else {
-      return AnyView(Text("No image source provided")) // Fallback if neither is set
+      Text("No image source provided")
     }
-    // let tintedImage = props.tintColor != nil ? image.foregroundColor(Color(hex: props.tintColor!)) : image
-    return AnyView(props.resizeMode.applyResizeMode(image).applyStyles(props.style))
   }
 }
