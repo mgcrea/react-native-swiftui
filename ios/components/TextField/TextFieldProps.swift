@@ -15,6 +15,8 @@ public final class TextFieldProps: ObservableObject, Decodable {
   @Published public var secure: Bool = false
   @Published public var multiline: Bool = false
   @Published public var disabled: Bool = false
+  @Published public var error: Bool = false
+  @Published public var helperText: String = ""
   @Published public var style: StyleProps?
   // Events
   public var onChange: ((String) -> Void)?
@@ -22,7 +24,7 @@ public final class TextFieldProps: ObservableObject, Decodable {
   public var onBlur: (() -> Void)?
 
   enum CodingKeys: String, CodingKey {
-    case text, label, placeholder, keyboardType, textContentType, returnKeyType, submitLabel, autocapitalizationType, maxLength, secure, multiline, disabled, style
+    case text, label, placeholder, keyboardType, textContentType, returnKeyType, submitLabel, autocapitalizationType, maxLength, secure, multiline, disabled, error, helperText, style
   }
 
   public required init(from decoder: Decoder) throws {
@@ -72,6 +74,8 @@ public final class TextFieldProps: ObservableObject, Decodable {
     secure = try container.decodeIfPresent(Bool.self, forKey: .secure) ?? false
     multiline = try container.decodeIfPresent(Bool.self, forKey: .multiline) ?? false
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
+    error = try container.decodeIfPresent(Bool.self, forKey: .error) ?? false
+    helperText = try container.decodeIfPresent(String.self, forKey: .helperText) ?? ""
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
 
     if maxLength != nil {
@@ -99,6 +103,8 @@ public final class TextFieldProps: ObservableObject, Decodable {
     secure = other.secure
     multiline = other.multiline
     disabled = other.disabled
+    error = other.error
+    helperText = other.helperText
     style = other.style
   }
 }

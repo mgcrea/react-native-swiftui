@@ -11,18 +11,26 @@ public struct TextFieldView: View {
   }
 
   public var body: some View {
-    if props.label.isEmpty {
-      inputField()
-    } else {
-      if #available(iOS 16.0, *) {
-        LabeledContent(props.label) {
-          inputField()
-        }
+    VStack(alignment: .leading, spacing: 4) {
+      if props.label.isEmpty {
+        inputField()
       } else {
-        HStack {
-          Text(props.label)
-          inputField()
+        if #available(iOS 16.0, *) {
+          LabeledContent(props.label) {
+            inputField()
+          }
+        } else {
+          HStack {
+            Text(props.label)
+            inputField()
+          }
         }
+      }
+
+      if !props.helperText.isEmpty {
+        Text(props.helperText)
+          .font(.caption)
+          .foregroundColor(props.error ? .red : .secondary)
       }
     }
   }

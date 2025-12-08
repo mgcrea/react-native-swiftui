@@ -30,6 +30,8 @@ export type NativeTextFieldProps<T = string> = {
   maxLength?: number | null;
   multiline?: boolean;
   disabled?: boolean;
+  error?: boolean;
+  helperText?: string;
   style?: StyleProp<NativeTextStyle>;
   onChange?: (value: T) => void;
   onFocus?: () => void;
