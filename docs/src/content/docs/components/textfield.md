@@ -40,6 +40,8 @@ const [text, setText] = useState('');
 | `maxLength` | `number \| null` | - | Maximum character length |
 | `multiline` | `boolean` | `false` | Allow multiple lines |
 | `disabled` | `boolean` | `false` | Disable input |
+| `error` | `boolean` | `false` | Display field in error state |
+| `helperText` | `string` | - | Helper text displayed below the field |
 | `style` | `StyleProp<NativeTextStyle>` | - | Style properties |
 | `onChange` | `(value: string) => void` | - | Called when text changes |
 | `onFocus` | `() => void` | - | Called when field is focused |
@@ -92,6 +94,46 @@ For password fields:
 />
 ```
 
+## Validation & Helper Text
+
+Use `error` and `helperText` props to provide validation feedback:
+
+```tsx
+const [email, setEmail] = useState('');
+const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const emailTouched = email.length > 0;
+const emailError = emailTouched && !isValidEmail;
+
+<SwiftUI.TextField
+  placeholder="Email"
+  text={email}
+  onChange={setEmail}
+  keyboardType="emailAddress"
+  error={emailError}
+  helperText={
+    emailError
+      ? 'Please enter a valid email address'
+      : "We'll never share your email"
+  }
+/>
+```
+
+The helper text appears below the field in a caption style. When `error` is `true`, the text is displayed in red; otherwise, it uses a secondary gray color.
+
+### Helper Text Without Error
+
+You can show hints without an error state:
+
+```tsx
+<SwiftUI.TextField
+  placeholder="Bio"
+  text={bio}
+  onChange={setBio}
+  multiline
+  helperText="Tell us about yourself (optional)"
+/>
+```
+
 ## Focus Events
 
 ```tsx
@@ -109,11 +151,15 @@ For password fields:
 
 ## Examples
 
-### Login Form
+### Login Form with Validation
 
 ```tsx
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
+
+const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const emailError = email.length > 0 && !isValidEmail;
+const passwordError = password.length > 0 && password.length < 8;
 
 <SwiftUI.Form>
   <SwiftUI.Section header="Login">
@@ -125,6 +171,8 @@ const [password, setPassword] = useState('');
       autocapitalizationType="none"
       text={email}
       onChange={setEmail}
+      error={emailError}
+      helperText={emailError ? 'Invalid email address' : undefined}
     />
     <SwiftUI.TextField
       label="Password"
@@ -133,6 +181,8 @@ const [password, setPassword] = useState('');
       textContentType="password"
       text={password}
       onChange={setPassword}
+      error={passwordError}
+      helperText={passwordError ? 'Must be at least 8 characters' : undefined}
     />
   </SwiftUI.Section>
 </SwiftUI.Form>
