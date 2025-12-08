@@ -10,7 +10,7 @@ public struct SheetPickerView: View {
 
   public var body: some View {
     triggerView
-      .sheet(isPresented: $props.isPresented, onDismiss: props.onDismiss) {
+      .sheet(isPresented: $props.isPresented, onDismiss: handleDismiss) {
         if #available(iOS 16.0, *) {
           SheetPickerContentView(props: props)
             .presentationDetents([.medium, .large])
@@ -18,6 +18,12 @@ public struct SheetPickerView: View {
           SheetPickerContentView(props: props)
         }
       }
+  }
+
+  private func handleDismiss() {
+    // Always call onDismiss so JS updates its state
+    // The isAutoDismissing flag is checked and reset in updateProps
+    props.onDismiss?()
   }
 
   @ViewBuilder
@@ -82,29 +88,40 @@ private struct SheetPickerContentView: View {
   @ObservedObject var props: SheetPickerProps
 
   var body: some View {
-    NavigationView {
-      VStack(spacing: 16) {
-        if !headerTitle.isEmpty {
-          Text(headerTitle)
-            .font(.title2)
-            .bold()
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
+    if #available(iOS 16.0, *) {
+      NavigationStack {
+        contentBody
+      }
+    } else {
+      NavigationView {
+        contentBody
+      }
+      .navigationViewStyle(.stack)
+    }
+  }
 
-        if #available(iOS 15.0, *) {
+  private var contentBody: some View {
+    VStack(spacing: 16) {
+      if !headerTitle.isEmpty {
+        Text(headerTitle)
+          .font(.title2)
+          .bold()
+          .frame(maxWidth: .infinity, alignment: .leading)
+      }
+
+      if #available(iOS 15.0, *) {
+        listView
+          .searchable(text: $props.searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: Text(props.searchPlaceholder))
+      } else {
+        VStack(spacing: 12) {
+          TextField(props.searchPlaceholder, text: $props.searchText)
+            .textFieldStyle(RoundedBorderTextFieldStyle())
           listView
-            .searchable(text: $props.searchText, placement: .navigationBarDrawer(displayMode: .automatic), prompt: Text(props.searchPlaceholder))
-        } else {
-          VStack(spacing: 12) {
-            TextField(props.searchPlaceholder, text: $props.searchText)
-              .textFieldStyle(RoundedBorderTextFieldStyle())
-            listView
-          }
         }
       }
-      .padding(.horizontal, 16)
-      .padding(.bottom, 16)
     }
+    .padding(.horizontal, 16)
+    .padding(.bottom, 16)
   }
 
   private var listView: some View {

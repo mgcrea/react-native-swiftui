@@ -42,6 +42,7 @@ public final class SheetPickerProps: ObservableObject, Decodable {
 
   public var onSelect: ((String) -> Void)?
   public var onDismiss: (() -> Void)?
+  internal var isAutoDismissing: Bool = false
 
   enum CodingKeys: String, CodingKey {
     case isPresented
@@ -143,6 +144,7 @@ public final class SheetPickerProps: ObservableObject, Decodable {
     searchText = ""
     onSelect?(value)
     if autoDismiss && isPresented {
+      isAutoDismissing = true
       isPresented = false
     }
   }

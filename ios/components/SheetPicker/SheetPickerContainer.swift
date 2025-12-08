@@ -28,10 +28,19 @@ public final class SheetPickerContainer: SwiftUIContainerView {
     if let isPresented = newDictionary["isPresented"] as? Bool,
        isPresented != props.isPresented
     {
-      props.isPresented = isPresented
-      if previousPresented && !isPresented {
-        props.searchText = ""
+      // Ignore attempts to re-present during auto-dismiss (race condition from JS state update)
+      if isPresented && props.isAutoDismissing {
+        props.isAutoDismissing = false
+      } else {
+        props.isPresented = isPresented
+        if previousPresented && !isPresented {
+          props.searchText = ""
+          props.isAutoDismissing = false
+        }
       }
+    } else if props.isAutoDismissing, newDictionary["isPresented"] as? Bool == false {
+      // JS confirmed dismiss, reset flag even though isPresented already matches
+      props.isAutoDismissing = false
     }
 
     if let title = newDictionary["title"] as? String,
