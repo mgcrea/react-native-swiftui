@@ -6,7 +6,6 @@ import React, {
   RefObject,
   useCallback,
   useContext,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -65,16 +64,9 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
     [debug, rootId],
   );
 
-  const nodesKey = useMemo(() => {
-    const keys = Array.from(nodeRegistry.current.keys());
-    return JSON.stringify(keys);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodeRegistryVersion]);
-
-  const renderSequenceKey = useMemo(() => {
-    return JSON.stringify(renderSequence.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [renderSequenceVersion]);
+  // Version counters for change detection - used as dependency keys
+  const nodesKey = `nodes-v${nodeRegistryVersion}`;
+  const renderSequenceKey = `seq-v${renderSequenceVersion}`;
 
   const getEventHandler = (id: string, name: string) => {
     return eventRegistry.current.get(id)?.get(name);
