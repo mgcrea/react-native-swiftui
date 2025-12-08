@@ -1,6 +1,6 @@
 import { useEffect, useId, useRef } from "react";
 import { useSwiftUIContext, useSwiftUIParentContext, type EventHandler } from "../contexts";
-import { useJsonMemo } from "../hooks";
+import { useDeepMemo } from "../hooks";
 import { WithId } from "../types";
 import { lowercaseFirstLetter } from "../utils";
 
@@ -41,7 +41,7 @@ export function useSwiftUINode<T extends SwiftUINodeProps, U extends SwiftUINode
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, registerEvents, ...eventsKeys, ...eventsValues]);
 
-  const memoizedProps = useJsonMemo(props);
+  const memoizedProps = useDeepMemo(props);
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
