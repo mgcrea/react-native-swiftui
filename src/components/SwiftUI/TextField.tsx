@@ -46,7 +46,11 @@ export const TextField: FunctionComponentWithId<NativeTextFieldProps> = ({
   ...otherProps
 }) => {
   const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
-  useSwiftUINode("TextField", { style: normalizedStyles, ...otherProps }, { change: onChange, focus: onFocus, blur: onBlur });
+  useSwiftUINode(
+    "TextField",
+    { style: normalizedStyles, ...otherProps },
+    { change: onChange, focus: onFocus, blur: onBlur },
+  );
 
   return null;
 };

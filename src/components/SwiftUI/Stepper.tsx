@@ -37,11 +37,15 @@ export const Stepper: FunctionComponentWithId<PropsWithChildren<NativeStepperPro
     [onChangeProp],
   );
 
-  const { id } = useSwiftUINode("Stepper", { style: normalizedStyles, ...otherProps }, {
-    change: onChange,
-    focus: onFocus,
-    blur: onBlur,
-  });
+  const { id } = useSwiftUINode(
+    "Stepper",
+    { style: normalizedStyles, ...otherProps },
+    {
+      change: onChange,
+      focus: onFocus,
+      blur: onBlur,
+    },
+  );
 
   return <SwiftUIParentIdProvider id={id}>{children}</SwiftUIParentIdProvider>;
 };
