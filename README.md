@@ -44,6 +44,8 @@ Native SwiftUI components for React Native using the Fabric renderer. Build iOS 
 - **📱 Sheet Presentation** - Native modal sheets with detent support
 - **🔌 Form Libraries** - Works with react-hook-form, TanStack Form, and more
 
+> **Note:** This library is iOS-only. For Android, check out [@mgcrea/react-native-jetpack-compose](https://github.com/mgcrea/react-native-jetpack-compose).
+
 ## Demo
 
 ![demo](./.github/assets/demo.gif)
