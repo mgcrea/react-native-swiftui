@@ -42,6 +42,5 @@ export const SwiftUISheet = forwardRef<SwiftUISheetHandle, SwiftUISheetProps>(fu
     />
   );
 });
-SwiftUISheet.displayName = "SwiftUISheet";
 
-export type { NativeSheetDetent, NativeSheetProps } from "../native/SheetViewNativeComponent";
+SwiftUISheet.displayName = "SwiftUISheet";
