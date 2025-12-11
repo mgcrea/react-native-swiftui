@@ -9,4 +9,5 @@ export * from "./components/SwiftUISheetPicker";
 export * from "./styles";
 // export * from "./utils";
 
+export type * from "./components/SwiftUI";
 export type * from "./types";
