@@ -1,6 +1,7 @@
 // @ts-check
 import starlight from "@astrojs/starlight";
 import { defineConfig } from "astro/config";
+import starlightLlmsTxt from "starlight-llms-txt";
 
 // https://astro.build/config
 export default defineConfig({
@@ -93,6 +94,7 @@ export default defineConfig({
           autogenerate: { directory: "examples" },
         },
       ],
+      plugins: [starlightLlmsTxt()],
     }),
   ],
 });
