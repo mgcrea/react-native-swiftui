@@ -56,6 +56,10 @@ export interface NativeTextStyleProps {
   style?: StyleProp<NativeTextStyle>;
 }
 
+export interface NativeLabelStyleProps {
+  labelStyle?: StyleProp<NativeTextStyle>;
+}
+
 export interface NativeViewStyleProps {
   style?: StyleProp<NativeViewStyle>;
 }
