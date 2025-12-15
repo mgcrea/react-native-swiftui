@@ -17,12 +17,16 @@ public struct StepperView<Content: View>: View {
       stepperContent()
     } else {
       if #available(iOS 16.0, *) {
-        LabeledContent(props.label) {
+        LabeledContent {
           stepperContent()
+        } label: {
+          Text(props.label)
+            .applyStyles(props.labelStyle)
         }
       } else {
         HStack {
           Text(props.label)
+            .applyStyles(props.labelStyle)
           stepperContent()
         }
       }

@@ -61,19 +61,7 @@ public struct PickerView: View {
 
   @ViewBuilder
   private func labelView() -> some View {
-    if let color = resolvedLabelColor {
-      Text(props.label)
-        .foregroundColor(color)
-    } else {
-      Text(props.label)
-        .foregroundColor(.primary)
-    }
-  }
-
-  private var resolvedLabelColor: Color? {
-    guard let colorValue = props.labelColor else {
-      return nil
-    }
-    return Color(value: colorValue)
+    Text(props.label)
+      .applyStyles(props.labelStyle)
   }
 }

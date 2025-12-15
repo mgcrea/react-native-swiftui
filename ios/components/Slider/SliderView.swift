@@ -18,12 +18,16 @@ public struct SliderView<Content: View>: View {
       sliderContent()
     } else {
       if #available(iOS 16.0, *) {
-        LabeledContent(props.label) {
+        LabeledContent {
           sliderContent()
+        } label: {
+          Text(props.label)
+            .applyStyles(props.labelStyle)
         }
       } else {
         HStack {
           Text(props.label)
+            .applyStyles(props.labelStyle)
           sliderContent()
         }
       }

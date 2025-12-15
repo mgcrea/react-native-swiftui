@@ -15,12 +15,16 @@ public struct NumberFieldView: View {
       inputField()
     } else {
       if #available(iOS 16.0, *) {
-        LabeledContent(props.label) {
+        LabeledContent {
           inputField()
+        } label: {
+          Text(props.label)
+            .applyStyles(props.labelStyle)
         }
       } else {
         HStack {
           Text(props.label)
+            .applyStyles(props.labelStyle)
           inputField()
         }
       }
