@@ -186,7 +186,7 @@ extension Font {
     case "caption2": return .caption2
     case "footnote": return .footnote
     case "headline": return .headline
-    case "largeTitle": return .largeTitle
+    case "largetitle": return .largeTitle
     case "subheadline": return .subheadline
     case "title": return .title
     case "title2": return .title2
