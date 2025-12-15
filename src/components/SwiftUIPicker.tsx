@@ -5,7 +5,7 @@ import NativePickerViewNativeComponent, {
   type NativePickerProps,
   type NativePickerStyle,
 } from "../native/PickerViewNativeComponent";
-import { NativeTextStyle } from "../types";
+import type { NativeTextStyle } from "../types";
 
 type NativePickerComponentRef = React.ComponentRef<typeof NativePickerViewNativeComponent>;
 

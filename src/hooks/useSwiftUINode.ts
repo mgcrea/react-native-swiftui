@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef } from "react";
 import { useSwiftUIContext, useSwiftUIParentContext, type EventHandler } from "../contexts";
 import { useDeepMemo } from "../hooks";
-import { WithId } from "../types";
+import type { WithId } from "../types";
 import { lowercaseFirstLetter } from "../utils";
 
 export type SwiftUINodeProps = WithId<Record<string, unknown>>;

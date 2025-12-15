@@ -1,4 +1,4 @@
-import React, { createContext, FunctionComponent, useContext, useMemo } from "react";
+import React, { createContext, type FunctionComponent, useContext, useMemo } from "react";
 
 type SwiftUIParentContextValue = {
   parentId: string;

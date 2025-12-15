@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import { SwiftUIParentIdProvider } from "../../contexts";
 import { useSwiftUINode } from "../../hooks";
 import type { FunctionComponentWithId } from "../../types";

@@ -1,19 +1,19 @@
 import {
-  PropsWithChildren,
-  ReactElement,
-  ReactNode,
+  type PropsWithChildren,
+  type ReactElement,
+  type ReactNode,
   useCallback,
   useEffect,
   useId,
   useLayoutEffect,
 } from "react";
+import type { ViewStyleProps } from "../types";
 import { SwiftUIParentIdProvider } from "./../contexts";
 import { SwiftUIProvider, useSwiftUIContext } from "./../contexts/SwiftUIContext";
 import {
-  NativeSwiftUIEvent,
+  type NativeSwiftUIEvent,
   default as SwiftUIRootNativeComponent,
 } from "./../native/SwiftUIRootNativeComponent";
-import type { NativeViewStyleProps } from "./../types";
 import { buildViewTree } from "./../utils/viewTree";
 import {
   Button,
@@ -40,7 +40,7 @@ import {
   ZStack,
 } from "./SwiftUI/index";
 
-export type SwiftUIProps = NativeViewStyleProps & {
+export type SwiftUIProps = ViewStyleProps & {
   id?: string;
   onEvent?: (event: { nativeEvent: NativeSwiftUIEvent }) => void;
   debug?: boolean;

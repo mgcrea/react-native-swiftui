@@ -1,4 +1,4 @@
-import { PropsWithChildren, useMemo } from "react";
+import { type PropsWithChildren, useMemo } from "react";
 import { SwiftUIParentIdProvider } from "../../contexts";
 import { useDebounce, useNormalizedStyles, useSwiftUINode } from "../../hooks";
 import type { FunctionComponentWithId, NativeLabelStyleProps, NativeTextStyle } from "../../types";

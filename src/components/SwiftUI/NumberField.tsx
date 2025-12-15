@@ -6,7 +6,7 @@ import type {
   NativeTextStyle,
   NativeTextStyleProps,
 } from "../../types";
-import { NativeKeyboardType, NativeReturnKeyType } from "./TextField";
+import type { NativeKeyboardType, NativeReturnKeyType } from "./TextField";
 
 export type NumberFormatter =
   | "currency"

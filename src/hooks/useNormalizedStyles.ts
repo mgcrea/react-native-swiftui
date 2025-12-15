@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { StyleProp, StyleSheet } from "react-native";
-import { NativeTextStyle, NativeViewStyle } from "src/types";
+import { type StyleProp, StyleSheet } from "react-native";
+import type { NativeTextStyle, NativeViewStyle } from "src/types";
 
 export const useNormalizedStyles = <T extends NativeTextStyle | NativeViewStyle>(
   style?: StyleProp<T>,

@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
 import type { NativeTextStyle, NativeTextStyleProps } from "../../types";
 import { fillArray } from "../../utils";

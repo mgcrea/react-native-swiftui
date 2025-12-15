@@ -1,9 +1,9 @@
 // src/contexts/SwiftUIContext.tsx
 import React, {
   createContext,
-  FunctionComponent,
-  PropsWithChildren,
-  RefObject,
+  type FunctionComponent,
+  type PropsWithChildren,
+  type RefObject,
   useCallback,
   useContext,
   useRef,
