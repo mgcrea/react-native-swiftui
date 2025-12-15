@@ -51,6 +51,8 @@ public struct TextFieldView: View {
       }
     }
     .keyboardType(props.keyboardType)
+    .textContentType(props.textContentType)
+    .autocapitalization(props.autocapitalizationType ?? .sentences)
     .focused($isFocused)
     .applyIf(props.submitLabel != nil) {
       $0.submitLabel(props.submitLabel!)
@@ -61,7 +63,11 @@ public struct TextFieldView: View {
       newValue ? props.onFocus?() : props.onBlur?()
     }
     .onChange(of: props.text) { newValue in
-      props.onChange?(newValue)
+      // Enforce maxLength on text changes
+      if let maxLength = props.maxLength, newValue.count > maxLength {
+        props.text = String(newValue.prefix(maxLength))
+      }
+      props.onChange?(props.text)
     }
     .toolbar {
       ToolbarItemGroup(placement: .keyboard) {
