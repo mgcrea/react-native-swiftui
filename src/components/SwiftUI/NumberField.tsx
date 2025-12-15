@@ -1,6 +1,11 @@
 import { useMemo } from "react";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeTextStyle, NativeTextStyleProps } from "../../types";
+import type {
+  FunctionComponentWithId,
+  NativeLabelStyleProps,
+  NativeTextStyle,
+  NativeTextStyleProps,
+} from "../../types";
 import { NativeKeyboardType, NativeReturnKeyType } from "./TextField";
 
 export type NumberFormatter =
@@ -14,26 +19,28 @@ export type NumberFormatter =
   | "currencyPlural"
   | "currencyAccounting";
 
-export type NativeNumberFieldProps<T = number> = NativeTextStyleProps & {
-  value?: T | null;
-  label?: string;
-  placeholder?: string;
-  keyboardType?: NativeKeyboardType;
-  returnKeyType?: NativeReturnKeyType;
-  min?: number | null;
-  max?: number | null;
-  disabled?: boolean;
-  formatter?: NumberFormatter;
-  onChange?: (value: T | null) => void;
-  onFocus?: () => void;
-  onBlur?: () => void;
-};
+export type NativeNumberFieldProps<T = number> = NativeTextStyleProps &
+  NativeLabelStyleProps & {
+    value?: T | null;
+    label?: string;
+    placeholder?: string;
+    keyboardType?: NativeKeyboardType;
+    returnKeyType?: NativeReturnKeyType;
+    min?: number | null;
+    max?: number | null;
+    disabled?: boolean;
+    formatter?: NumberFormatter;
+    onChange?: (value: T | null) => void;
+    onFocus?: () => void;
+    onBlur?: () => void;
+  };
 
 export const NumberField: FunctionComponentWithId<NativeNumberFieldProps> = ({
   onChange: onChangeProp,
   onFocus,
   onBlur,
   style,
+  labelStyle,
   ...otherProps
 }) => {
   const onChange = useMemo(
@@ -48,10 +55,11 @@ export const NumberField: FunctionComponentWithId<NativeNumberFieldProps> = ({
   );
 
   const normalizedStyle = useNormalizedStyles<NativeTextStyle>(style);
+  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
 
   useSwiftUINode(
     "NumberField",
-    { style: normalizedStyle, ...otherProps },
+    { style: normalizedStyle, labelStyle: normalizedLabelStyle, ...otherProps },
     { change: onChange, focus: onFocus, blur: onBlur },
   );
 

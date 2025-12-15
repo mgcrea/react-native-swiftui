@@ -1,9 +1,9 @@
 import { PropsWithChildren, useMemo } from "react";
 import { SwiftUIParentIdProvider } from "../../contexts";
-import { useDebounce, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId } from "../../types";
+import { useDebounce, useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeLabelStyleProps, NativeTextStyle } from "../../types";
 
-export type NativeSliderProps = {
+export type NativeSliderProps = NativeLabelStyleProps & {
   value?: number;
   minimum?: number;
   maximum?: number;
@@ -21,6 +21,7 @@ export const Slider: FunctionComponentWithId<PropsWithChildren<NativeSliderProps
   onFocus,
   onBlur,
   value,
+  labelStyle,
   ...otherProps
 }) => {
   const onChange = useMemo(
@@ -34,10 +35,11 @@ export const Slider: FunctionComponentWithId<PropsWithChildren<NativeSliderProps
   );
 
   const debouncedValue = useDebounce(value, 100);
+  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
 
   const { id } = useSwiftUINode(
     "Slider",
-    { value: debouncedValue, ...otherProps },
+    { value: debouncedValue, labelStyle: normalizedLabelStyle, ...otherProps },
     {
       change: onChange,
       focus: onFocus,

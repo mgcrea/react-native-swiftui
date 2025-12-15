@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from "react";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { NativeTextStyle, NativeTextStyleProps } from "../../types";
+import type { NativeLabelStyleProps, NativeTextStyle, NativeTextStyleProps } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/picker
 
@@ -24,17 +24,18 @@ const DEFAULT_PICKER_CONFIG = {
   suffix: "",
 } satisfies NativePickerConfig;
 
-export type NativePickerProps<T extends string> = NativeTextStyleProps & {
-  options?: readonly NativePickerOption<T>[];
-  config?: NativePickerConfig;
-  selection?: T;
-  label?: string;
-  pickerStyle?: NativePickerStyle;
-  disabled?: boolean;
-  onChange?: (value: T) => void;
-  onFocus?: () => void;
-  onBlur?: () => void;
-};
+export type NativePickerProps<T extends string> = NativeTextStyleProps &
+  NativeLabelStyleProps & {
+    options?: readonly NativePickerOption<T>[];
+    config?: NativePickerConfig;
+    selection?: T;
+    label?: string;
+    pickerStyle?: NativePickerStyle;
+    disabled?: boolean;
+    onChange?: (value: T) => void;
+    onFocus?: () => void;
+    onBlur?: () => void;
+  };
 
 export const Picker = <T extends string>({
   selection,
@@ -44,6 +45,7 @@ export const Picker = <T extends string>({
   onFocus,
   onBlur,
   style,
+  labelStyle,
   ...otherProps
 }: NativePickerProps<T>): ReactNode => {
   const onChange = useMemo(
@@ -79,6 +81,7 @@ export const Picker = <T extends string>({
   );
 
   const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
+  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
 
   useSwiftUINode(
     "Picker",
@@ -87,6 +90,7 @@ export const Picker = <T extends string>({
       options: normalizedOptions,
       config: normalizedConfig,
       style: normalizedStyles,
+      labelStyle: normalizedLabelStyle,
       ...otherProps,
     },
     {

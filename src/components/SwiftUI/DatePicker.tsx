@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId } from "../../types";
+import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeLabelStyleProps, NativeTextStyle } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/datepickerstyle
 export type NativeDatePickerStyle = "automatic" | "compact" | "field" | "graphical" | "stepperField" | "wheel";
@@ -9,7 +9,7 @@ export type NativeDatePickerStyle = "automatic" | "compact" | "field" | "graphic
 export type NativeDatePickerComponents = "date" | "hourAndMinute" | "hourMinuteAndSecond";
 export type NativeDatePickerComponentsAliases = "date" | "time" | "datetime";
 
-export type NativeDatePickerProps = {
+export type NativeDatePickerProps = NativeLabelStyleProps & {
   selection?: Date;
   label?: string;
   datePickerStyle?: NativeDatePickerStyle;
@@ -24,6 +24,7 @@ export const DatePicker: FunctionComponentWithId<NativeDatePickerProps> = ({
   onChange: onChangeProp,
   onFocus,
   onBlur,
+  labelStyle,
   ...otherProps
 }) => {
   const onChange = useMemo(
@@ -40,7 +41,13 @@ export const DatePicker: FunctionComponentWithId<NativeDatePickerProps> = ({
     [onChangeProp],
   );
 
-  useSwiftUINode("DatePicker", otherProps, { change: onChange, focus: onFocus, blur: onBlur });
+  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
+
+  useSwiftUINode(
+    "DatePicker",
+    { labelStyle: normalizedLabelStyle, ...otherProps },
+    { change: onChange, focus: onFocus, blur: onBlur },
+  );
   return null;
 };
 DatePicker.displayName = "DatePicker";

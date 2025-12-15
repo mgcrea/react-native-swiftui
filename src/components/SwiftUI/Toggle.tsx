@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId } from "../../types";
+import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import type { FunctionComponentWithId, NativeLabelStyleProps, NativeTextStyle } from "../../types";
 
-export type NativeToggleProps = {
+export type NativeToggleProps = NativeLabelStyleProps & {
   isOn: boolean;
   label?: string;
   disabled?: boolean;
@@ -11,6 +11,7 @@ export type NativeToggleProps = {
 
 export const Toggle: FunctionComponentWithId<NativeToggleProps> = ({
   onChange: onChangeProp,
+  labelStyle,
   ...otherProps
 }) => {
   const onChange = useMemo(
@@ -23,9 +24,15 @@ export const Toggle: FunctionComponentWithId<NativeToggleProps> = ({
     [onChangeProp],
   );
 
-  useSwiftUINode("Toggle", otherProps, {
-    change: onChange,
-  });
+  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
+
+  useSwiftUINode(
+    "Toggle",
+    { labelStyle: normalizedLabelStyle, ...otherProps },
+    {
+      change: onChange,
+    },
+  );
 
   return null;
 };
