@@ -3,7 +3,7 @@ import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
 import type { FunctionComponentWithId, NativeLabelStyleProps, NativeTextStyle } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/datepickerstyle
-export type NativeDatePickerStyle = "automatic" | "compact" | "field" | "graphical" | "stepperField" | "wheel";
+export type NativeDatePickerStyle = "default" | "compact" | "field" | "graphical" | "stepperField" | "wheel";
 
 // https://developer.apple.com/documentation/swiftui/datepickercomponents
 export type NativeDatePickerComponents = "date" | "hourAndMinute" | "hourMinuteAndSecond";
