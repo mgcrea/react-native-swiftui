@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
+import type { CodegenTypes } from "react-native";
 import { codegenNativeComponent, type HostComponent, type ViewProps } from "react-native";
-import type { DirectEventHandler, WithDefault } from "react-native/Libraries/Types/CodegenTypes";
 
 export type NativeSheetDetent = string;
 
@@ -10,15 +10,15 @@ type NativeSheetPrimaryActionEvent = {};
 type NativeSheetSecondaryActionEvent = {};
 
 export interface NativeSheetProps extends ViewProps {
-  isPresented?: WithDefault<boolean, false>;
+  isPresented?: CodegenTypes.WithDefault<boolean, false>;
   detents?: NativeSheetDetent[];
   title?: string;
   message?: string;
   primaryButtonTitle?: string;
   secondaryButtonTitle?: string;
-  onNativeDismiss?: DirectEventHandler<Readonly<NativeSheetDismissEvent>>;
-  onNativePrimaryAction?: DirectEventHandler<Readonly<NativeSheetPrimaryActionEvent>>;
-  onNativeSecondaryAction?: DirectEventHandler<Readonly<NativeSheetSecondaryActionEvent>>;
+  onNativeDismiss?: CodegenTypes.DirectEventHandler<Readonly<NativeSheetDismissEvent>>;
+  onNativePrimaryAction?: CodegenTypes.DirectEventHandler<Readonly<NativeSheetPrimaryActionEvent>>;
+  onNativeSecondaryAction?: CodegenTypes.DirectEventHandler<Readonly<NativeSheetSecondaryActionEvent>>;
 }
 
 export default codegenNativeComponent<NativeSheetProps>("NativeSheetView") as HostComponent<NativeSheetProps>;

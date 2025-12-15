@@ -1,5 +1,5 @@
+import type { CodegenTypes } from "react-native";
 import { codegenNativeComponent, type HostComponent, type ViewProps } from "react-native";
-import type { Double, WithDefault } from "react-native/Libraries/Types/CodegenTypes";
 
 export type NativeSFSymbolWeight =
   | "ultraLight"
@@ -34,13 +34,13 @@ export type NativeSFSymbolTextStyle =
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 export interface NativeSFSymbolProps extends ViewProps {
   name: string;
-  size?: Double;
-  textStyle?: WithDefault<NativeSFSymbolTextStyle, "body">;
-  weight?: WithDefault<NativeSFSymbolWeight, "regular">;
-  scale?: WithDefault<NativeSFSymbolScale, "medium">;
-  renderingMode?: WithDefault<NativeSFSymbolRenderingMode, "monochrome">;
-  resizeMode?: WithDefault<NativeSFSymbolResizeMode, "contain">;
-  variableValue?: Double;
+  size?: CodegenTypes.Double;
+  textStyle?: CodegenTypes.WithDefault<NativeSFSymbolTextStyle, "body">;
+  weight?: CodegenTypes.WithDefault<NativeSFSymbolWeight, "regular">;
+  scale?: CodegenTypes.WithDefault<NativeSFSymbolScale, "medium">;
+  renderingMode?: CodegenTypes.WithDefault<NativeSFSymbolRenderingMode, "monochrome">;
+  resizeMode?: CodegenTypes.WithDefault<NativeSFSymbolResizeMode, "contain">;
+  variableValue?: CodegenTypes.Double;
   colors?: readonly string[];
 }
 

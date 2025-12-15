@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
+import type { CodegenTypes } from "react-native";
 import { codegenNativeComponent, type HostComponent, type ViewProps } from "react-native";
-import type { DirectEventHandler, WithDefault } from "react-native/Libraries/Types/CodegenTypes";
 
 export type NativeSheetPickerOption = Readonly<{
   label?: string;
@@ -15,14 +15,14 @@ export type NativeSheetPickerSelectEvent = Readonly<{
 export type NativeSheetPickerDismissEvent = {};
 
 export interface NativeSheetPickerProps extends ViewProps {
-  isPresented?: WithDefault<boolean, false>;
+  isPresented?: CodegenTypes.WithDefault<boolean, false>;
   title?: string;
   searchPlaceholder?: string;
   selectedValue?: string;
   options?: readonly NativeSheetPickerOption[];
-  autoDismiss?: WithDefault<boolean, true>;
-  onNativeSelect?: DirectEventHandler<NativeSheetPickerSelectEvent>;
-  onNativeDismiss?: DirectEventHandler<Readonly<NativeSheetPickerDismissEvent>>;
+  autoDismiss?: CodegenTypes.WithDefault<boolean, true>;
+  onNativeSelect?: CodegenTypes.DirectEventHandler<NativeSheetPickerSelectEvent>;
+  onNativeDismiss?: CodegenTypes.DirectEventHandler<Readonly<NativeSheetPickerDismissEvent>>;
 }
 
 export default codegenNativeComponent<NativeSheetPickerProps>(

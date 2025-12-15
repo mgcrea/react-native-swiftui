@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 /* eslint-disable @typescript-eslint/no-deprecated */
+import type { CodegenTypes } from "react-native";
 import {
   codegenNativeCommands,
   codegenNativeComponent,
   type HostComponent,
   type ViewProps,
 } from "react-native";
-import type { DirectEventHandler } from "react-native/Libraries/Types/CodegenTypes";
 
 export type NativeSwiftUIEvent = {
   name: string;
@@ -17,7 +17,7 @@ export type NativeSwiftUIEvent = {
 
 export interface NativeSwiftUIRootProps extends ViewProps {
   viewTree?: string;
-  onEvent?: DirectEventHandler<Readonly<NativeSwiftUIEvent>>;
+  onEvent?: CodegenTypes.DirectEventHandler<Readonly<NativeSwiftUIEvent>>;
 }
 
 export interface NativeSwiftUIRootCommands {
