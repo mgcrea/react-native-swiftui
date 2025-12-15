@@ -8,9 +8,32 @@ public struct ToggleView: View {
   }
 
   public var body: some View {
-    Toggle(props.label, isOn: $props.isOn)
+    if props.label.isEmpty {
+      toggleContent()
+    } else {
+      if #available(iOS 16.0, *) {
+        LabeledContent {
+          toggleContent()
+        } label: {
+          Text(props.label)
+            .applyStyles(props.labelStyle)
+        }
+      } else {
+        HStack {
+          Text(props.label)
+            .applyStyles(props.labelStyle)
+          Spacer()
+          toggleContent()
+        }
+      }
+    }
+  }
+
+  @ViewBuilder
+  private func toggleContent() -> some View {
+    Toggle("", isOn: $props.isOn)
+      .labelsHidden()
       .disabled(props.disabled)
-      .foregroundColor(props.disabled ? .gray : .primary)
       .onChange(of: props.isOn) { newValue in
         props.onChange?(newValue)
       }

@@ -11,11 +11,35 @@ public struct DatePickerView: View {
   }
 
   public var body: some View {
-    props.datePickerStyle.applyStyle(DatePicker(
-      selection: $props.selection,
-      displayedComponents: props.displayedComponents, label: {
-        Text(props.label).foregroundColor(props.disabled ? .gray : .primary)
+    if props.label.isEmpty {
+      datePickerContent()
+    } else {
+      if #available(iOS 16.0, *) {
+        LabeledContent {
+          datePickerContent()
+        } label: {
+          Text(props.label)
+            .applyStyles(props.labelStyle)
+        }
+      } else {
+        HStack {
+          Text(props.label)
+            .applyStyles(props.labelStyle)
+          datePickerContent()
+        }
       }
+    }
+  }
+
+  @ViewBuilder
+  private func datePickerContent() -> some View {
+    props.datePickerStyle.applyStyle(
+      DatePicker(
+        selection: $props.selection,
+        displayedComponents: props.displayedComponents,
+        label: { EmptyView() }
+      )
+      .labelsHidden()
     )
     .disabled(props.disabled)
     .focused($isFocused)
@@ -24,6 +48,6 @@ public struct DatePickerView: View {
     }
     .onChange(of: props.selection) { newValue in
       props.onChange?(newValue)
-    })
+    }
   }
 }
