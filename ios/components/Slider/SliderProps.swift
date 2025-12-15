@@ -6,6 +6,7 @@ public final class SliderProps: ObservableObject, Decodable {
   @Published public var maximum: Double
   @Published public var step: Double
   @Published public var label: String
+  @Published public var labelStyle: StyleProps?
   @Published public var disabled: Bool = false
   // Events
   public var onChange: ((Double) -> Void)?
@@ -13,7 +14,7 @@ public final class SliderProps: ObservableObject, Decodable {
   public var onBlur: (() -> Void)?
 
   enum CodingKeys: String, CodingKey {
-    case value, minimum, maximum, step, label, disabled
+    case value, minimum, maximum, step, label, labelStyle, disabled
   }
 
   public required init(from decoder: Decoder) throws {
@@ -23,6 +24,7 @@ public final class SliderProps: ObservableObject, Decodable {
     maximum = try container.decodeIfPresent(Double.self, forKey: .maximum) ?? 100.0
     step = try container.decodeIfPresent(Double.self, forKey: .step) ?? 1.0
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+    labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
 
     // Validate ranges
@@ -40,6 +42,7 @@ public final class SliderProps: ObservableObject, Decodable {
     maximum = other.maximum
     step = other.step
     label = other.label
+    labelStyle = other.labelStyle
     disabled = other.disabled
   }
 }

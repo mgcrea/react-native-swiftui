@@ -7,7 +7,7 @@ public final class PickerProps: ObservableObject, Decodable {
   @Published var config: PickerConfig?
   @Published var selection: String = ""
   @Published var label: String = ""
-  @Published var labelColor: ColorValue?
+  @Published var labelStyle: StyleProps?
   @Published var pickerStyle: PickerStyle = .default
   @Published var isRootView: Bool = false
   @Published var disabled: Bool = false
@@ -79,14 +79,14 @@ public final class PickerProps: ObservableObject, Decodable {
 
   // Coding keys for decoding
   enum CodingKeys: String, CodingKey, CaseIterable {
-    case label, labelColor, selection, options, config, pickerStyle, disabled, style
+    case label, labelStyle, selection, options, config, pickerStyle, disabled, style
   }
 
   // Decodable initializer
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
-    labelColor = try container.decodeIfPresent(ColorValue.self, forKey: .labelColor)
+    labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
     selection = try container.decodeIfPresent(String.self, forKey: .selection) ?? ""
     options = try container.decodeIfPresent([PickerOption].self, forKey: .options) ?? []
     config = try container.decodeIfPresent(PickerConfig.self, forKey: .config)
@@ -116,7 +116,7 @@ public final class PickerProps: ObservableObject, Decodable {
     if label != other.label {
       label = other.label
     }
-    labelColor = other.labelColor
+    labelStyle = other.labelStyle
     if pickerStyle != other.pickerStyle {
       pickerStyle = other.pickerStyle
     }

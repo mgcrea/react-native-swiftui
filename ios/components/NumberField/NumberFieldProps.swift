@@ -5,6 +5,7 @@ import SwiftUI
 public final class NumberFieldProps: ObservableObject, Decodable {
   @Published public var value: Double? = nil
   @Published public var label: String = ""
+  @Published public var labelStyle: StyleProps?
   @Published public var placeholder: String = ""
   @Published public var keyboardType: UIKeyboardType = .decimalPad
   @Published public var returnKeyType: UIReturnKeyType = .default
@@ -19,13 +20,14 @@ public final class NumberFieldProps: ObservableObject, Decodable {
   public var onBlur: (() -> Void)?
 
   enum CodingKeys: String, CodingKey {
-    case value, label, placeholder, keyboardType, returnKeyType, min, max, disabled, formatter, style
+    case value, label, labelStyle, placeholder, keyboardType, returnKeyType, min, max, disabled, formatter, style
   }
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     value = try container.decodeIfPresent(Double.self, forKey: .value) ?? nil
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+    labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
     placeholder = try container.decodeIfPresent(String.self, forKey: .placeholder) ?? ""
     // Decode keyboardType
     if let keyboardTypeString = try container.decodeIfPresent(String.self, forKey: .keyboardType) {
@@ -78,6 +80,7 @@ public final class NumberFieldProps: ObservableObject, Decodable {
   public func merge(from other: NumberFieldProps) {
     value = other.value
     label = other.label
+    labelStyle = other.labelStyle
     placeholder = other.placeholder
     keyboardType = other.keyboardType
     returnKeyType = other.returnKeyType

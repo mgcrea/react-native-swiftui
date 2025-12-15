@@ -5,6 +5,7 @@ import SwiftUI
 public final class TextFieldProps: ObservableObject, Decodable {
   @Published public var text: String = ""
   @Published public var label: String = ""
+  @Published public var labelStyle: StyleProps?
   @Published public var placeholder: String = ""
   @Published public var keyboardType: UIKeyboardType = .default
   @Published public var textContentType: UITextContentType? = nil
@@ -24,13 +25,14 @@ public final class TextFieldProps: ObservableObject, Decodable {
   public var onBlur: (() -> Void)?
 
   enum CodingKeys: String, CodingKey {
-    case text, label, placeholder, keyboardType, textContentType, returnKeyType, submitLabel, autocapitalizationType, maxLength, secure, multiline, disabled, error, helperText, style
+    case text, label, labelStyle, placeholder, keyboardType, textContentType, returnKeyType, submitLabel, autocapitalizationType, maxLength, secure, multiline, disabled, error, helperText, style
   }
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     text = try container.decodeIfPresent(String.self, forKey: .text) ?? ""
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+    labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
     placeholder = try container.decodeIfPresent(String.self, forKey: .placeholder) ?? ""
     // Decode keyboardType
     if let keyboardTypeString = try container.decodeIfPresent(String.self, forKey: .keyboardType) {
@@ -93,6 +95,7 @@ public final class TextFieldProps: ObservableObject, Decodable {
   public func merge(from other: TextFieldProps) {
     text = other.text
     label = other.label
+    labelStyle = other.labelStyle
     placeholder = other.placeholder
     keyboardType = other.keyboardType
     textContentType = other.textContentType

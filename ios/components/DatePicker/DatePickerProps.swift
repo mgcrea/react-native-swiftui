@@ -5,6 +5,7 @@ import SwiftUI
 public final class DatePickerProps: ObservableObject, Decodable {
   @Published var selection: Date = .init()
   @Published var label: String = ""
+  @Published var labelStyle: StyleProps?
   @Published var datePickerStyle: DatePickerStyle = .default
   @Published var displayedComponents: DatePickerComponents = [.date]
   @Published var disabled: Bool = false
@@ -51,7 +52,7 @@ public final class DatePickerProps: ObservableObject, Decodable {
   public init() {}
 
   enum CodingKeys: String, CodingKey {
-    case label, selection, displayedComponents, datePickerStyle, disabled
+    case label, labelStyle, selection, displayedComponents, datePickerStyle, disabled
   }
 
   // Decodable initializer
@@ -59,6 +60,7 @@ public final class DatePickerProps: ObservableObject, Decodable {
     let container = try decoder.container(keyedBy: CodingKeys.self)
 
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+    labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
 
     // Ensure we have at least one component
     displayedComponents = try container.decodeDatePickerComponents(forKey: .displayedComponents)
@@ -100,6 +102,7 @@ public final class DatePickerProps: ObservableObject, Decodable {
   public func merge(from other: DatePickerProps) {
     selection = other.selection
     label = other.label
+    labelStyle = other.labelStyle
     datePickerStyle = other.datePickerStyle
     displayedComponents = other.displayedComponents
     disabled = other.disabled
