@@ -1,8 +1,7 @@
 import { type PropsWithChildren } from "react";
-import { type StyleProp } from "react-native";
 import { SwiftUIParentIdProvider } from "../../contexts";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
+import type { FunctionComponentWithId, NativeTextStyle, NativeTextStyleProps } from "../../types";
 
 export type CustomNativeButtonStyle = "subtle" | "picker";
 export type NativeButtonStyle =
@@ -13,11 +12,10 @@ export type NativeButtonStyle =
   | "borderless"
   | CustomNativeButtonStyle;
 
-export type NativeButtonProps = {
+export type NativeButtonProps = NativeTextStyleProps & {
   title?: string;
   disabled?: boolean;
   buttonStyle?: NativeButtonStyle;
-  style?: StyleProp<NativeTextStyle>;
   onPress?: () => void;
 };
 

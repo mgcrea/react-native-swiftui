@@ -1,4 +1,5 @@
-import { ColorValue, TextStyle, ViewStyle } from "react-native";
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+import { ColorValue, StyleProp, TextStyle, ViewStyle } from "react-native";
 
 export type NativeViewStyle = Pick<
   ViewStyle,
@@ -50,3 +51,11 @@ export type NativeFont =
   | "title"
   | "title2"
   | "title3";
+
+export interface NativeTextStyleProps {
+  style?: StyleProp<NativeTextStyle>;
+}
+
+export interface NativeViewStyleProps {
+  style?: StyleProp<NativeViewStyle>;
+}

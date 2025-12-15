@@ -1,16 +1,14 @@
 import { type PropsWithChildren } from "react";
-import { type StyleProp } from "react-native";
 import { SwiftUIParentIdProvider } from "../../contexts";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeViewStyle } from "../../types";
+import type { FunctionComponentWithId, NativeViewStyle, NativeViewStyleProps } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/section
 
-export type NativeSectionProps = {
+export type NativeSectionProps = NativeViewStyleProps & {
   header?: string;
   footer?: string;
   isCollapsed?: boolean;
-  style?: StyleProp<NativeViewStyle>;
 };
 
 export const Section: FunctionComponentWithId<PropsWithChildren<NativeSectionProps>> = ({

@@ -1,6 +1,5 @@
-import { type StyleProp } from "react-native";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
+import type { FunctionComponentWithId, NativeTextStyle, NativeTextStyleProps } from "../../types";
 
 export type NativeKeyboardType = "default" | "numberPad" | "emailAddress" | "decimalPad";
 export type NativeTextContentType = "username" | "password" | "emailAddress";
@@ -17,7 +16,7 @@ export type NativeSubmitLabel =
   | "search"
   | "send";
 
-export type NativeTextFieldProps<T = string> = {
+export type NativeTextFieldProps<T = string> = NativeTextStyleProps & {
   text?: T;
   label?: string;
   placeholder?: string;
@@ -32,7 +31,6 @@ export type NativeTextFieldProps<T = string> = {
   disabled?: boolean;
   error?: boolean;
   helperText?: string;
-  style?: StyleProp<NativeTextStyle>;
   onChange?: (value: T) => void;
   onFocus?: () => void;
   onBlur?: () => void;

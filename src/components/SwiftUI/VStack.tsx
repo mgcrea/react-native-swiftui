@@ -1,14 +1,12 @@
 import { type PropsWithChildren } from "react";
-import { type StyleProp } from "react-native";
 import { SwiftUIParentIdProvider } from "../../contexts";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeViewStyle } from "../../types";
+import type { FunctionComponentWithId, NativeViewStyle, NativeViewStyleProps } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/vstack
-export type NativeVStackProps = {
+export type NativeVStackProps = NativeViewStyleProps & {
   alignment?: "leading" | "center" | "trailing";
   spacing?: number;
-  style?: StyleProp<NativeViewStyle>;
 };
 
 export const VStack: FunctionComponentWithId<PropsWithChildren<NativeVStackProps>> = ({

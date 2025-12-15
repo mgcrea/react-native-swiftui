@@ -1,13 +1,12 @@
-import { Image as BaseImage, type ImageSourcePropType, type StyleProp } from "react-native";
+import { Image as BaseImage, type ImageSourcePropType } from "react-native";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
+import type { FunctionComponentWithId, NativeTextStyle, NativeTextStyleProps } from "../../types";
 
-export type NativeImageProps = {
+export type NativeImageProps = NativeTextStyleProps & {
   name?: string;
   source?: ImageSourcePropType;
   resizeMode?: "cover" | "contain" | "stretch" | "center";
   tintColor?: string;
-  style?: StyleProp<NativeTextStyle>;
 };
 
 export const Image: FunctionComponentWithId<NativeImageProps> = ({ source, style, ...props }) => {

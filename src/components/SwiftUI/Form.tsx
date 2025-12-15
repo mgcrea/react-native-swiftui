@@ -1,13 +1,11 @@
 import { type PropsWithChildren } from "react";
-import { StyleProp } from "react-native";
 import { SwiftUIParentIdProvider } from "../../contexts";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeViewStyle } from "../../types";
+import type { FunctionComponentWithId, NativeViewStyle, NativeViewStyleProps } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/form
 
-export type NativeFormProps = {
-  style?: StyleProp<NativeViewStyle>;
+export type NativeFormProps = NativeViewStyleProps & {
   disabled?: boolean;
   scrollDisabled?: boolean;
 };

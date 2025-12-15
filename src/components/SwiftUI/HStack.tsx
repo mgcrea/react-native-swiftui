@@ -1,14 +1,12 @@
 import { type PropsWithChildren } from "react";
-import { type StyleProp } from "react-native";
 import { SwiftUIParentIdProvider } from "../../contexts";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeViewStyle } from "../../types";
+import type { FunctionComponentWithId, NativeViewStyle, NativeViewStyleProps } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/hstack
-export type NativeHStackProps = {
+export type NativeHStackProps = NativeViewStyleProps & {
   alignment?: "top" | "center" | "bottom" | "firstTextBaseline" | "lastTextBaseline";
   spacing?: number;
-  style?: StyleProp<NativeViewStyle>;
 };
 
 export const HStack: FunctionComponentWithId<PropsWithChildren<NativeHStackProps>> = ({

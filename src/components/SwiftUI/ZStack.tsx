@@ -1,11 +1,10 @@
 import { type PropsWithChildren } from "react";
-import { type StyleProp } from "react-native";
 import { SwiftUIParentIdProvider } from "../../contexts";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeViewStyle } from "../../types";
+import type { FunctionComponentWithId, NativeViewStyle, NativeViewStyleProps } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/zstack
-export type NativeZStackProps = {
+export type NativeZStackProps = NativeViewStyleProps & {
   alignment?:
     | "topLeading"
     | "top"
@@ -16,7 +15,6 @@ export type NativeZStackProps = {
     | "bottomLeading"
     | "bottom"
     | "bottomTrailing";
-  style?: StyleProp<NativeViewStyle>;
 };
 
 export const ZStack: FunctionComponentWithId<PropsWithChildren<NativeZStackProps>> = ({

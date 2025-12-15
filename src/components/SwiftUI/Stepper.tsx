@@ -1,18 +1,16 @@
 import { type PropsWithChildren, useMemo } from "react";
-import { type StyleProp } from "react-native";
 import { SwiftUIParentIdProvider } from "../../contexts";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
+import type { FunctionComponentWithId, NativeTextStyle, NativeTextStyleProps } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/stepper
 
-export type NativeStepperProps = {
+export type NativeStepperProps = NativeTextStyleProps & {
   value?: number;
   label?: string;
   minimum?: number;
   maximum?: number;
   step?: number;
-  style?: StyleProp<NativeTextStyle>;
   onChange?: (value: number) => void;
   onFocus?: () => void;
   onBlur?: () => void;

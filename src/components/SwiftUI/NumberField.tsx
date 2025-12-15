@@ -1,7 +1,6 @@
 import { useMemo } from "react";
-import { StyleProp } from "react-native";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeTextStyle } from "../../types";
+import type { FunctionComponentWithId, NativeTextStyle, NativeTextStyleProps } from "../../types";
 import { NativeKeyboardType, NativeReturnKeyType } from "./TextField";
 
 export type NumberFormatter =
@@ -15,7 +14,7 @@ export type NumberFormatter =
   | "currencyPlural"
   | "currencyAccounting";
 
-export type NativeNumberFieldProps<T = number> = {
+export type NativeNumberFieldProps<T = number> = NativeTextStyleProps & {
   value?: T | null;
   label?: string;
   placeholder?: string;
@@ -24,7 +23,6 @@ export type NativeNumberFieldProps<T = number> = {
   min?: number | null;
   max?: number | null;
   disabled?: boolean;
-  style?: StyleProp<NativeTextStyle>;
   formatter?: NumberFormatter;
   onChange?: (value: T | null) => void;
   onFocus?: () => void;

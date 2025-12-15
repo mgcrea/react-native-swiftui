@@ -1,7 +1,6 @@
 import { ReactNode, useMemo } from "react";
-import { StyleProp } from "react-native";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { NativeTextStyle } from "../../types";
+import type { NativeTextStyle, NativeTextStyleProps } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/picker
 
@@ -25,14 +24,13 @@ const DEFAULT_PICKER_CONFIG = {
   suffix: "",
 } satisfies NativePickerConfig;
 
-export type NativePickerProps<T extends string> = {
+export type NativePickerProps<T extends string> = NativeTextStyleProps & {
   options?: readonly NativePickerOption<T>[];
   config?: NativePickerConfig;
   selection?: T;
   label?: string;
   pickerStyle?: NativePickerStyle;
   disabled?: boolean;
-  style?: StyleProp<NativeTextStyle>;
   onChange?: (value: T) => void;
   onFocus?: () => void;
   onBlur?: () => void;

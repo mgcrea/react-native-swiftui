@@ -7,13 +7,13 @@ import {
   useId,
   useLayoutEffect,
 } from "react";
-import { StyleProp, ViewStyle } from "react-native";
 import { SwiftUIParentIdProvider } from "./../contexts";
 import { SwiftUIProvider, useSwiftUIContext } from "./../contexts/SwiftUIContext";
 import {
   NativeSwiftUIEvent,
   default as SwiftUIRootNativeComponent,
 } from "./../native/SwiftUIRootNativeComponent";
+import type { NativeViewStyleProps } from "./../types";
 import { buildViewTree } from "./../utils/viewTree";
 import {
   Button,
@@ -40,10 +40,9 @@ import {
   ZStack,
 } from "./SwiftUI/index";
 
-export type SwiftUIProps = {
+export type SwiftUIProps = NativeViewStyleProps & {
   id?: string;
   onEvent?: (event: { nativeEvent: NativeSwiftUIEvent }) => void;
-  style?: StyleProp<ViewStyle>;
   debug?: boolean;
 };
 

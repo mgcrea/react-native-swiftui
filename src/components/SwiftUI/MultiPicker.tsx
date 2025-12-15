@@ -1,7 +1,6 @@
 import { ReactNode, useMemo } from "react";
-import { StyleProp } from "react-native";
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { NativeTextStyle } from "../../types";
+import type { NativeTextStyle, NativeTextStyleProps } from "../../types";
 import { fillArray } from "../../utils";
 
 // https://developer.apple.com/documentation/swiftui/picker
@@ -31,12 +30,11 @@ export type NativeMultiPickerComponent<T extends string> = {
   // width?: number; // @TODO
 };
 
-export type NativeMultiPickerProps<T extends string> = {
+export type NativeMultiPickerProps<T extends string> = NativeTextStyleProps & {
   components: NativeMultiPickerComponent<T>[];
   selections?: T[];
   label?: string;
   disabled?: boolean;
-  style?: StyleProp<NativeTextStyle>;
   onChange?: (value: T[]) => void;
   onFocus?: () => void;
   onBlur?: () => void;
