@@ -54,12 +54,13 @@ public final class NumberFieldProps: ObservableObject, Decodable {
     formatter = try container.decodeFormatter(forKey: .formatter)
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
 
-    if max != nil {
-      value = enforceMaxValue(value ?? 0)
-    }
-
-    if min != nil {
-      value = enforceMinValue(value ?? 0)
+    if let currentValue = value {
+      if max != nil {
+        value = enforceMaxValue(currentValue)
+      }
+      if min != nil {
+        value = enforceMinValue(currentValue)
+      }
     }
   }
 
@@ -78,7 +79,6 @@ public final class NumberFieldProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: NumberFieldProps) {
-    value = other.value
     label = other.label
     labelStyle = other.labelStyle
     placeholder = other.placeholder
@@ -89,6 +89,19 @@ public final class NumberFieldProps: ObservableObject, Decodable {
     disabled = other.disabled
     formatter = other.formatter
     style = other.style
+    // Apply clamping after setting min/max
+    if let currentValue = other.value {
+      var clampedValue = currentValue
+      if let minVal = min {
+        clampedValue = Swift.max(clampedValue, minVal)
+      }
+      if let maxVal = max {
+        clampedValue = Swift.min(clampedValue, maxVal)
+      }
+      value = clampedValue
+    } else {
+      value = other.value
+    }
   }
 }
 
