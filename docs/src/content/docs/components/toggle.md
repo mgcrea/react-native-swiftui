@@ -29,6 +29,7 @@ const [isEnabled, setIsEnabled] = useState(false);
 |------|------|---------|-------------|
 | `isOn` | `boolean` | **Required** | Current toggle state |
 | `label` | `string` | - | Label text displayed next to toggle |
+| `labelStyle` | `StyleProp<NativeTextStyle>` | - | Style for the label text |
 | `disabled` | `boolean` | `false` | Disable toggle interaction |
 | `onChange` | `(value: boolean) => void` | - | Called when toggle state changes |
 

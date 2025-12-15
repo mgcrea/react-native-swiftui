@@ -32,6 +32,7 @@ const [selected, setSelected] = useState('option1');
 | `options` | `readonly (string \| { value: string; label: string })[]` | - | Array of options |
 | `config` | `NativePickerConfig` | - | Configuration for numeric pickers |
 | `label` | `string` | - | Label text |
+| `labelStyle` | `StyleProp<NativeTextStyle>` | - | Style for the label text |
 | `pickerStyle` | `"default" \| "inline" \| "menu" \| "segmented" \| "wheel"` | `"default"` | Visual style |
 | `disabled` | `boolean` | `false` | Disable picker |
 | `style` | `StyleProp<NativeTextStyle>` | - | Style properties |

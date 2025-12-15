@@ -30,6 +30,7 @@ const [text, setText] = useState('');
 |------|------|---------|-------------|
 | `text` | `string` | - | Current text value |
 | `label` | `string` | - | Field label |
+| `labelStyle` | `StyleProp<NativeTextStyle>` | - | Style for the label text |
 | `placeholder` | `string` | - | Placeholder text |
 | `keyboardType` | `"default" \| "numberPad" \| "emailAddress" \| "decimalPad"` | `"default"` | Keyboard type |
 | `textContentType` | `"username" \| "password" \| "emailAddress"` | - | Content type for autofill |

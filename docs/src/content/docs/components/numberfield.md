@@ -29,6 +29,7 @@ const [amount, setAmount] = useState<number | null>(100);
 |------|------|---------|-------------|
 | `value` | `number \| null` | - | Current numeric value |
 | `label` | `string` | - | Field label |
+| `labelStyle` | `StyleProp<NativeTextStyle>` | - | Style for the label text |
 | `placeholder` | `string` | - | Placeholder text |
 | `keyboardType` | `"default" \| "numberPad" \| "decimalPad"` | - | Keyboard type |
 | `returnKeyType` | `"default" \| "done" \| "next" \| "search"` | - | Return key type |

@@ -34,6 +34,7 @@ const [volume, setVolume] = useState(50);
 | `maximum` | `number` | `1` | Maximum value |
 | `step` | `number` | - | Step increment |
 | `label` | `string` | - | Label text |
+| `labelStyle` | `StyleProp<NativeTextStyle>` | - | Style for the label text |
 | `disabled` | `boolean` | `false` | Disable slider |
 | `onChange` | `(value: number) => void` | - | Called when value changes |
 | `onFocus` | `() => void` | - | Called when slider is focused |

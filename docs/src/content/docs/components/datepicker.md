@@ -29,6 +29,7 @@ const [date, setDate] = useState(new Date());
 |------|------|---------|-------------|
 | `selection` | `Date` | - | Currently selected date |
 | `label` | `string` | - | Label text |
+| `labelStyle` | `StyleProp<NativeTextStyle>` | - | Style for the label text |
 | `datePickerStyle` | `NativeDatePickerStyle` | `"automatic"` | Visual style |
 | `displayedComponents` | `NativeDatePickerComponents[] \| NativeDatePickerComponentsAliases` | - | Which components to display |
 | `disabled` | `boolean` | `false` | Disable picker |

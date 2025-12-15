@@ -31,6 +31,7 @@ const [quantity, setQuantity] = useState(1);
 |------|------|---------|-------------|
 | `value` | `number` | - | Current value |
 | `label` | `string` | - | Label text (typically includes current value) |
+| `labelStyle` | `StyleProp<NativeTextStyle>` | - | Style for the label text |
 | `minimum` | `number` | - | Minimum allowed value |
 | `maximum` | `number` | - | Maximum allowed value |
 | `step` | `number` | `1` | Increment/decrement amount |
