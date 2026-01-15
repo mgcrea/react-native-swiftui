@@ -2,7 +2,6 @@ import SwiftUI
 
 public struct SliderView<Content: View>: View {
   @ObservedObject public var props: SliderProps
-  @State private var isFocused: Bool = false
   @State private var localValue: Double = 0
   @State private var isEditing: Bool = false
   let content: () -> Content
@@ -44,21 +43,23 @@ public struct SliderView<Content: View>: View {
         step: props.step,
         onEditingChanged: { editing in
           isEditing = editing
-          isFocused = editing
-          if !editing {
+          // Call focus/blur directly instead of relying on .onChange(of: isFocused)
+          // because SwiftUI coalesces rapid state changes and may skip intermediate values
+          if editing {
+            props.onFocus?()
+          } else {
             // Sync final value to props when user stops dragging
             props.value = localValue
+            props.onBlur?()
           }
         }
       )
       .disabled(props.disabled)
       .foregroundColor(props.disabled ? .gray : .primary)
-      .onChange(of: isFocused) { newValue in
-        newValue ? props.onFocus?() : props.onBlur?()
-      }
       .onChange(of: localValue) { newValue in
-        // Only fire onChange during active editing
-        guard isEditing else { return }
+        // Fire onChange during active editing OR when value differs from props
+        // (handles initial tap where isEditing may not be set yet)
+        guard isEditing || newValue != props.value else { return }
         props.onChange?(newValue)
       }
       .onChange(of: props.value) { newValue in
