@@ -24,6 +24,9 @@ export default defineConfig({
           href: "https://github.com/mgcrea/react-native-swiftui",
         },
       ],
+      components: {
+        PageTitle: "./src/components/PageTitle.astro",
+      },
       sidebar: [
         {
           label: "Getting Started",

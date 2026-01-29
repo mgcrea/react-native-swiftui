@@ -1,0 +1,57 @@
+---
+import type { Props } from "@astrojs/starlight/props";
+import Default from "@astrojs/starlight/components/PageTitle.astro";
+
+// Extract slug from URL pathname (e.g., /react-native-swiftui/components/button/ -> components/button)
+const pathname = Astro.url.pathname;
+const slug = pathname.replace(/^\/react-native-swiftui\//, "").replace(/\/$/, "") || "index";
+const extension = slug === "index" ? ".mdx" : ".md";
+const rawUrl = `https://github.com/mgcrea/react-native-swiftui/raw/main/docs/src/content/docs/${slug}${extension}`;
+---
+
+<div class="title-with-edit">
+  <Default {...Astro.props}><slot /></Default>
+  <a href={rawUrl} target="_blank" rel="noopener noreferrer" class="edit-link">
+    <svg
+      aria-hidden="true"
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="currentColor"
+    >
+      <path
+        d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Zm6.75.062V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"
+      ></path>
+    </svg>
+    Markdown
+  </a>
+</div>
+
+<style>
+  .title-with-edit {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .edit-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+    text-decoration: none;
+    white-space: nowrap;
+    margin-top: 0.5rem;
+  }
+
+  .edit-link:hover {
+    color: var(--sl-color-white);
+  }
+
+  .edit-link svg {
+    opacity: 0.7;
+  }
+</style>
