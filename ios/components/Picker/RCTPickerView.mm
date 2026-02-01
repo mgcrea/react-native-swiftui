@@ -12,19 +12,30 @@ using namespace facebook::react;
 static NSDictionary *convertProps(const NativePickerViewProps &props) {
   NSMutableArray *optionsArray = [NSMutableArray array];
   for (const auto &option : props.options) {
-    NSString *optionValue = [NSString stringWithUTF8String:option.c_str()];
-    [optionsArray addObject:@{
-      @"label" : optionValue,
-      @"value" : optionValue,
-    }];
+    NSString *value = [NSString stringWithUTF8String:option.value.c_str()];
+    NSString *label = option.label.empty()
+                          ? value
+                          : [NSString stringWithUTF8String:option.label.c_str()];
+    NSMutableDictionary *optionDict = [@{
+      @"label" : label,
+      @"value" : value,
+    } mutableCopy];
+    if (!option.icon.empty()) {
+      optionDict[@"icon"] = [NSString stringWithUTF8String:option.icon.c_str()];
+    }
+    [optionsArray addObject:optionDict];
   }
-  NSLog(@"pickerStyle: %d", props.pickerStyle);
+
   std::string styleString = toString(props.pickerStyle);
   NSString *pickerStyle = [NSString stringWithUTF8String:styleString.c_str()];
-  NSLog(@"pickerStyle: %@", pickerStyle);
+
+  // Prefer value over selection if both provided
+  NSString *selection = !props.value.empty()
+                            ? [NSString stringWithUTF8String:props.value.c_str()]
+                            : [NSString stringWithUTF8String:props.selection.c_str()];
 
   NSMutableDictionary *propsDictionary = [@{
-    @"selection" : [NSString stringWithUTF8String:props.selection.c_str()],
+    @"selection" : selection,
     @"label" : [NSString stringWithUTF8String:props.label.c_str()],
     @"options" : optionsArray,
     @"pickerStyle" : pickerStyle,

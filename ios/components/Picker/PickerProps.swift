@@ -20,7 +20,25 @@ public final class PickerProps: ObservableObject, Decodable {
   struct PickerOption: Identifiable, Decodable, Hashable {
     let label: String
     let value: String
+    let icon: String?
     var id: String { value } // Use value as the unique identifier
+
+    init(label: String, value: String, icon: String? = nil) {
+      self.label = label
+      self.value = value
+      self.icon = icon
+    }
+
+    init(from decoder: Decoder) throws {
+      let container = try decoder.container(keyedBy: CodingKeys.self)
+      label = try container.decode(String.self, forKey: .label)
+      value = try container.decode(String.self, forKey: .value)
+      icon = try container.decodeIfPresent(String.self, forKey: .icon)
+    }
+
+    private enum CodingKeys: String, CodingKey {
+      case label, value, icon
+    }
   }
 
   struct PickerConfig: Decodable, Hashable {

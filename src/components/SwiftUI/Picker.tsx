@@ -6,7 +6,11 @@ import type { NativeLabelStyleProps, NativeTextStyle, NativeTextStyleProps } fro
 
 export type NativePickerStyle = "default" | "inline" | "menu" | "segmented" | "wheel";
 
-export type NativePickerOption<T extends string> = { value: T; label: string } | T;
+export type NativePickerOption<T extends string> = {
+  value: T;
+  label: string;
+  icon?: string;
+};
 
 export type NativePickerConfig = {
   min: number;
@@ -28,6 +32,7 @@ export type NativePickerProps<T extends string> = NativeTextStyleProps &
   NativeLabelStyleProps & {
     options?: readonly NativePickerOption<T>[];
     config?: NativePickerConfig;
+    value?: T;
     selection?: T;
     label?: string;
     pickerStyle?: NativePickerStyle;
@@ -38,6 +43,7 @@ export type NativePickerProps<T extends string> = NativeTextStyleProps &
   };
 
 export const Picker = <T extends string>({
+  value,
   selection,
   options,
   config,
@@ -51,15 +57,17 @@ export const Picker = <T extends string>({
   const onChange = useMemo(
     () =>
       onChangeProp
-        ? (value: string) => {
-            onChangeProp(value as T); // Cast string to T
+        ? (val: string) => {
+            onChangeProp(val as T); // Cast string to T
           }
         : undefined,
     [onChangeProp],
   );
 
+  // Prefer value over selection
+  const resolvedSelection = value ?? selection;
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-conversion
-  const normalizedSelection = selection ? String(selection) : undefined;
+  const normalizedSelection = resolvedSelection ? String(resolvedSelection) : undefined;
   const normalizedConfig = useMemo(
     () =>
       config
@@ -70,15 +78,6 @@ export const Picker = <T extends string>({
         : undefined,
     [config],
   );
-  const normalizedOptions = useMemo(
-    () =>
-      options
-        ? options.length > 0 && typeof options[0] === "string"
-          ? options.map((value) => ({ value, label: value }))
-          : options
-        : [],
-    [options],
-  );
 
   const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
   const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
@@ -87,7 +86,7 @@ export const Picker = <T extends string>({
     "Picker",
     {
       selection: normalizedSelection,
-      options: normalizedOptions,
+      options,
       config: normalizedConfig,
       style: normalizedStyles,
       labelStyle: normalizedLabelStyle,

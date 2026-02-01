@@ -5,6 +5,12 @@ import { codegenNativeComponent, type HostComponent, type ViewProps } from "reac
 
 export type NativePickerStyle = "default" | "inline" | "menu" | "segmented" | "wheel";
 
+export type NativePickerOption = Readonly<{
+  value: string;
+  label?: string;
+  icon?: string;
+}>;
+
 type NativePickerChangeEvent = {
   value: string;
 };
@@ -12,10 +18,11 @@ type NativePickerFocusEvent = {};
 type NativePickerBlurEvent = {};
 
 export interface NativePickerProps extends ViewProps {
+  value?: string;
   selection?: string;
   label?: string;
   labelColor?: string;
-  options?: string[];
+  options?: readonly NativePickerOption[];
   pickerStyle?: CodegenTypes.WithDefault<NativePickerStyle, "default">;
   disabled?: boolean;
   onNativeChange?: CodegenTypes.DirectEventHandler<Readonly<NativePickerChangeEvent>>;

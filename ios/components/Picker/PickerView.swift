@@ -26,7 +26,11 @@ public struct PickerView: View {
     props.pickerStyle.applyStyle(
       Picker(selection: $props.selection, label: labelView()) {
         ForEach(props.computedOptions) { option in
-          Text(option.label).tag(option.value)
+          if props.pickerStyle == .segmented, let icon = option.icon {
+            Label(option.label, systemImage: icon).tag(option.value)
+          } else {
+            Text(option.label).tag(option.value)
+          }
         }
       }
       .onChange(of: isFocused) { newValue in
