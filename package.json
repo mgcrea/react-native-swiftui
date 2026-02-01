@@ -1,6 +1,6 @@
 {
   "name": "@mgcrea/react-native-swiftui",
-  "version": "0.14.3",
+  "version": "0.15.0",
   "description": "SwiftUI components for React Native",
   "author": "Olivier Louvignes <olivier@mgcrea.io> (https://github.com/mgcrea)",
   "homepage": "https://github.com/mgcrea/react-native-swiftui#readme",
