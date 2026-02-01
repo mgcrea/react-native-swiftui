@@ -16,10 +16,16 @@ import { SwiftUI } from '@mgcrea/react-native-swiftui';
 ```tsx
 const [selected, setSelected] = useState('option1');
 
+const options = [
+  { value: 'option1', label: 'Option 1' },
+  { value: 'option2', label: 'Option 2' },
+  { value: 'option3', label: 'Option 3' },
+];
+
 <SwiftUI.Picker
   label="Choose Option"
-  selection={selected}
-  options={['option1', 'option2', 'option3']}
+  value={selected}
+  options={options}
   onChange={setSelected}
 />
 ```
@@ -28,8 +34,9 @@ const [selected, setSelected] = useState('option1');
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `selection` | `string` | - | Currently selected value |
-| `options` | `readonly (string \| { value: string; label: string })[]` | - | Array of options |
+| `value` | `string` | - | Currently selected value (preferred) |
+| `selection` | `string` | - | Currently selected value (deprecated, use `value`) |
+| `options` | `readonly { value: string; label: string; icon?: string }[]` | - | Array of options |
 | `config` | `NativePickerConfig` | - | Configuration for numeric pickers |
 | `label` | `string` | - | Label text |
 | `labelStyle` | `StyleProp<NativeTextStyle>` | - | Style for the label text |
@@ -40,14 +47,40 @@ const [selected, setSelected] = useState('option1');
 | `onFocus` | `() => void` | - | Called when picker is focused |
 | `onBlur` | `() => void` | - | Called when picker loses focus |
 
+## Option Format
+
+Options must be objects with `value` and `label` properties:
+
+```tsx
+const options = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+];
+```
+
+For segmented pickers, you can include SF Symbol icons:
+
+```tsx
+const options = [
+  { value: 'list', label: 'List', icon: 'list.bullet' },
+  { value: 'grid', label: 'Grid', icon: 'square.grid.2x2' },
+];
+```
+
 ## Picker Styles
 
 ### Default (Menu on iOS 14+)
 
 ```tsx
+const options = [
+  { value: 'opt1', label: 'Option 1' },
+  { value: 'opt2', label: 'Option 2' },
+  { value: 'opt3', label: 'Option 3' },
+];
+
 <SwiftUI.Picker
   label="Select"
-  selection={value}
+  value={value}
   options={options}
   pickerStyle="default"
   onChange={setValue}
@@ -57,10 +90,33 @@ const [selected, setSelected] = useState('option1');
 ### Segmented Control
 
 ```tsx
+const options = [
+  { value: 'list', label: 'List' },
+  { value: 'grid', label: 'Grid' },
+  { value: 'map', label: 'Map' },
+];
+
 <SwiftUI.Picker
   label="View Mode"
-  selection={viewMode}
-  options={['list', 'grid', 'map']}
+  value={viewMode}
+  options={options}
+  pickerStyle="segmented"
+  onChange={setViewMode}
+/>
+```
+
+### Segmented with SF Symbols
+
+```tsx
+const options = [
+  { value: 'list', label: 'List', icon: 'list.bullet' },
+  { value: 'grid', label: 'Grid', icon: 'square.grid.2x2' },
+  { value: 'map', label: 'Map', icon: 'map' },
+];
+
+<SwiftUI.Picker
+  value={viewMode}
+  options={options}
   pickerStyle="segmented"
   onChange={setViewMode}
 />
@@ -69,9 +125,15 @@ const [selected, setSelected] = useState('option1');
 ### Menu
 
 ```tsx
+const categories = [
+  { value: 'electronics', label: 'Electronics' },
+  { value: 'clothing', label: 'Clothing' },
+  { value: 'books', label: 'Books' },
+];
+
 <SwiftUI.Picker
   label="Category"
-  selection={category}
+  value={category}
   options={categories}
   pickerStyle="menu"
   onChange={setCategory}
@@ -81,9 +143,17 @@ const [selected, setSelected] = useState('option1');
 ### Wheel
 
 ```tsx
+const sizes = [
+  { value: 'xs', label: 'XS' },
+  { value: 's', label: 'S' },
+  { value: 'm', label: 'M' },
+  { value: 'l', label: 'L' },
+  { value: 'xl', label: 'XL' },
+];
+
 <SwiftUI.Picker
   label="Size"
-  selection={size}
+  value={size}
   options={sizes}
   pickerStyle="wheel"
   style={{ height: 216 }}
@@ -94,53 +164,29 @@ const [selected, setSelected] = useState('option1');
 ### Inline
 
 ```tsx
+const priorities = [
+  { value: 'low', label: 'Low' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+];
+
 <SwiftUI.Picker
   label="Priority"
-  selection={priority}
-  options={['Low', 'Medium', 'High']}
+  value={priority}
+  options={priorities}
   pickerStyle="inline"
   onChange={setPriority}
 />
 ```
 
-## Option Formats
-
-### Simple Strings
-
-```tsx
-<SwiftUI.Picker
-  label="Color"
-  selection={color}
-  options={['Red', 'Green', 'Blue']}
-  onChange={setColor}
-/>
-```
-
-### Labeled Options
-
-For different display labels and values:
-
-```tsx
-<SwiftUI.Picker
-  label="Country"
-  selection={countryCode}
-  options={[
-    { value: 'us', label: 'United States' },
-    { value: 'uk', label: 'United Kingdom' },
-    { value: 'ca', label: 'Canada' },
-  ]}
-  onChange={setCountryCode}
-/>
-```
-
 ## Numeric Picker with Config
 
-For numeric ranges, use the `config` prop:
+For numeric ranges, use the `config` prop instead of `options`:
 
 ```tsx
 <SwiftUI.Picker
   label="Age"
-  selection={age}
+  value={age}
   config={{
     min: 18,
     max: 100,
@@ -165,15 +211,17 @@ Config options:
 ```tsx
 const [theme, setTheme] = useState('system');
 
+const themeOptions = [
+  { value: 'system', label: 'System' },
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+];
+
 <SwiftUI.Section header="Appearance">
   <SwiftUI.Picker
     label="Theme"
-    selection={theme}
-    options={[
-      { value: 'system', label: 'System' },
-      { value: 'light', label: 'Light' },
-      { value: 'dark', label: 'Dark' },
-    ]}
+    value={theme}
+    options={themeOptions}
     pickerStyle="segmented"
     onChange={setTheme}
   />
@@ -185,36 +233,62 @@ const [theme, setTheme] = useState('system');
 ```tsx
 const [category, setCategory] = useState('all');
 
+const categoryOptions = [
+  { value: 'all', label: 'All Items' },
+  { value: 'active', label: 'Active' },
+  { value: 'completed', label: 'Completed' },
+  { value: 'archived', label: 'Archived' },
+];
+
 <SwiftUI.Picker
   label="Category"
-  selection={category}
-  options={[
-    { value: 'all', label: 'All Items' },
-    { value: 'active', label: 'Active' },
-    { value: 'completed', label: 'Completed' },
-    { value: 'archived', label: 'Archived' },
-  ]}
+  value={category}
+  options={categoryOptions}
   pickerStyle="menu"
   onChange={setCategory}
+/>
+```
+
+### View Mode with Icons
+
+```tsx
+const [viewMode, setViewMode] = useState('list');
+
+const viewOptions = [
+  { value: 'list', label: 'List', icon: 'list.bullet' },
+  { value: 'grid', label: 'Grid', icon: 'square.grid.2x2' },
+];
+
+<SwiftUI.Picker
+  value={viewMode}
+  options={viewOptions}
+  pickerStyle="segmented"
+  onChange={setViewMode}
 />
 ```
 
 ### Dynamic Options
 
 ```tsx
-const [options, setOptions] = useState(['Option 1', 'Option 2']);
-const [selected, setSelected] = useState('Option 1');
+const [options, setOptions] = useState([
+  { value: 'opt1', label: 'Option 1' },
+  { value: 'opt2', label: 'Option 2' },
+]);
+const [selected, setSelected] = useState('opt1');
 
 <SwiftUI.Section>
   <SwiftUI.Picker
     label="Choose"
-    selection={selected}
+    value={selected}
     options={options}
     onChange={setSelected}
   />
   <SwiftUI.Button
     title="Add Option"
-    onPress={() => setOptions([...options, `Option ${options.length + 1}`])}
+    onPress={() => {
+      const newValue = `opt${options.length + 1}`;
+      setOptions([...options, { value: newValue, label: `Option ${options.length + 1}` }]);
+    }}
   />
 </SwiftUI.Section>
 ```

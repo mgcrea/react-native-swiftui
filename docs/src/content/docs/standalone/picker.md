@@ -16,10 +16,16 @@ import { SwiftUIPicker } from '@mgcrea/react-native-swiftui';
 ```tsx
 const [selected, setSelected] = useState('apple');
 
+const options = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'orange', label: 'Orange' },
+];
+
 <SwiftUIPicker
   label="Fruit"
-  selection={selected}
-  options={['Apple', 'Banana', 'Orange']}
+  value={selected}
+  options={options}
   pickerStyle="menu"
   onChange={(value) => setSelected(value)}
 />
@@ -29,8 +35,9 @@ const [selected, setSelected] = useState('apple');
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `selection` | `string` | - | Currently selected value |
-| `options` | `(string \| { value: string; label: string })[]` | - | Array of options |
+| `value` | `string` | - | Currently selected value (preferred) |
+| `selection` | `string` | - | Currently selected value (deprecated, use `value`) |
+| `options` | `{ value: string; label?: string; icon?: string }[]` | - | Array of options |
 | `pickerStyle` | `"default" \| "inline" \| "menu" \| "segmented" \| "wheel"` | `"default"` | Visual style |
 | `label` | `string` | - | Picker label |
 | `labelColor` | `string` | - | Label text color |
@@ -38,6 +45,26 @@ const [selected, setSelected] = useState('apple');
 | `onFocus` | `() => void` | - | Focus handler |
 | `onBlur` | `() => void` | - | Blur handler |
 | `style` | `StyleProp<ViewStyle>` | - | Container style |
+
+## Option Format
+
+Options must be objects with `value` and `label` properties:
+
+```tsx
+const options = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+];
+```
+
+The `label` property is optional and defaults to `value` if not provided. For segmented pickers, you can also include an SF Symbol icon:
+
+```tsx
+const options = [
+  { value: 'list', label: 'List', icon: 'list.bullet' },
+  { value: 'grid', label: 'Grid', icon: 'square.grid.2x2' },
+];
+```
 
 ## Picker Styles
 
@@ -54,10 +81,16 @@ Each picker style has a default height:
 ### Menu Style
 
 ```tsx
+const options = [
+  { value: 'electronics', label: 'Electronics' },
+  { value: 'clothing', label: 'Clothing' },
+  { value: 'books', label: 'Books' },
+];
+
 <SwiftUIPicker
   label="Category"
-  selection={category}
-  options={categories}
+  value={category}
+  options={options}
   pickerStyle="menu"
   onChange={(value) => setCategory(value)}
 />
@@ -66,20 +99,51 @@ Each picker style has a default height:
 ### Segmented Style
 
 ```tsx
+const options = [
+  { value: 'day', label: 'Day' },
+  { value: 'week', label: 'Week' },
+  { value: 'month', label: 'Month' },
+];
+
 <SwiftUIPicker
-  selection={tab}
-  options={['Day', 'Week', 'Month']}
+  value={tab}
+  options={options}
   pickerStyle="segmented"
   onChange={(value) => setTab(value)}
+/>
+```
+
+### Segmented with SF Symbols
+
+```tsx
+const options = [
+  { value: 'list', label: 'List', icon: 'list.bullet' },
+  { value: 'grid', label: 'Grid', icon: 'square.grid.2x2' },
+  { value: 'map', label: 'Map', icon: 'map' },
+];
+
+<SwiftUIPicker
+  value={viewMode}
+  options={options}
+  pickerStyle="segmented"
+  onChange={(value) => setViewMode(value)}
 />
 ```
 
 ### Wheel Style
 
 ```tsx
+const options = [
+  { value: 'xs', label: 'XS' },
+  { value: 's', label: 'S' },
+  { value: 'm', label: 'M' },
+  { value: 'l', label: 'L' },
+  { value: 'xl', label: 'XL' },
+];
+
 <SwiftUIPicker
-  selection={size}
-  options={['XS', 'S', 'M', 'L', 'XL']}
+  value={size}
+  options={options}
   pickerStyle="wheel"
   onChange={(value) => setSize(value)}
   style={{ height: 216 }}
@@ -89,9 +153,15 @@ Each picker style has a default height:
 ### Inline Style
 
 ```tsx
+const options = [
+  { value: 'low', label: 'Low' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'high', label: 'High' },
+];
+
 <SwiftUIPicker
-  selection={priority}
-  options={['Low', 'Medium', 'High']}
+  value={priority}
+  options={options}
   pickerStyle="inline"
   onChange={(value) => setPriority(value)}
   style={{ height: 200 }}
@@ -104,7 +174,7 @@ Each picker style has a default height:
 
 ```tsx
 <SwiftUIPicker
-  selection={selected}
+  value={selected}
   options={options}
   pickerStyle="segmented"
   onChange={setSelected}
@@ -118,7 +188,7 @@ Each picker style has a default height:
 <SwiftUIPicker
   label="Choose Option"
   labelColor="#007AFF"
-  selection={selected}
+  value={selected}
   options={options}
   onChange={setSelected}
 />
@@ -131,14 +201,16 @@ Each picker style has a default height:
 ```tsx
 const [filter, setFilter] = useState('all');
 
+const filterOptions = [
+  { value: 'all', label: 'All' },
+  { value: 'active', label: 'Active' },
+  { value: 'completed', label: 'Done' },
+];
+
 <View style={styles.filterContainer}>
   <SwiftUIPicker
-    selection={filter}
-    options={[
-      { value: 'all', label: 'All' },
-      { value: 'active', label: 'Active' },
-      { value: 'completed', label: 'Done' },
-    ]}
+    value={filter}
+    options={filterOptions}
     pickerStyle="segmented"
     onChange={(value) => setFilter(value)}
     style={{ marginHorizontal: 16 }}
@@ -149,11 +221,17 @@ const [filter, setFilter] = useState('all');
 ### Settings Row
 
 ```tsx
+const themeOptions = [
+  { value: 'system', label: 'System' },
+  { value: 'light', label: 'Light' },
+  { value: 'dark', label: 'Dark' },
+];
+
 <View style={styles.settingRow}>
   <Text style={styles.settingLabel}>Theme</Text>
   <SwiftUIPicker
-    selection={theme}
-    options={['System', 'Light', 'Dark']}
+    value={theme}
+    options={themeOptions}
     pickerStyle="menu"
     onChange={(value) => setTheme(value)}
   />
@@ -163,22 +241,38 @@ const [filter, setFilter] = useState('all');
 ### Dynamic Style Switcher
 
 ```tsx
+const styleOptions = [
+  { value: 'default', label: 'Default' },
+  { value: 'inline', label: 'Inline' },
+  { value: 'menu', label: 'Menu' },
+  { value: 'segmented', label: 'Segmented' },
+  { value: 'wheel', label: 'Wheel' },
+];
+
+const fruitOptions = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'orange', label: 'Orange' },
+  { value: 'grape', label: 'Grape' },
+  { value: 'mango', label: 'Mango' },
+];
+
 const [pickerStyle, setPickerStyle] = useState<PickerStyle>('menu');
-const [selectedFruit, setSelectedFruit] = useState('Apple');
+const [selectedFruit, setSelectedFruit] = useState('apple');
 
 <View style={styles.container}>
   <Text style={styles.label}>Picker Style</Text>
   <SwiftUIPicker
-    selection={pickerStyle}
-    options={['default', 'inline', 'menu', 'segmented', 'wheel']}
+    value={pickerStyle}
+    options={styleOptions}
     pickerStyle="segmented"
     onChange={(value) => setPickerStyle(value as PickerStyle)}
   />
 
   <Text style={styles.label}>Select Fruit</Text>
   <SwiftUIPicker
-    selection={selectedFruit}
-    options={['Apple', 'Banana', 'Orange', 'Grape', 'Mango']}
+    value={selectedFruit}
+    options={fruitOptions}
     pickerStyle={pickerStyle}
     onChange={(value) => setSelectedFruit(value)}
     style={pickerStyle === 'wheel' ? { height: 216 } : undefined}
@@ -186,18 +280,20 @@ const [selectedFruit, setSelectedFruit] = useState('Apple');
 </View>
 ```
 
-### With Labeled Options
+### Country Selector
 
 ```tsx
+const countryOptions = [
+  { value: 'us', label: 'United States' },
+  { value: 'uk', label: 'United Kingdom' },
+  { value: 'ca', label: 'Canada' },
+  { value: 'au', label: 'Australia' },
+];
+
 <SwiftUIPicker
   label="Country"
-  selection={country}
-  options={[
-    { value: 'us', label: 'United States' },
-    { value: 'uk', label: 'United Kingdom' },
-    { value: 'ca', label: 'Canada' },
-    { value: 'au', label: 'Australia' },
-  ]}
+  value={country}
+  options={countryOptions}
   pickerStyle="menu"
   onChange={(value) => setCountry(value)}
 />
@@ -206,12 +302,24 @@ const [selectedFruit, setSelectedFruit] = useState('Apple');
 ### In a Form Layout
 
 ```tsx
+const sizeOptions = [
+  { value: 'small', label: 'Small' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'large', label: 'Large' },
+];
+
+const colorOptions = [
+  { value: 'red', label: 'Red' },
+  { value: 'blue', label: 'Blue' },
+  { value: 'green', label: 'Green' },
+];
+
 <View style={styles.form}>
   <View style={styles.row}>
     <Text style={styles.label}>Size</Text>
     <SwiftUIPicker
-      selection={size}
-      options={['Small', 'Medium', 'Large']}
+      value={size}
+      options={sizeOptions}
       pickerStyle="menu"
       onChange={setSize}
     />
@@ -219,8 +327,8 @@ const [selectedFruit, setSelectedFruit] = useState('Apple');
   <View style={styles.row}>
     <Text style={styles.label}>Color</Text>
     <SwiftUIPicker
-      selection={color}
-      options={['Red', 'Blue', 'Green']}
+      value={color}
+      options={colorOptions}
       pickerStyle="menu"
       onChange={setColor}
     />
