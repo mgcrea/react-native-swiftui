@@ -3,7 +3,6 @@
   "compilerOptions": {
     "declaration": true,
     "emitDeclarationOnly": true,
-    "resolveJsonModule": true,
     "verbatimModuleSyntax": true,
     "module": "ESNext",
     "noEmit": false,

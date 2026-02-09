@@ -8,7 +8,7 @@ const config = [
     },
   },
   {
-    ignores: [".idea/**", "example/**", "test/**"],
+    ignores: [".idea/**", "example/**", "test/**", "docs/**"],
   },
   {
     languageOptions: {
