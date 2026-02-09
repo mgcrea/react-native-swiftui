@@ -39,6 +39,7 @@ const options = [
 | `selection` | `string` | - | Currently selected value (deprecated, use `value`) |
 | `options` | `{ value: string; label?: string; icon?: string }[]` | - | Array of options |
 | `pickerStyle` | `"default" \| "inline" \| "menu" \| "segmented" \| "wheel"` | `"default"` | Visual style |
+| `controlSize` | `"mini" \| "small" \| "regular" \| "large" \| "extraLarge"` | - | Control size (iOS 15+, `extraLarge` requires iOS 17+) |
 | `label` | `string` | - | Picker label |
 | `labelColor` | `string` | - | Label text color |
 | `onChange` | `(value: string, event: NativeOnChangeEvent) => void` | - | Selection change handler |
