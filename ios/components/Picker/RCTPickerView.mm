@@ -48,6 +48,11 @@ static NSDictionary *convertProps(const NativePickerViewProps &props) {
     propsDictionary[@"labelColor"] = labelColor;
   }
 
+  if (!props.controlSize.empty()) {
+    propsDictionary[@"controlSize"] =
+        [NSString stringWithUTF8String:props.controlSize.c_str()];
+  }
+
   return propsDictionary;
 }
 

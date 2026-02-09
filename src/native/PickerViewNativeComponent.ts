@@ -4,6 +4,7 @@ import type { CodegenTypes } from "react-native";
 import { codegenNativeComponent, type HostComponent, type ViewProps } from "react-native";
 
 export type NativePickerStyle = "default" | "inline" | "menu" | "segmented" | "wheel";
+export type NativeControlSize = "mini" | "small" | "regular" | "large" | "extraLarge";
 
 export type NativePickerOption = Readonly<{
   value: string;
@@ -24,6 +25,7 @@ export interface NativePickerProps extends ViewProps {
   labelColor?: string;
   options?: readonly NativePickerOption[];
   pickerStyle?: CodegenTypes.WithDefault<NativePickerStyle, "default">;
+  controlSize?: string;
   disabled?: boolean;
   onNativeChange?: CodegenTypes.DirectEventHandler<Readonly<NativePickerChangeEvent>>;
   onNativeFocus?: CodegenTypes.DirectEventHandler<Readonly<NativePickerFocusEvent>>;
