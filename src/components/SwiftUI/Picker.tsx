@@ -6,6 +6,8 @@ import type { NativeLabelStyleProps, NativeTextStyle, NativeTextStyleProps } fro
 
 export type NativePickerStyle = "default" | "inline" | "menu" | "segmented" | "wheel";
 
+export type NativeControlSize = "mini" | "small" | "regular" | "large" | "extraLarge";
+
 export type NativePickerOption<T extends string> = {
   value: T;
   label: string;
@@ -36,6 +38,7 @@ export type NativePickerProps<T extends string> = NativeTextStyleProps &
     selection?: T;
     label?: string;
     pickerStyle?: NativePickerStyle;
+    controlSize?: NativeControlSize;
     disabled?: boolean;
     onChange?: (value: T) => void;
     onFocus?: () => void;

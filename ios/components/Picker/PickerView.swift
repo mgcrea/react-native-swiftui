@@ -40,6 +40,7 @@ public struct PickerView: View {
         props.onChange?(newValue)
       }
     )
+    .modifier(ControlSizeModifier(controlSize: props.controlSize))
     .applyStyles(props.style)
   }
 
@@ -67,5 +68,19 @@ public struct PickerView: View {
   private func labelView() -> some View {
     Text(props.label)
       .applyStyles(props.labelStyle)
+  }
+}
+
+// MARK: - Control Size Modifier
+
+private struct ControlSizeModifier: ViewModifier {
+  let controlSize: PickerProps.ControlSize?
+
+  func body(content: Content) -> some View {
+    if let controlSize {
+      controlSize.apply(content)
+    } else {
+      content
+    }
   }
 }

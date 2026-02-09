@@ -10,6 +10,7 @@ public final class PickerProps: ObservableObject, Decodable {
   @Published var labelStyle: StyleProps?
   @Published var pickerStyle: PickerStyle = .default
   @Published var isRootView: Bool = false
+  @Published var controlSize: ControlSize?
   @Published var disabled: Bool = false
   @Published public var style: StyleProps?
   // Events
@@ -95,9 +96,33 @@ public final class PickerProps: ObservableObject, Decodable {
     }
   }
 
+  enum ControlSize: String, Decodable {
+    case mini, small, regular, large, extraLarge
+
+    @ViewBuilder
+    func apply<V: View>(_ view: V) -> some View {
+      switch self {
+      case .mini:
+        view.controlSize(.mini)
+      case .small:
+        view.controlSize(.small)
+      case .regular:
+        view.controlSize(.regular)
+      case .large:
+        view.controlSize(.large)
+      case .extraLarge:
+        if #available(iOS 17.0, *) {
+          view.controlSize(.extraLarge)
+        } else {
+          view.controlSize(.large)
+        }
+      }
+    }
+  }
+
   // Coding keys for decoding
   enum CodingKeys: String, CodingKey, CaseIterable {
-    case label, labelStyle, selection, options, config, pickerStyle, disabled, style
+    case label, labelStyle, selection, options, config, pickerStyle, controlSize, disabled, style
   }
 
   // Decodable initializer
@@ -115,6 +140,7 @@ public final class PickerProps: ObservableObject, Decodable {
     } else {
       pickerStyle = .default // Default fallback
     }
+    controlSize = try container.decodeIfPresent(ControlSize.self, forKey: .controlSize)
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
@@ -137,6 +163,9 @@ public final class PickerProps: ObservableObject, Decodable {
     labelStyle = other.labelStyle
     if pickerStyle != other.pickerStyle {
       pickerStyle = other.pickerStyle
+    }
+    if controlSize != other.controlSize {
+      controlSize = other.controlSize
     }
     if disabled != other.disabled {
       disabled = other.disabled
