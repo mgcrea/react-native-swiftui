@@ -41,6 +41,7 @@ const options = [
 | `label` | `string` | - | Label text |
 | `labelStyle` | `StyleProp<NativeTextStyle>` | - | Style for the label text |
 | `pickerStyle` | `"default" \| "inline" \| "menu" \| "segmented" \| "wheel"` | `"default"` | Visual style |
+| `controlSize` | `"mini" \| "small" \| "regular" \| "large" \| "extraLarge"` | - | Control size (iOS 15+, `extraLarge` requires iOS 17+) |
 | `disabled` | `boolean` | `false` | Disable picker |
 | `style` | `StyleProp<NativeTextStyle>` | - | Style properties |
 | `onChange` | `(value: string) => void` | - | Called when selection changes |
@@ -121,6 +122,22 @@ const options = [
   onChange={setViewMode}
 />
 ```
+
+### Control Size
+
+Use the `controlSize` prop to adjust the visual size of pickers, particularly useful for segmented pickers:
+
+```tsx
+<SwiftUI.Picker
+  value={viewMode}
+  options={options}
+  pickerStyle="segmented"
+  controlSize="small"
+  onChange={setViewMode}
+/>
+```
+
+Available sizes: `"mini"`, `"small"`, `"regular"`, `"large"`, `"extraLarge"` (iOS 17+).
 
 ### Menu
 
