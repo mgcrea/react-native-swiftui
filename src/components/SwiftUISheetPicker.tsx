@@ -1,13 +1,27 @@
 import React, { forwardRef, useImperativeHandle, useRef } from "react";
-import NativeSheetPickerView, {
-  type NativeSheetPickerOption,
-  type NativeSheetPickerProps,
-} from "../native/SheetPickerViewNativeComponent";
+import type { ViewProps } from "react-native";
+import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-modules";
 
-export type SheetPickerOption = NativeSheetPickerOption;
+import SheetPickerViewConfig from "../../nitrogen/generated/shared/json/SheetPickerViewConfig.json";
+import type { SheetPickerViewMethods, SheetPickerViewProps } from "../specs/SheetPickerView.nitro";
 
-export type SwiftUISheetPickerProps = Omit<NativeSheetPickerProps, "onNativeSelect" | "onNativeDismiss"> & {
-  options: readonly SheetPickerOption[];
+const NativeSheetPickerView = getHostComponent<SheetPickerViewProps, SheetPickerViewMethods>(
+  "SheetPickerView",
+  () => SheetPickerViewConfig as ViewConfig<SheetPickerViewProps>,
+);
+
+export type SheetPickerOption = {
+  label?: string;
+  value: string;
+};
+
+export type SwiftUISheetPickerProps = ViewProps & {
+  isPresented?: boolean;
+  title?: string;
+  searchPlaceholder?: string;
+  selectedValue?: string;
+  options: SheetPickerOption[];
+  autoDismiss?: boolean;
   onSelect?: (value: string) => void;
   onDismiss?: () => void;
 };
@@ -34,14 +48,14 @@ export const SwiftUISheetPicker = forwardRef<SwiftUISheetPickerHandle, SwiftUISh
     return (
       <NativeSheetPickerView
         ref={nativeRef}
-        onNativeSelect={(event) => {
-          if (onSelect) {
-            onSelect(event.nativeEvent.value);
-          }
-          // Don't call onDismiss here - let native handle it via onNativeDismiss
-          // The native side auto-dismisses when autoDismiss is true
-        }}
-        onNativeDismiss={onDismiss}
+        onNativeSelect={
+          onSelect
+            ? callback((value: string) => {
+                onSelect(value);
+              })
+            : undefined
+        }
+        onNativeDismiss={onDismiss ? callback(onDismiss) : undefined}
         {...props}
         autoDismiss={autoDismiss}
       />

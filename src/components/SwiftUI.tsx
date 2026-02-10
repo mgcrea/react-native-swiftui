@@ -7,13 +7,12 @@ import {
   useId,
   useLayoutEffect,
 } from "react";
+import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-modules";
+import SwiftUIRootViewConfig from "../../nitrogen/generated/shared/json/SwiftUIRootViewConfig.json";
+import type { SwiftUIRootViewMethods, SwiftUIRootViewProps } from "../specs/SwiftUIRootView.nitro";
 import type { ViewStyleProps } from "../types";
 import { SwiftUIParentIdProvider } from "./../contexts";
 import { SwiftUIProvider, useSwiftUIContext } from "./../contexts/SwiftUIContext";
-import {
-  type NativeSwiftUIEvent,
-  default as SwiftUIRootNativeComponent,
-} from "./../native/SwiftUIRootNativeComponent";
 import { buildViewTree } from "./../utils/viewTree";
 import {
   Button,
@@ -40,9 +39,21 @@ import {
   ZStack,
 } from "./SwiftUI/index";
 
+const NativeSwiftUIRootView = getHostComponent<SwiftUIRootViewProps, SwiftUIRootViewMethods>(
+  "SwiftUIRootView",
+  () => SwiftUIRootViewConfig as ViewConfig<SwiftUIRootViewProps>,
+);
+
+export type SwiftUIEvent = {
+  name: string;
+  value: string;
+  type: string;
+  id: string;
+};
+
 export type SwiftUIProps = ViewStyleProps & {
   id?: string;
-  onEvent?: (event: { nativeEvent: NativeSwiftUIEvent }) => void;
+  onEvent?: (event: SwiftUIEvent) => void;
   debug?: boolean;
 };
 
@@ -91,20 +102,22 @@ export const SwiftUIRoot = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nativeRef, nodesKey, renderSequenceKey]);
 
-  const handleEvent: SwiftUIProps["onEvent"] = (event) => {
-    const { id, name, value } = event.nativeEvent;
-    log(`received event "${name}" for id=${id}, value=${value}`);
-    const handler = getEventHandler(id, name);
-    if (handler) {
-      handler(name === "change" ? value : ""); // Pass value only for change
-    }
-    rootOnEvent?.(event); // Forward to root handler
-  };
+  const handleEvent = useCallback(
+    (name: string, value: string, type: string, id: string) => {
+      log(`received event "${name}" for id=${id}, value=${value}`);
+      const handler = getEventHandler(id, name);
+      if (handler) {
+        handler(name === "change" ? value : ""); // Pass value only for change
+      }
+      rootOnEvent?.({ name, value, type, id }); // Forward to root handler
+    },
+    [getEventHandler, log, rootOnEvent],
+  );
 
   return (
-    <SwiftUIRootNativeComponent ref={nativeRef} onEvent={handleEvent} style={style}>
+    <NativeSwiftUIRootView ref={nativeRef} onEvent={callback(handleEvent)} style={style}>
       {children}
-    </SwiftUIRootNativeComponent>
+    </NativeSwiftUIRootView>
   );
 };
 

@@ -1,11 +1,22 @@
-import type { ComponentRef } from "react";
-import { forwardRef, useImperativeHandle, useRef } from "react";
-import NativeSheetView, { type NativeSheetProps } from "../native/SheetViewNativeComponent";
+import { forwardRef, useImperativeHandle, useRef, type ComponentRef } from "react";
+import type { ViewProps } from "react-native";
+import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-modules";
 
-export type SwiftUISheetProps = Omit<
-  NativeSheetProps,
-  "onNativeDismiss" | "onNativePrimaryAction" | "onNativeSecondaryAction"
-> & {
+import SheetViewConfig from "../../nitrogen/generated/shared/json/SheetViewConfig.json";
+import type { SheetViewMethods, SheetViewProps } from "../specs/SheetView.nitro";
+
+const NativeSheetView = getHostComponent<SheetViewProps, SheetViewMethods>(
+  "SheetView",
+  () => SheetViewConfig as ViewConfig<SheetViewProps>,
+);
+
+export type SwiftUISheetProps = ViewProps & {
+  isPresented?: boolean;
+  detents?: string[];
+  title?: string;
+  message?: string;
+  primaryButtonTitle?: string;
+  secondaryButtonTitle?: string;
   onDismiss?: () => void;
   onPrimaryAction?: () => void;
   onSecondaryAction?: () => void;
@@ -35,9 +46,9 @@ export const SwiftUISheet = forwardRef<SwiftUISheetHandle, SwiftUISheetProps>(fu
     <NativeSheetView
       ref={nativeRef}
       isPresented={isPresented}
-      onNativeDismiss={onDismiss ?? undefined}
-      onNativePrimaryAction={onPrimaryAction ?? undefined}
-      onNativeSecondaryAction={onSecondaryAction ?? undefined}
+      onNativeDismiss={onDismiss ? callback(onDismiss) : undefined}
+      onNativePrimaryAction={onPrimaryAction ? callback(onPrimaryAction) : undefined}
+      onNativeSecondaryAction={onSecondaryAction ? callback(onSecondaryAction) : undefined}
       {...props}
     />
   );

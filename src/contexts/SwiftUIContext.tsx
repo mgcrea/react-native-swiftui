@@ -9,11 +9,8 @@ import React, {
   useRef,
   useState,
 } from "react";
+import type { HostComponent } from "react-native";
 import type { ViewTreeNode } from "src/types";
-import {
-  Commands as NativeSwiftUIRootCommands,
-  default as SwiftUIRootNativeComponent,
-} from "../native/SwiftUIRootNativeComponent";
 
 export type EventHandler = (...args: string[]) => void;
 export type EventRegistry = Map<string, Map<string, EventHandler>>;
@@ -24,7 +21,7 @@ export type SwiftUIContextValue = {
   nodesKey: string;
   renderSequenceKey: string;
   getNodes: () => NodeRegistry;
-  nativeRef: RefObject<React.ComponentRef<typeof SwiftUIRootNativeComponent> | null>;
+  nativeRef: RefObject<React.ComponentRef<HostComponent<Record<string, unknown>>> | null>;
   recordRenderOrder: (id: string) => void;
   commitRenderSequence: () => void;
   registerEvents: (id: string, events: Record<string, EventHandler | undefined>) => void;
@@ -53,7 +50,7 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
   const [renderSequenceVersion, setRenderSequenceVersion] = useState(0);
   const renderSequence = useRef<string[]>([]);
   const previousRenderSequence = useRef<string[]>([]);
-  const nativeRef = useRef<React.ComponentRef<typeof SwiftUIRootNativeComponent> | null>(null);
+  const nativeRef = useRef<React.ComponentRef<HostComponent<Record<string, unknown>>> | null>(null);
 
   const log = useCallback(
     (message: string, ...args: unknown[]) => {
@@ -161,7 +158,9 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
       }
       log(`updating node with id=${id}`, { props });
       node.node.props = { ...node.node.props, ...props };
-      NativeSwiftUIRootCommands.updateChildProps(nativeRef.current, id, JSON.stringify(props));
+      // Use Nitro hybridRef to call updateChildProps method on the native view
+      const ref = nativeRef.current as unknown as { updateChildProps?: (id: string, props: string) => void };
+      ref.updateChildProps?.(id, JSON.stringify(props));
     },
     [log],
   );

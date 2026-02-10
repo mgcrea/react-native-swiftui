@@ -1,15 +1,26 @@
 import React, { forwardRef } from "react";
-import type { StyleProp, ViewStyle } from "react-native";
+import type { StyleProp, ViewProps, ViewStyle } from "react-native";
+import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-modules";
 
-import NativePickerViewNativeComponent, {
-  type NativePickerProps,
-  type NativePickerStyle,
-} from "../native/PickerViewNativeComponent";
+import PickerViewConfig from "../../nitrogen/generated/shared/json/PickerViewConfig.json";
+import type { PickerViewMethods, PickerViewProps } from "../specs/PickerView.nitro";
 import type { NativeTextStyle } from "../types";
 
-type NativePickerComponentRef = React.ComponentRef<typeof NativePickerViewNativeComponent>;
+const NativePickerView = getHostComponent<PickerViewProps, PickerViewMethods>(
+  "PickerView",
+  () => PickerViewConfig as ViewConfig<PickerViewProps>,
+);
 
-const DEFAULT_HEIGHTS: Record<NativePickerStyle, number> = {
+export type PickerStyle = "default" | "inline" | "menu" | "segmented" | "wheel";
+export type ControlSize = "mini" | "small" | "regular" | "large" | "extraLarge";
+
+export type PickerOption = {
+  value: string;
+  label?: string;
+  icon?: string;
+};
+
+const DEFAULT_HEIGHTS: Record<PickerStyle, number> = {
   default: 44,
   inline: 200,
   menu: 44,
@@ -17,35 +28,38 @@ const DEFAULT_HEIGHTS: Record<NativePickerStyle, number> = {
   wheel: 216,
 };
 
-type NativeOnChangeEvent = Parameters<NonNullable<NativePickerProps["onNativeChange"]>>[0];
+type NativePickerComponentRef = React.ComponentRef<typeof NativePickerView>;
 
-export type SwiftUIPickerProps = Omit<
-  NativePickerProps,
-  "onNativeChange" | "onNativeFocus" | "onNativeBlur" | "style"
-> & {
-  onChange?: (value: string, event: NativeOnChangeEvent) => void;
+export type SwiftUIPickerProps = ViewProps & {
+  value?: string;
+  selection?: string;
+  label?: string;
+  labelColor?: string;
+  options?: PickerOption[];
+  pickerStyle?: PickerStyle;
+  controlSize?: ControlSize;
+  disabled?: boolean;
+  onChange?: (value: string) => void;
   onFocus?: () => void;
   onBlur?: () => void;
   style?: StyleProp<ViewStyle & Pick<NativeTextStyle, "tint">>;
 };
 
 export const SwiftUIPicker = forwardRef<NativePickerComponentRef, SwiftUIPickerProps>(
-  ({ pickerStyle, style, onChange, onFocus, onBlur, ...restProps }, ref) => {
+  ({ pickerStyle, style, onChange, onFocus: _onFocus, onBlur: _onBlur, ...restProps }, ref) => {
     const defaultHeight = DEFAULT_HEIGHTS[pickerStyle ?? "default"];
     const composedStyle: StyleProp<ViewStyle> = [{ minHeight: defaultHeight }, style];
 
     return (
-      <NativePickerViewNativeComponent
+      <NativePickerView
         {...restProps}
         onNativeChange={
           onChange
-            ? (event) => {
-                onChange(event.nativeEvent.value, event);
-              }
+            ? callback((value: string) => {
+                onChange(value);
+              })
             : undefined
         }
-        onNativeFocus={onFocus ?? undefined}
-        onNativeBlur={onBlur ?? undefined}
         pickerStyle={pickerStyle}
         style={composedStyle}
         ref={ref}

@@ -1,22 +1,44 @@
 import React, { forwardRef, useMemo } from "react";
-import { StyleSheet, type ColorValue, type StyleProp, type TextStyle } from "react-native";
+import { StyleSheet, type ColorValue, type StyleProp, type TextStyle, type ViewProps } from "react-native";
+import { getHostComponent, type ViewConfig } from "react-native-nitro-modules";
 
-import NativeSFSymbolViewNativeComponent, {
-  type NativeSFSymbolProps,
-  type NativeSFSymbolRenderingMode,
-  type NativeSFSymbolResizeMode,
-  type NativeSFSymbolScale,
-  type NativeSFSymbolTextStyle,
-  type NativeSFSymbolWeight,
-} from "../native/SFSymbolViewNativeComponent";
+import SFSymbolViewConfig from "../../nitrogen/generated/shared/json/SFSymbolViewConfig.json";
+import type { SFSymbolViewMethods, SFSymbolViewProps } from "../specs/SFSymbolView.nitro";
 
-type NativeSFSymbolComponentRef = React.ComponentRef<typeof NativeSFSymbolViewNativeComponent>;
+const NativeSFSymbolView = getHostComponent<SFSymbolViewProps, SFSymbolViewMethods>(
+  "SFSymbolView",
+  () => SFSymbolViewConfig as ViewConfig<SFSymbolViewProps>,
+);
 
-export type SFSymbolWeight = NativeSFSymbolWeight;
-export type SFSymbolScale = NativeSFSymbolScale;
-export type SFSymbolRenderingMode = NativeSFSymbolRenderingMode;
-export type SFSymbolResizeMode = NativeSFSymbolResizeMode;
-export type SFSymbolTextStyle = NativeSFSymbolTextStyle;
+export type SFSymbolWeight =
+  | "ultraLight"
+  | "thin"
+  | "light"
+  | "regular"
+  | "medium"
+  | "semibold"
+  | "bold"
+  | "heavy"
+  | "black";
+
+export type SFSymbolScale = "small" | "medium" | "large";
+
+export type SFSymbolRenderingMode = "monochrome" | "hierarchical" | "palette" | "multicolor";
+
+export type SFSymbolResizeMode = "contain" | "cover" | "stretch" | "center";
+
+export type SFSymbolTextStyle =
+  | "largeTitle"
+  | "title"
+  | "title2"
+  | "title3"
+  | "headline"
+  | "subheadline"
+  | "body"
+  | "callout"
+  | "footnote"
+  | "caption"
+  | "caption2";
 
 const TEXT_STYLE_TO_POINTS: Record<SFSymbolTextStyle, number> = {
   largeTitle: 34,
@@ -32,12 +54,22 @@ const TEXT_STYLE_TO_POINTS: Record<SFSymbolTextStyle, number> = {
   caption2: 11,
 };
 
-export type SFSymbolProps = Omit<NativeSFSymbolProps, "size" | "textStyle" | "style" | "colors"> & {
+export type SFSymbolProps = ViewProps & {
+  /** SF Symbol name */
+  name: string;
   /**
    * Size of the symbol. Can be a number (point size) or a text style string.
    * @example size={24} or size="title"
    */
   size?: number | SFSymbolTextStyle;
+  /** Weight of the symbol */
+  weight?: SFSymbolWeight;
+  /** Scale of the symbol */
+  scale?: SFSymbolScale;
+  /** Rendering mode */
+  renderingMode?: SFSymbolRenderingMode;
+  /** Variable value (for symbols that support it) */
+  variableValue?: number;
   /**
    * Primary color of the symbol. For multiple colors, use the `colors` prop.
    * Can also be set via `style.color`.
@@ -55,6 +87,8 @@ export type SFSymbolProps = Omit<NativeSFSymbolProps, "size" | "textStyle" | "st
    */
   style?: StyleProp<TextStyle>;
 };
+
+type NativeSFSymbolComponentRef = React.ComponentRef<typeof NativeSFSymbolView>;
 
 /**
  * A React Native component for rendering SF Symbols.
@@ -95,9 +129,9 @@ export type SFSymbolProps = Omit<NativeSFSymbolProps, "size" | "textStyle" | "st
  * ```
  */
 export const SFSymbol = forwardRef<NativeSFSymbolComponentRef, SFSymbolProps>(
-  ({ size = "body", color, colors, style, ...restProps }, ref) => {
+  ({ name, size = "body", color, colors, style, ...restProps }, ref) => {
     // Determine if size is a number (point size) or string (text style)
-    const sizeProps: Pick<NativeSFSymbolProps, "size" | "textStyle"> =
+    const sizeProps: { size?: number; textStyle?: string } =
       typeof size === "number" ? { size } : typeof size === "string" ? { textStyle: size } : {};
 
     // Calculate dimension for explicit sizing
@@ -129,8 +163,9 @@ export const SFSymbol = forwardRef<NativeSFSymbolComponentRef, SFSymbolProps>(
     }, [dimension, style]);
 
     return (
-      <NativeSFSymbolViewNativeComponent
+      <NativeSFSymbolView
         {...restProps}
+        symbolName={name}
         {...sizeProps}
         colors={resolvedColors}
         style={combinedStyle}
