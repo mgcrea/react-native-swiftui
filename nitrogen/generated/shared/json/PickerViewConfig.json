@@ -1,0 +1,18 @@
+{
+  "uiViewClassName": "PickerView",
+  "supportsRawText": false,
+  "bubblingEventTypes": {},
+  "directEventTypes": {},
+  "validAttributes": {
+    "value": true,
+    "selection": true,
+    "label": true,
+    "labelColor": true,
+    "options": true,
+    "pickerStyle": true,
+    "controlSize": true,
+    "disabled": true,
+    "onNativeChange": true,
+    "hybridRef": true
+  }
+}

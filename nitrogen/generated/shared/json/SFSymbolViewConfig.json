@@ -1,0 +1,17 @@
+{
+  "uiViewClassName": "SFSymbolView",
+  "supportsRawText": false,
+  "bubblingEventTypes": {},
+  "directEventTypes": {},
+  "validAttributes": {
+    "symbolName": true,
+    "size": true,
+    "textStyle": true,
+    "weight": true,
+    "scale": true,
+    "renderingMode": true,
+    "variableValue": true,
+    "colors": true,
+    "hybridRef": true
+  }
+}

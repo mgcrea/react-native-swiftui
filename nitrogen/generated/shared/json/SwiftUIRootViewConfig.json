@@ -1,0 +1,11 @@
+{
+  "uiViewClassName": "SwiftUIRootView",
+  "supportsRawText": false,
+  "bubblingEventTypes": {},
+  "directEventTypes": {},
+  "validAttributes": {
+    "viewTree": true,
+    "onEvent": true,
+    "hybridRef": true
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "cxxNamespace": ["rnswiftui"],
+  "ios": {
+    "iosModuleName": "RNSwiftUI"
+  },
+  "android": {
+    "androidNamespace": ["rnswiftui"],
+    "androidCxxLibName": "RNSwiftUI"
+  },
+  "autolinking": {
+    "SFSymbolView": {
+      "swift": "HybridSFSymbolView"
+    },
+    "PickerView": {
+      "swift": "HybridPickerView"
+    },
+    "SheetView": {
+      "swift": "HybridSheetView"
+    },
+    "SheetPickerView": {
+      "swift": "HybridSheetPickerView"
+    },
+    "SwiftUIRootView": {
+      "swift": "HybridSwiftUIRootView"
+    }
+  },
+  "ignorePaths": ["node_modules", "example", ".idea"]
+}

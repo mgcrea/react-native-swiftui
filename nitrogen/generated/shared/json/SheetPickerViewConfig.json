@@ -1,0 +1,17 @@
+{
+  "uiViewClassName": "SheetPickerView",
+  "supportsRawText": false,
+  "bubblingEventTypes": {},
+  "directEventTypes": {},
+  "validAttributes": {
+    "isPresented": true,
+    "title": true,
+    "searchPlaceholder": true,
+    "selectedValue": true,
+    "options": true,
+    "autoDismiss": true,
+    "onNativeSelect": true,
+    "onNativeDismiss": true,
+    "hybridRef": true
+  }
+}
