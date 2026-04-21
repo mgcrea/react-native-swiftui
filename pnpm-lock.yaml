@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      react-native-nitro-modules:
-        specifier: ^0.33.7
-        version: 0.33.7(react-native@0.80.2(@babel/core@7.26.9)(@react-native-community/cli@20.0.2(typescript@5.8.2))(@types/react@19.0.10)(react@19.0.0))(react@19.0.0)
     devDependencies:
       '@babel/cli':
         specifier: ^7.26.4
@@ -66,6 +62,9 @@ importers:
       react-native:
         specifier: 0.80.2
         version: 0.80.2(@babel/core@7.26.9)(@react-native-community/cli@20.0.2(typescript@5.8.2))(@types/react@19.0.10)(react@19.0.0)
+      react-native-nitro-modules:
+        specifier: ^0.33.7
+        version: 0.33.7(react-native@0.80.2(@babel/core@7.26.9)(@react-native-community/cli@20.0.2(typescript@5.8.2))(@types/react@19.0.10)(react@19.0.0))(react@19.0.0)
       tsc-alias:
         specifier: ^1.8.16
         version: 1.8.16

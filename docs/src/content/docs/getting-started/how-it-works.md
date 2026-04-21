@@ -3,7 +3,7 @@ title: How It Works
 description: Understanding the SwiftUI bridge architecture
 ---
 
-React Native SwiftUI bridges React components to native SwiftUI views using React Native's Fabric renderer. This page explains the architecture and key concepts.
+React Native SwiftUI bridges React components to native SwiftUI views using [Nitro Modules](https://nitro.margelo.com/). This page explains the architecture and key concepts.
 
 ## Architecture Overview
 
@@ -56,7 +56,7 @@ The `SwiftUI` component acts as the bridge between React and native:
 | Responsibility          | Description                                      |
 | ----------------------- | ------------------------------------------------ |
 | Context Provider        | Manages component registration and event routing |
-| Native View Host        | Creates the native Fabric component              |
+| Native View Host        | Hosts the `HybridSwiftUIRootView` Nitro view     |
 | Tree Serialization      | Converts React tree to native view tree          |
 | Event Dispatch          | Routes native events to React handlers           |
 
@@ -72,7 +72,7 @@ Events flow from native SwiftUI back to React:
 
 1. **User interaction** — User taps toggle, types in text field
 2. **Native event** — SwiftUI fires change event with new value
-3. **Bridge dispatch** — Event sent through Fabric to JavaScript
+3. **Bridge dispatch** — Event sent through the Nitro JSI bridge to JavaScript
 4. **Handler callback** — Your `onChange` function is called
 5. **State update** — React re-renders with new value
 
@@ -131,13 +131,13 @@ Components match iOS exactly:
 - **System colors** — Automatic dark mode support
 - **Native behaviors** — Keyboard handling, haptics, accessibility
 
-### Fabric Integration
+### Nitro Integration
 
-Built on React Native's modern architecture:
+Built on [Nitro Modules](https://nitro.margelo.com/) for a direct JSI bridge to Swift:
 
-- **Synchronous rendering** — Faster initial paint
-- **Concurrent features** — Works with React 18 features
-- **Type-safe codegen** — Native specs generated from TypeScript
+- **Direct JSI calls** — No serialization overhead between JS and Swift
+- **Hybrid views** — Each native view is a Swift `HybridView` subclass
+- **Type-safe codegen** — Swift/C++ bridge generated from `src/specs/*.nitro.ts` by Nitrogen
 
 ## Limitations
 
@@ -175,7 +175,7 @@ React Native views cannot be placed inside the SwiftUI tree:
 
 ### New Architecture Required
 
-Requires React Native 0.76+ with Fabric enabled. The legacy architecture is not supported.
+Requires React Native 0.78+ with the New Architecture enabled (a prerequisite of Nitro Modules). The legacy architecture is not supported.
 
 ## What's Next?
 

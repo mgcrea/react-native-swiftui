@@ -7,27 +7,27 @@ description: How to install and set up React Native SwiftUI in your project
 
 Before installing, ensure your project meets these requirements:
 
-- **React Native** 0.76 or later (New Architecture with Fabric renderer)
+- **React Native** 0.78 or later (New Architecture enabled)
 - **iOS** 15.1 or later
 - **Node.js** 18 or later
 
 :::note
-This library requires the New Architecture (Fabric renderer) to be enabled in your React Native project. It will not work with the legacy architecture.
+This library depends on [Nitro Modules](https://nitro.margelo.com/), which requires the New Architecture. It will not work with the legacy architecture.
 :::
 
 ## Installation
 
-Install the package using your preferred package manager:
+Install the package and its Nitro Modules peer dependency using your preferred package manager:
 
 ```bash
 # npm
-npm install @mgcrea/react-native-swiftui
+npm install @mgcrea/react-native-swiftui react-native-nitro-modules
 
 # pnpm
-pnpm add @mgcrea/react-native-swiftui
+pnpm add @mgcrea/react-native-swiftui react-native-nitro-modules
 
 # yarn
-yarn add @mgcrea/react-native-swiftui
+yarn add @mgcrea/react-native-swiftui react-native-nitro-modules
 ```
 
 ## iOS Setup
@@ -42,28 +42,6 @@ Or using the library's helper script:
 
 ```bash
 npm run install:ios
-```
-
-## Enabling New Architecture
-
-If you haven't already enabled the New Architecture in your React Native project, you'll need to do so.
-
-### For React Native 0.76+
-
-The New Architecture is enabled by default in React Native 0.76+. No additional configuration is needed.
-
-### For React Native 0.73-0.75
-
-Add the following to your `ios/Podfile`:
-
-```ruby
-ENV['RCT_NEW_ARCH_ENABLED'] = '1'
-```
-
-Then reinstall pods:
-
-```bash
-cd ios && pod install && cd ..
 ```
 
 ## Verify Installation

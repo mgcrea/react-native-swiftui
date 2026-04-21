@@ -29,13 +29,13 @@
 
 ## Overview
 
-Native SwiftUI components for React Native using the Fabric renderer. Build iOS forms and interfaces with SwiftUI's declarative syntax while maintaining a familiar React workflow.
+Native SwiftUI components for React Native powered by Nitro Modules. Build iOS forms and interfaces with SwiftUI's declarative syntax while maintaining a familiar React workflow.
 
 ## Features
 
 - **🍎 Native SwiftUI** - Real SwiftUI components, not web views or custom drawings
-- **🔧 No Dependencies** - Safe from supply chain attacks
-- **⚡ Fabric Renderer** - Built on React Native's modern architecture
+- **🔧 Minimal Dependencies** - Single peer (`react-native-nitro-modules`)
+- **⚡ Nitro Modules** - Direct JSI bridge between JS and Swift for zero serialization overhead
 - **📝 TypeScript-first** - Full type safety and autocomplete support
 - **🔄 Two-Way Binding** - State syncs between JavaScript and SwiftUI
 - **📋 Form Components** - TextField, Picker, DatePicker, Toggle, Stepper, Slider
@@ -124,7 +124,7 @@ Contributions are welcome! To run the example project:
 git clone https://github.com/mgcrea/react-native-swiftui.git
 cd react-native-swiftui
 pnpm install
-pnpm run codegen:ios
+pnpm run nitrogen
 
 cd example
 pnpm install

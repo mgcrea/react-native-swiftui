@@ -1,5 +1,6 @@
 // src/contexts/SwiftUIContext.tsx
-import React, {
+import {
+  type ComponentRef,
   createContext,
   type FunctionComponent,
   type PropsWithChildren,
@@ -9,19 +10,22 @@ import React, {
   useRef,
   useState,
 } from "react";
-import type { HostComponent } from "react-native";
+import type { ReactNativeView } from "react-native-nitro-modules";
+import type { SwiftUIRootViewMethods, SwiftUIRootViewProps } from "src/specs/SwiftUIRootView.nitro";
 import type { ViewTreeNode } from "src/types";
 
 export type EventHandler = (...args: string[]) => void;
 export type EventRegistry = Map<string, Map<string, EventHandler>>;
 export type NodeRegistry = Map<string, { node: ViewTreeNode; parentId?: string }>;
 
+export type SwiftUIRootViewRef = ComponentRef<ReactNativeView<SwiftUIRootViewProps, SwiftUIRootViewMethods>>;
+
 export type SwiftUIContextValue = {
   getEventHandler: (id: string, name: string) => EventHandler | undefined;
   nodesKey: string;
   renderSequenceKey: string;
   getNodes: () => NodeRegistry;
-  nativeRef: RefObject<React.ComponentRef<HostComponent<Record<string, unknown>>> | null>;
+  nativeRef: RefObject<SwiftUIRootViewRef | null>;
   recordRenderOrder: (id: string) => void;
   commitRenderSequence: () => void;
   registerEvents: (id: string, events: Record<string, EventHandler | undefined>) => void;
@@ -50,7 +54,7 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
   const [renderSequenceVersion, setRenderSequenceVersion] = useState(0);
   const renderSequence = useRef<string[]>([]);
   const previousRenderSequence = useRef<string[]>([]);
-  const nativeRef = useRef<React.ComponentRef<HostComponent<Record<string, unknown>>> | null>(null);
+  const nativeRef = useRef<SwiftUIRootViewRef | null>(null);
 
   const log = useCallback(
     (message: string, ...args: unknown[]) => {
@@ -158,7 +162,8 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
       }
       log(`updating node with id=${id}`, { props });
       node.node.props = { ...node.node.props, ...props };
-      // Use Nitro hybridRef to call updateChildProps method on the native view
+      // Nitro mirrors hybrid view methods onto the component ref at runtime,
+      // but those methods aren't reflected in the HostComponent ref type.
       const ref = nativeRef.current as unknown as { updateChildProps?: (id: string, props: string) => void };
       ref.updateChildProps?.(id, JSON.stringify(props));
     },
