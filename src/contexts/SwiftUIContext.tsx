@@ -11,7 +11,11 @@ import {
   useState,
 } from "react";
 import type { ReactNativeView } from "react-native-nitro-modules";
-import type { SwiftUIRootView, SwiftUIRootViewMethods, SwiftUIRootViewProps } from "src/specs/SwiftUIRootView.nitro";
+import type {
+  SwiftUIRootView,
+  SwiftUIRootViewMethods,
+  SwiftUIRootViewProps,
+} from "src/specs/SwiftUIRootView.nitro";
 import type { ViewTreeNode } from "src/types";
 
 export type EventHandler = (...args: string[]) => void;

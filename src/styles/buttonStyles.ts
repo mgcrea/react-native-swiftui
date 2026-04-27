@@ -1,4 +1,5 @@
 import { PlatformColor } from "react-native";
+
 import type { NativeTextStyle } from "../types";
 
 export const pickerButtonStyles: NativeTextStyle = {

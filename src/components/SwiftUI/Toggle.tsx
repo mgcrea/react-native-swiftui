@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
 import type { FunctionComponentWithId, NativeLabelStyleProps, NativeTextStyle } from "../../types";
 

@@ -1,4 +1,5 @@
 import { Image as BaseImage, type ImageSourcePropType } from "react-native";
+
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
 import type { FunctionComponentWithId, NativeTextStyle, NativeTextStyleProps } from "../../types";
 

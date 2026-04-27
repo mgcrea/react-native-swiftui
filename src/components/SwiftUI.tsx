@@ -9,6 +9,7 @@ import {
   useState,
 } from "react";
 import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-modules";
+
 import SwiftUIRootViewConfig from "../../nitrogen/generated/shared/json/SwiftUIRootViewConfig.json";
 import type { SwiftUIRootViewMethods, SwiftUIRootViewProps } from "../specs/SwiftUIRootView.nitro";
 import type { ViewStyleProps } from "../types";
