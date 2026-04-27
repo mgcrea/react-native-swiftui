@@ -14,5 +14,6 @@ example/
 link-assets-manifest.json
 *.ttf
 
+AGENTS.md
 CLAUDE.md
 .claude/
