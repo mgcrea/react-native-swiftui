@@ -18,16 +18,13 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/mgcrea/react-native-swiftui.git", :tag => "#{s.version}" }
 
   s.pod_target_xcconfig = {
-    "DEFINES_MODULE" => "YES",
     'SWIFT_COMPILATION_MODE' => 'wholemodule',
-    # 'SWIFT_ENABLE_EXPLICIT_MODULES' => 'NO',
-    # 'SWIFT_INSTALL_OBJC_HEADER' => 'YES',
   }
 
-  s.source_files = "ios/**/*.{h,m,mm,cpp,swift}", "nitrogen/generated/ios/**/*.{h,m,mm,cpp,swift}", "nitrogen/generated/shared/**/*.{h,hpp,cpp}"
+  s.source_files = "ios/**/*.{h,m,mm,cpp,swift}"
 
-  s.dependency 'NitroModules'
-  # s.dependency 'SwiftUIIntrospect', '~> 1.3'
+  load 'nitrogen/generated/ios/RNSwiftUI+autolinking.rb'
+  add_nitrogen_files(s)
 
   install_modules_dependencies(s)
 end
