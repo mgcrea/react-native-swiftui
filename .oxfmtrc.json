@@ -1,0 +1,20 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 111,
+  "sortImports": { "enabled": true },
+  "overrides": [
+    {
+      "files": ["**/*.json", "**/*.jsonc"],
+      "options": { "trailingComma": "none" }
+    }
+  ],
+  "ignorePatterns": [
+    "dist",
+    "nitrogen/generated",
+    "ios",
+    "example",
+    "docs",
+    "tmp",
+    "pnpm-lock.yaml"
+  ]
+}
