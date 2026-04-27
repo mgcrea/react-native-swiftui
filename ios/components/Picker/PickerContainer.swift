@@ -20,18 +20,19 @@ public class PickerContainer: SwiftUIContainerView {
     hostingController.rootView = AnyView(PickerView(props: props))
   }
 
-  @objc
-  public func updateProps(with newDictionary: [String: Any], oldDictionary _: [String: Any]) {
-    do {
-      // Convert NSDictionary to JSON data
-      let jsonData = try JSONSerialization.data(withJSONObject: newDictionary, options: [])
-      // Decode into a new PickerProps instance
-      let decoder = JSONDecoder()
-      let updatedProps = try decoder.decode(PickerProps.self, from: jsonData)
-      // Merge into existing props to preserve onChange
-      props.merge(from: updatedProps)
-    } catch {
-      print("Failed to update PickerProps: \(error)")
-    }
+  func update(
+    selection: String,
+    label: String,
+    options: [PickerProps.PickerOption],
+    pickerStyle: PickerProps.PickerStyle,
+    controlSize: PickerProps.ControlSize?,
+    disabled: Bool
+  ) {
+    if props.selection != selection { props.selection = selection }
+    if props.label != label { props.label = label }
+    if props.options != options { props.options = options }
+    if props.pickerStyle != pickerStyle { props.pickerStyle = pickerStyle }
+    if props.controlSize != controlSize { props.controlSize = controlSize }
+    if props.disabled != disabled { props.disabled = disabled }
   }
 }

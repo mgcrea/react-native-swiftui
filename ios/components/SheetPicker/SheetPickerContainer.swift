@@ -22,12 +22,16 @@ public final class SheetPickerContainer: SwiftUIContainerView {
     hostingController.rootView = AnyView(SheetPickerView(props: props))
   }
 
-  @objc
-  public func updateProps(with newDictionary: [String: Any], oldDictionary _: [String: Any]) {
+  public func update(
+    isPresented: Bool,
+    title: String?,
+    searchPlaceholder: String?,
+    selectedValue: String?,
+    autoDismiss: Bool,
+    options: [SheetPickerOption]
+  ) {
     let previousPresented = props.isPresented
-    if let isPresented = newDictionary["isPresented"] as? Bool,
-       isPresented != props.isPresented
-    {
+    if isPresented != props.isPresented {
       // Ignore attempts to re-present during auto-dismiss (race condition from JS state update)
       if isPresented && props.isAutoDismissing {
         props.isAutoDismissing = false
@@ -38,57 +42,25 @@ public final class SheetPickerContainer: SwiftUIContainerView {
           props.isAutoDismissing = false
         }
       }
-    } else if props.isAutoDismissing, newDictionary["isPresented"] as? Bool == false {
+    } else if props.isAutoDismissing, !isPresented {
       // JS confirmed dismiss, reset flag even though isPresented already matches
       props.isAutoDismissing = false
     }
 
-    if let title = newDictionary["title"] as? String,
-       title != props.title
-    {
+    if let title, title != props.title {
       props.title = title
     }
-
-    if let searchPlaceholder = newDictionary["searchPlaceholder"] as? String,
-       searchPlaceholder != props.searchPlaceholder
-    {
+    if let searchPlaceholder, searchPlaceholder != props.searchPlaceholder {
       props.searchPlaceholder = searchPlaceholder
     }
-
-    if let selectedValue = newDictionary["selectedValue"] as? String,
-       selectedValue != props.selectedValue
-    {
+    if let selectedValue, selectedValue != props.selectedValue {
       props.selectedValue = selectedValue
     }
-
-    if let autoDismiss = newDictionary["autoDismiss"] as? Bool,
-       autoDismiss != props.autoDismiss
-    {
+    if autoDismiss != props.autoDismiss {
       props.autoDismiss = autoDismiss
     }
-
-    if let optionsValue = newDictionary["options"] as? [Any] {
-      let parsedOptions = parseOptions(optionsValue)
-      if parsedOptions != props.options {
-        props.options = parsedOptions
-      }
+    if options != props.options {
+      props.options = options
     }
-  }
-
-  private func parseOptions(_ rawOptions: [Any]) -> [SheetPickerOption] {
-    var parsed: [SheetPickerOption] = []
-    parsed.reserveCapacity(rawOptions.count)
-
-    for entry in rawOptions {
-      guard let dict = entry as? [String: Any],
-            let value = dict["value"] as? String
-      else {
-        continue
-      }
-      let label = dict["label"] as? String ?? value
-      parsed.append(SheetPickerOption(label: label, value: value))
-    }
-
-    return parsed
   }
 }

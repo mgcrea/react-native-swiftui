@@ -61,32 +61,17 @@ class HybridSheetPickerView: HybridSheetPickerViewSpec {
   func afterUpdate() {
     guard needsUpdate else { return }
 
-    var optionsArray: [[String: Any]] = []
-    if let options = options {
-      for option in options {
-        optionsArray.append([
-          "value": option.value,
-          "label": option.label ?? option.value,
-        ])
-      }
-    }
+    let mappedOptions: [SheetPickerOption] = options?.map {
+      SheetPickerOption(label: $0.label ?? $0.value, value: $0.value)
+    } ?? []
 
-    var dict: [String: Any] = [
-      "isPresented": isPresented ?? false,
-      "options": optionsArray,
-      "autoDismiss": autoDismiss ?? true,
-    ]
-
-    if let title = title {
-      dict["title"] = title
-    }
-    if let searchPlaceholder = searchPlaceholder {
-      dict["searchPlaceholder"] = searchPlaceholder
-    }
-    if let selectedValue = selectedValue {
-      dict["selectedValue"] = selectedValue
-    }
-
-    container.updateProps(with: dict, oldDictionary: [:])
+    container.update(
+      isPresented: isPresented ?? false,
+      title: title,
+      searchPlaceholder: searchPlaceholder,
+      selectedValue: selectedValue,
+      autoDismiss: autoDismiss ?? true,
+      options: mappedOptions
+    )
   }
 }

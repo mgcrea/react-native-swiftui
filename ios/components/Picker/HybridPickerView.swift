@@ -66,37 +66,19 @@ class HybridPickerView: HybridPickerViewSpec {
     guard needsUpdate else { return }
 
     let resolvedSelection = (value?.isEmpty == false ? value : selection) ?? ""
+    let mappedOptions: [PickerProps.PickerOption] = options?.map {
+      PickerProps.PickerOption(label: $0.label ?? $0.value, value: $0.value, icon: $0.icon)
+    } ?? []
+    let resolvedPickerStyle = PickerProps.PickerStyle(rawValue: pickerStyle ?? "") ?? .default
+    let resolvedControlSize = controlSize.flatMap { PickerProps.ControlSize(rawValue: $0) }
 
-    var optionsArray: [[String: Any]] = []
-    if let options = options {
-      for option in options {
-        var dict: [String: Any] = [
-          "value": option.value,
-          "label": option.label ?? option.value,
-        ]
-        if let icon = option.icon {
-          dict["icon"] = icon
-        }
-        optionsArray.append(dict)
-      }
-    }
-
-    var dict: [String: Any] = [
-      "selection": resolvedSelection,
-      "label": label ?? "",
-      "options": optionsArray,
-      "pickerStyle": pickerStyle ?? "default",
-      "disabled": disabled ?? false,
-    ]
-
-    if let labelColor = labelColor {
-      dict["labelColor"] = labelColor
-    }
-
-    if let controlSize = controlSize {
-      dict["controlSize"] = controlSize
-    }
-
-    container.updateProps(with: dict, oldDictionary: [:])
+    container.update(
+      selection: resolvedSelection,
+      label: label ?? "",
+      options: mappedOptions,
+      pickerStyle: resolvedPickerStyle,
+      controlSize: resolvedControlSize,
+      disabled: disabled ?? false
+    )
   }
 }

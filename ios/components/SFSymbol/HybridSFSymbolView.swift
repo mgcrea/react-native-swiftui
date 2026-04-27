@@ -59,26 +59,19 @@ class HybridSFSymbolView: HybridSFSymbolViewSpec {
   func afterUpdate() {
     guard needsUpdate else { return }
 
-    var dict: [String: Any] = [
-      "name": symbolName,
-      "textStyle": textStyle ?? "body",
-      "weight": weight ?? "regular",
-      "scale": scale ?? "medium",
-      "renderingMode": renderingMode ?? "monochrome",
-    ]
+    let resolvedSize: Double? = (size ?? 0) > 0 ? size : nil
+    let resolvedVariableValue: Double? = (variableValue ?? -1) >= 0 ? variableValue : nil
+    let resolvedColors: [String]? = (colors?.isEmpty == false) ? colors : nil
 
-    if let size = size, size > 0 {
-      dict["size"] = size
-    }
-
-    if let variableValue = variableValue, variableValue >= 0 {
-      dict["variableValue"] = variableValue
-    }
-
-    if let colors = colors, !colors.isEmpty {
-      dict["colors"] = colors
-    }
-
-    container.updateProps(with: dict, oldDictionary: [:])
+    container.update(
+      name: symbolName,
+      size: resolvedSize,
+      textStyle: textStyle ?? "body",
+      weight: weight ?? "regular",
+      scale: scale ?? "medium",
+      renderingMode: renderingMode ?? "monochrome",
+      variableValue: resolvedVariableValue,
+      colors: resolvedColors
+    )
   }
 }
