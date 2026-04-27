@@ -1,6 +1,6 @@
 /** @type {import('jest').Config} */
 const config = {
-  preset: "react-native",
+  preset: "@react-native/jest-preset",
   setupFilesAfterEnv: ["./test/setup.ts"],
   moduleNameMapper: {
     "^src/(.*)$": "<rootDir>/src/$1",
@@ -9,5 +9,4 @@ const config = {
   testPathIgnorePatterns: ["/.idea/", "/node_modules/", "/example/", "/dist/"],
 };
 
-// eslint-disable-next-line no-undef
 module.exports = config;

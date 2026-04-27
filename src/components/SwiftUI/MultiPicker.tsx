@@ -44,7 +44,7 @@ export type NativeMultiPickerProps<T extends string> = NativeTextStyleProps & {
 export const MultiPicker = <T extends string>({
   components,
   selections,
-  label,
+  label: _label,
   onChange: onChangeProp,
   onFocus,
   onBlur,
