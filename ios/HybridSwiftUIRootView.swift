@@ -46,6 +46,10 @@ class HybridSwiftUIRootView: HybridSwiftUIRootViewSpec {
     }
   }
 
+  func onDropView() {
+    rootView.tearDown()
+  }
+
   // MARK: - Methods
 
   func updateChildProps(identifier: String, props: String) throws {

@@ -264,8 +264,12 @@ public class SwiftUIRootView: SwiftUIContainerView {
     return nil
   }
 
+  @objc public func tearDown() {
+    cancellables.removeAll()
+    onEvent = nil
+  }
+
   deinit {
-    // Clean up Combine subscriptions to prevent memory leaks
     cancellables.removeAll()
   }
 }
