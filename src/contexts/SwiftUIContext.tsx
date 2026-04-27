@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 import type { ReactNativeView } from "react-native-nitro-modules";
-import type { SwiftUIRootViewMethods, SwiftUIRootViewProps } from "src/specs/SwiftUIRootView.nitro";
+import type { SwiftUIRootView, SwiftUIRootViewMethods, SwiftUIRootViewProps } from "src/specs/SwiftUIRootView.nitro";
 import type { ViewTreeNode } from "src/types";
 
 export type EventHandler = (...args: string[]) => void;
@@ -26,6 +26,7 @@ export type SwiftUIContextValue = {
   renderSequenceKey: string;
   getNodes: () => NodeRegistry;
   nativeRef: RefObject<SwiftUIRootViewRef | null>;
+  hybridRef: RefObject<SwiftUIRootView | null>;
   recordRenderOrder: (id: string) => void;
   commitRenderSequence: () => void;
   registerEvents: (id: string, events: Record<string, EventHandler | undefined>) => void;
@@ -55,6 +56,7 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
   const renderSequence = useRef<string[]>([]);
   const previousRenderSequence = useRef<string[]>([]);
   const nativeRef = useRef<SwiftUIRootViewRef | null>(null);
+  const hybridRef = useRef<SwiftUIRootView | null>(null);
 
   const log = useCallback(
     (message: string, ...args: unknown[]) => {
@@ -151,8 +153,8 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
 
   const updateNodeProps = useCallback(
     (id: string, props: Record<string, unknown>) => {
-      if (!nativeRef.current) {
-        log("[warn] native ref not available");
+      if (!hybridRef.current) {
+        log("[warn] hybrid ref not available");
         return;
       }
       const node = nodeRegistry.current.get(id);
@@ -162,10 +164,7 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
       }
       log(`updating node with id=${id}`, { props });
       node.node.props = { ...node.node.props, ...props };
-      // Nitro mirrors hybrid view methods onto the component ref at runtime,
-      // but those methods aren't reflected in the HostComponent ref type.
-      const ref = nativeRef.current as unknown as { updateChildProps?: (id: string, props: string) => void };
-      ref.updateChildProps?.(id, JSON.stringify(props));
+      hybridRef.current.updateChildProps(id, JSON.stringify(props));
     },
     [log],
   );
@@ -176,6 +175,7 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
     renderSequenceKey,
     getNodes,
     nativeRef,
+    hybridRef,
     recordRenderOrder,
     commitRenderSequence,
     registerEvents,

@@ -6,6 +6,7 @@ import {
   useEffect,
   useId,
   useLayoutEffect,
+  useState,
 } from "react";
 import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-modules";
 import SwiftUIRootViewConfig from "../../nitrogen/generated/shared/json/SwiftUIRootViewConfig.json";
@@ -66,6 +67,7 @@ export const SwiftUIRoot = ({
 }: PropsWithChildren<SwiftUIProps>): ReactNode => {
   const {
     nativeRef,
+    hybridRef,
     getEventHandler,
     nodesKey,
     renderSequenceKey,
@@ -94,13 +96,15 @@ export const SwiftUIRoot = ({
     commitRenderSequence();
   });
 
+  const [viewTreeJson, setViewTreeJson] = useState<string | undefined>(undefined);
+
   // Rebuild view tree when nodes or order changes
   useEffect(() => {
     const viewTree = buildViewTree(nodes, renderSequence.current);
     log(`updating view tree`, viewTree);
-    nativeRef.current?.setNativeProps({ viewTree: JSON.stringify(viewTree) });
+    setViewTreeJson(JSON.stringify(viewTree));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nativeRef, nodesKey, renderSequenceKey]);
+  }, [nodesKey, renderSequenceKey]);
 
   const handleEvent = useCallback(
     (name: string, value: string, type: string, id: string) => {
@@ -115,7 +119,15 @@ export const SwiftUIRoot = ({
   );
 
   return (
-    <NativeSwiftUIRootView ref={nativeRef} onEvent={callback(handleEvent)} style={style}>
+    <NativeSwiftUIRootView
+      ref={nativeRef}
+      hybridRef={callback((ref) => {
+        hybridRef.current = ref;
+      })}
+      onEvent={callback(handleEvent)}
+      style={style}
+      viewTree={viewTreeJson}
+    >
       {children}
     </NativeSwiftUIRootView>
   );
