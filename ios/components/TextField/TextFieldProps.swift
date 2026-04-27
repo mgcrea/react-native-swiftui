@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Props
 
-public final class TextFieldProps: ObservableObject, Decodable {
+final class TextFieldProps: ObservableObject, Decodable {
   @Published public var text: String = ""
   @Published public var label: String = ""
   @Published public var labelStyle: StyleProps?

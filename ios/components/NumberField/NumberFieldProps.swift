@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Props
 
-public final class NumberFieldProps: ObservableObject, Decodable {
+final class NumberFieldProps: ObservableObject, Decodable {
   @Published public var value: Double? = nil
   @Published public var label: String = ""
   @Published public var labelStyle: StyleProps?

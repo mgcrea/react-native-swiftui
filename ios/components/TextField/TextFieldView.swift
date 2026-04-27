@@ -2,15 +2,15 @@ import SwiftUI
 
 // MARK: - View
 
-public struct TextFieldView: View {
-  @ObservedObject public var props: TextFieldProps
+struct TextFieldView: View {
+  @ObservedObject var props: TextFieldProps
   @FocusState private var isFocused: Bool
 
-  public init(props: TextFieldProps) {
+  init(props: TextFieldProps) {
     self.props = props
   }
 
-  public var body: some View {
+  var body: some View {
     VStack(alignment: .leading, spacing: 4) {
       if props.label.isEmpty {
         inputField()

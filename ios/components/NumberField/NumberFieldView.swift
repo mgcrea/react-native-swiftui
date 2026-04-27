@@ -2,15 +2,15 @@ import SwiftUI
 
 // MARK: - View
 
-public struct NumberFieldView: View {
-  @ObservedObject public var props: NumberFieldProps
+struct NumberFieldView: View {
+  @ObservedObject var props: NumberFieldProps
   @FocusState private var isFocused: Bool
 
-  public init(props: NumberFieldProps) {
+  init(props: NumberFieldProps) {
     self.props = props
   }
 
-  public var body: some View {
+  var body: some View {
     if props.label.isEmpty {
       inputField()
     } else {
