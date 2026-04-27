@@ -145,7 +145,14 @@ open class HybridSFSymbolViewSpec_cxx {
     }
     @inline(__always)
     set {
-      self.__implementation.size = newValue.value
+      self.__implementation.size = { () -> Double? in
+        if bridge.has_value_std__optional_double_(newValue) {
+          let __unwrapped = bridge.get_std__optional_double_(newValue)
+          return __unwrapped
+        } else {
+          return nil
+        }
+      }()
     }
   }
   
@@ -258,7 +265,14 @@ open class HybridSFSymbolViewSpec_cxx {
     }
     @inline(__always)
     set {
-      self.__implementation.variableValue = newValue.value
+      self.__implementation.variableValue = { () -> Double? in
+        if bridge.has_value_std__optional_double_(newValue) {
+          let __unwrapped = bridge.get_std__optional_double_(newValue)
+          return __unwrapped
+        } else {
+          return nil
+        }
+      }()
     }
   }
   
@@ -308,5 +322,9 @@ open class HybridSFSymbolViewSpec_cxx {
   public final func maybePrepareForRecycle() {
     guard let recyclable = __implementation as? any RecyclableView else { return }
     recyclable.prepareForRecycle()
+  }
+  
+  public final func onDropView() {
+    __implementation.onDropView()
   }
 }

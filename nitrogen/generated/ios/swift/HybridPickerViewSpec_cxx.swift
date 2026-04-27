@@ -368,4 +368,8 @@ open class HybridPickerViewSpec_cxx {
     guard let recyclable = __implementation as? any RecyclableView else { return }
     recyclable.prepareForRecycle()
   }
+  
+  public final func onDropView() {
+    __implementation.onDropView()
+  }
 }

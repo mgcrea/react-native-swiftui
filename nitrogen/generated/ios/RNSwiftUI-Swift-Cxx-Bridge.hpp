@@ -69,7 +69,7 @@ namespace margelo::nitro::rnswiftui::bridge::swift {
     return optional.has_value();
   }
   inline std::string get_std__optional_std__string_(const std::optional<std::string>& optional) noexcept {
-    return *optional;
+    return optional.value();
   }
   
   // pragma MARK: std::vector<PickerViewOption>
@@ -95,7 +95,7 @@ namespace margelo::nitro::rnswiftui::bridge::swift {
     return optional.has_value();
   }
   inline std::vector<PickerViewOption> get_std__optional_std__vector_PickerViewOption__(const std::optional<std::vector<PickerViewOption>>& optional) noexcept {
-    return *optional;
+    return optional.value();
   }
   
   // pragma MARK: std::optional<bool>
@@ -110,7 +110,7 @@ namespace margelo::nitro::rnswiftui::bridge::swift {
     return optional.has_value();
   }
   inline bool get_std__optional_bool_(const std::optional<bool>& optional) noexcept {
-    return *optional;
+    return optional.value();
   }
   
   // pragma MARK: std::function<void(const std::string& /* value */)>
@@ -147,7 +147,7 @@ namespace margelo::nitro::rnswiftui::bridge::swift {
     return optional.has_value();
   }
   inline std::function<void(const std::string& /* value */)> get_std__optional_std__function_void_const_std__string_____value______(const std::optional<std::function<void(const std::string& /* value */)>>& optional) noexcept {
-    return *optional;
+    return optional.value();
   }
   
   // pragma MARK: std::shared_ptr<HybridPickerViewSpec>
@@ -174,7 +174,7 @@ namespace margelo::nitro::rnswiftui::bridge::swift {
     return optional.has_value();
   }
   inline double get_std__optional_double_(const std::optional<double>& optional) noexcept {
-    return *optional;
+    return optional.value();
   }
   
   // pragma MARK: std::vector<std::string>
@@ -200,7 +200,7 @@ namespace margelo::nitro::rnswiftui::bridge::swift {
     return optional.has_value();
   }
   inline std::vector<std::string> get_std__optional_std__vector_std__string__(const std::optional<std::vector<std::string>>& optional) noexcept {
-    return *optional;
+    return optional.value();
   }
   
   // pragma MARK: std::shared_ptr<HybridSFSymbolViewSpec>
@@ -238,7 +238,7 @@ namespace margelo::nitro::rnswiftui::bridge::swift {
     return optional.has_value();
   }
   inline std::vector<SheetPickerViewOption> get_std__optional_std__vector_SheetPickerViewOption__(const std::optional<std::vector<SheetPickerViewOption>>& optional) noexcept {
-    return *optional;
+    return optional.value();
   }
   
   // pragma MARK: std::function<void()>
@@ -275,7 +275,7 @@ namespace margelo::nitro::rnswiftui::bridge::swift {
     return optional.has_value();
   }
   inline std::function<void()> get_std__optional_std__function_void____(const std::optional<std::function<void()>>& optional) noexcept {
-    return *optional;
+    return optional.value();
   }
   
   // pragma MARK: std::shared_ptr<HybridSheetPickerViewSpec>
@@ -336,7 +336,7 @@ namespace margelo::nitro::rnswiftui::bridge::swift {
     return optional.has_value();
   }
   inline std::function<void(const std::string& /* name */, const std::string& /* value */, const std::string& /* type */, const std::string& /* id */)> get_std__optional_std__function_void_const_std__string_____name_____const_std__string_____value_____const_std__string_____type_____const_std__string_____id______(const std::optional<std::function<void(const std::string& /* name */, const std::string& /* value */, const std::string& /* type */, const std::string& /* id */)>>& optional) noexcept {
-    return *optional;
+    return optional.value();
   }
   
   // pragma MARK: std::shared_ptr<HybridSwiftUIRootViewSpec>

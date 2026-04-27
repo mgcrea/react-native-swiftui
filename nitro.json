@@ -9,19 +9,34 @@
   },
   "autolinking": {
     "SFSymbolView": {
-      "swift": "HybridSFSymbolView"
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "HybridSFSymbolView"
+      }
     },
     "PickerView": {
-      "swift": "HybridPickerView"
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "HybridPickerView"
+      }
     },
     "SheetView": {
-      "swift": "HybridSheetView"
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "HybridSheetView"
+      }
     },
     "SheetPickerView": {
-      "swift": "HybridSheetPickerView"
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "HybridSheetPickerView"
+      }
     },
     "SwiftUIRootView": {
-      "swift": "HybridSwiftUIRootView"
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "HybridSwiftUIRootView"
+      }
     }
   },
   "ignorePaths": ["node_modules", "example", ".idea"]

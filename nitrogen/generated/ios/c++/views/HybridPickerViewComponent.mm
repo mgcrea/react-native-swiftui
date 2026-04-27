@@ -17,6 +17,13 @@
 #import "HybridPickerViewSpecSwift.hpp"
 #import "RNSwiftUI-Swift-Cxx-Umbrella.hpp"
 
+#if __has_include(<cxxreact/ReactNativeVersion.h>)
+#include <cxxreact/ReactNativeVersion.h>
+#if REACT_NATIVE_VERSION_MINOR >= 82
+#define ENABLE_RCT_COMPONENT_VIEW_INVALIDATE
+#endif
+#endif
+
 using namespace facebook;
 using namespace margelo::nitro::rnswiftui;
 using namespace margelo::nitro::rnswiftui::views;
@@ -143,5 +150,13 @@ using namespace margelo::nitro::rnswiftui::views;
   RNSwiftUI::HybridPickerViewSpec_cxx& swiftPart = _hybridView->getSwiftPart();
   swiftPart.maybePrepareForRecycle();
 }
+
+#ifdef ENABLE_RCT_COMPONENT_VIEW_INVALIDATE
+- (void)invalidate {
+  RNSwiftUI::HybridPickerViewSpec_cxx& swiftPart = _hybridView->getSwiftPart();
+  swiftPart.onDropView();
+  [super invalidate];
+}
+#endif
 
 @end
