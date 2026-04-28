@@ -6,9 +6,12 @@ import { useDeepMemo } from "./useDeepMemo";
 describe("useDeepMemo", () => {
   describe("reference stability", () => {
     it("should return the same reference for equal objects", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { a: 1, b: 2 } },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { a: 1, b: 2 } },
+        },
+      );
 
       const firstRef = result.current;
       rerender({ obj: { a: 1, b: 2 } });
@@ -17,9 +20,12 @@ describe("useDeepMemo", () => {
     });
 
     it("should return a new reference when object changes", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { a: 1 } },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { a: 1 } },
+        },
+      );
 
       const firstRef = result.current;
       rerender({ obj: { a: 2 } });
@@ -31,9 +37,12 @@ describe("useDeepMemo", () => {
 
   describe("deep equality - primitives", () => {
     it("should detect changes in primitive values", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { str: "hello", num: 42, bool: true } },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { str: "hello", num: 42, bool: true } },
+        },
+      );
 
       const firstRef = result.current;
 
@@ -47,9 +56,12 @@ describe("useDeepMemo", () => {
     });
 
     it("should handle null and undefined values", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { a: null, b: undefined } as Record<string, unknown> },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { a: null, b: undefined } as Record<string, unknown> },
+        },
+      );
 
       const firstRef = result.current;
 
@@ -63,9 +75,12 @@ describe("useDeepMemo", () => {
 
   describe("deep equality - nested objects", () => {
     it("should detect changes in nested objects", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { style: { color: "red", size: 10 } } },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { style: { color: "red", size: 10 } } },
+        },
+      );
 
       const firstRef = result.current;
 
@@ -79,9 +94,12 @@ describe("useDeepMemo", () => {
     });
 
     it("should handle deeply nested objects", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { a: { b: { c: { d: 1 } } } } },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { a: { b: { c: { d: 1 } } } } },
+        },
+      );
 
       const firstRef = result.current;
 
@@ -95,9 +113,12 @@ describe("useDeepMemo", () => {
 
   describe("deep equality - arrays", () => {
     it("should detect changes in arrays", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { items: [1, 2, 3] } },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { items: [1, 2, 3] } },
+        },
+      );
 
       const firstRef = result.current;
 
@@ -111,9 +132,12 @@ describe("useDeepMemo", () => {
     });
 
     it("should detect array length changes", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { items: [1, 2] } },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { items: [1, 2] } },
+        },
+      );
 
       const firstRef = result.current;
 
@@ -122,9 +146,12 @@ describe("useDeepMemo", () => {
     });
 
     it("should handle arrays of objects", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { items: [{ id: 1 }, { id: 2 }] } },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { items: [{ id: 1 }, { id: 2 }] } },
+        },
+      );
 
       const firstRef = result.current;
 
@@ -142,9 +169,12 @@ describe("useDeepMemo", () => {
       const date2 = new Date("2024-01-15T10:00:00Z");
       const date3 = new Date("2024-01-16T10:00:00Z");
 
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { selection: date1 } as Record<string, unknown> },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { selection: date1 } as Record<string, unknown> },
+        },
+      );
 
       const firstRef = result.current;
 
@@ -158,9 +188,12 @@ describe("useDeepMemo", () => {
     });
 
     it("should detect Date vs non-Date", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { value: new Date("2024-01-15") } as Record<string, unknown> },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { value: new Date("2024-01-15") } as Record<string, unknown> },
+        },
+      );
 
       const firstRef = result.current;
 
@@ -172,9 +205,12 @@ describe("useDeepMemo", () => {
 
   describe("key changes", () => {
     it("should detect added keys", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { a: 1 } as Record<string, unknown> },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { a: 1 } as Record<string, unknown> },
+        },
+      );
 
       const firstRef = result.current;
 
@@ -183,9 +219,12 @@ describe("useDeepMemo", () => {
     });
 
     it("should detect removed keys", () => {
-      const { result, rerender } = renderHook(({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj), {
-        initialProps: { obj: { a: 1, b: 2 } as Record<string, unknown> },
-      });
+      const { result, rerender } = renderHook(
+        ({ obj }: { obj: Record<string, unknown> }) => useDeepMemo(obj),
+        {
+          initialProps: { obj: { a: 1, b: 2 } as Record<string, unknown> },
+        },
+      );
 
       const firstRef = result.current;
 
