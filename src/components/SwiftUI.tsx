@@ -135,8 +135,9 @@ export const SwiftUIRoot = ({
 };
 
 export const SwiftUI = ({ children, debug, ...props }: PropsWithChildren<SwiftUIProps>): ReactElement => {
-  // eslint-disable-next-line react-hooks/rules-of-hooks, @typescript-eslint/prefer-nullish-coalescing
-  const id = props.id || `root:${useId()}`;
+  const generatedId = useId();
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const id = props.id || `root:${generatedId}`;
   return (
     <SwiftUIProvider id={id} debug={debug}>
       <SwiftUIParentIdProvider id="__root">

@@ -16,8 +16,9 @@ export function useSwiftUINode<T extends SwiftUINodeProps, U extends SwiftUINode
   const { registerNode, unregisterNode, registerEvents, updateNodeProps, recordRenderOrder } =
     useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
-  // eslint-disable-next-line react-hooks/rules-of-hooks, @typescript-eslint/prefer-nullish-coalescing
-  const id = props.id || `${lowercaseFirstLetter(type)}:${useId()}`;
+  const generatedId = useId();
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const id = props.id || `${lowercaseFirstLetter(type)}:${generatedId}`;
   const isInitialRender = useRef(true);
 
   // Record the render order every render
