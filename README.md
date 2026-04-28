@@ -56,17 +56,26 @@ Try it yourself with the [Rxd AppStore application](https://apps.apple.com/fr/ap
 
 ### Installation
 
+Install the package alongside its required peer, [`react-native-nitro-modules`](https://nitro.margelo.com/):
+
 ```bash
-npm install @mgcrea/react-native-swiftui
+npm install @mgcrea/react-native-swiftui react-native-nitro-modules
 # or
-pnpm add @mgcrea/react-native-swiftui
+pnpm add @mgcrea/react-native-swiftui react-native-nitro-modules
 # or
-yarn add @mgcrea/react-native-swiftui
+yarn add @mgcrea/react-native-swiftui react-native-nitro-modules
+```
+
+Then install the iOS pods:
+
+```bash
+cd ios && pod install
 ```
 
 ### Requirements
 
 - React Native 0.78.0+ (New Architecture required)
+- `react-native-nitro-modules` 0.35+
 - iOS 15.1+
 
 ### Basic Usage
