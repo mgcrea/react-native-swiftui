@@ -17,3 +17,5 @@ link-assets-manifest.json
 AGENTS.md
 CLAUDE.md
 .claude/
+
+buildServer.json
