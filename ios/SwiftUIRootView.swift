@@ -24,7 +24,9 @@ public class SwiftUIRootView: SwiftUIContainerView {
   }
 
   @objc public func updateProps(with newDictionary: [String: Any], oldDictionary _: [String: Any]?) {
-    props.update(with: newDictionary)
+    DispatchQueue.main.async { [weak self] in
+      self?.props.update(with: newDictionary)
+    }
   }
 
   private func updateSwiftUIView(with node: (any SwiftUINode)?) {
@@ -151,103 +153,112 @@ public class SwiftUIRootView: SwiftUIContainerView {
   }
 
   @objc public func updateChildProps(_ identifier: String, props propsJson: String) {
-    guard let node = findNode(withId: identifier, in: props.viewTree) else {
-      print("Node with id \(identifier) not found")
-      return
-    }
-
-    do {
-      let decoder = JSONDecoder()
-      let updatedPropsData = propsJson.data(using: .utf8)!
-      switch node {
-      case let button as GenericNode<ButtonProps>:
-        let updatedProps = try decoder.decode(ButtonProps.self, from: updatedPropsData)
-        button.props.merge(from: updatedProps)
-
-      case let datePicker as GenericNode<DatePickerProps>:
-        let updatedProps = try decoder.decode(DatePickerProps.self, from: updatedPropsData)
-        datePicker.props.merge(from: updatedProps)
-
-      case let stepper as GenericNode<StepperProps>:
-        let updatedProps = try decoder.decode(StepperProps.self, from: updatedPropsData)
-        stepper.props.merge(from: updatedProps)
-
-      case let text as GenericNode<TextProps>:
-        let updatedProps = try decoder.decode(TextProps.self, from: updatedPropsData)
-        text.props.merge(from: updatedProps)
-
-      case let textField as GenericNode<TextFieldProps>:
-        let updatedProps = try decoder.decode(TextFieldProps.self, from: updatedPropsData)
-        textField.props.merge(from: updatedProps)
-
-      case let numberField as GenericNode<NumberFieldProps>:
-        let updatedProps = try decoder.decode(NumberFieldProps.self, from: updatedPropsData)
-        numberField.props.merge(from: updatedProps)
-
-      case let toggle as GenericNode<ToggleProps>:
-        let updatedProps = try decoder.decode(ToggleProps.self, from: updatedPropsData)
-        toggle.props.merge(from: updatedProps)
-
-      case let slider as GenericNode<SliderProps>:
-        let updatedProps = try decoder.decode(SliderProps.self, from: updatedPropsData)
-        slider.props.merge(from: updatedProps)
-
-      case let picker as GenericNode<PickerProps>:
-        let updatedProps = try decoder.decode(PickerProps.self, from: updatedPropsData)
-        picker.props.merge(from: updatedProps)
-      case let sheetPicker as GenericNode<SheetPickerProps>:
-        let updatedProps = try decoder.decode(SheetPickerProps.self, from: updatedPropsData)
-        sheetPicker.props.merge(from: updatedProps)
-
-      case let multiPicker as GenericNode<MultiPickerProps>:
-        let updatedProps = try decoder.decode(MultiPickerProps.self, from: updatedPropsData)
-        multiPicker.props.merge(from: updatedProps)
-
-      case let form as GenericNode<FormProps>:
-        let updatedProps = try decoder.decode(FormProps.self, from: updatedPropsData)
-        form.props.merge(from: updatedProps)
-
-      case let section as GenericNode<SectionProps>:
-        let updatedProps = try decoder.decode(SectionProps.self, from: updatedPropsData)
-        section.props.merge(from: updatedProps)
-
-      case let group as GenericNode<GroupProps>:
-        let updatedProps = try decoder.decode(GroupProps.self, from: updatedPropsData)
-        group.props.merge(from: updatedProps)
-
-      case let hstack as GenericNode<HStackProps>:
-        let updatedProps = try decoder.decode(HStackProps.self, from: updatedPropsData)
-        hstack.props.merge(from: updatedProps)
-
-      case let vstack as GenericNode<VStackProps>:
-        let updatedProps = try decoder.decode(VStackProps.self, from: updatedPropsData)
-        vstack.props.merge(from: updatedProps)
-
-      case let zstack as GenericNode<ZStackProps>:
-        let updatedProps = try decoder.decode(ZStackProps.self, from: updatedPropsData)
-        zstack.props.merge(from: updatedProps)
-
-      case let sheet as GenericNode<SheetProps>:
-        let updatedProps = try decoder.decode(SheetProps.self, from: updatedPropsData)
-        sheet.props.merge(from: updatedProps)
-
-      case let rectangle as GenericNode<RectangleProps>:
-        let updatedProps = try decoder.decode(RectangleProps.self, from: updatedPropsData)
-        rectangle.props.merge(from: updatedProps)
-
-      case let image as GenericNode<ImageProps>:
-        let updatedProps = try decoder.decode(ImageProps.self, from: updatedPropsData)
-        image.props.merge(from: updatedProps)
-
-      case let lazyVGrid as GenericNode<LazyVGridProps>:
-        let updatedProps = try decoder.decode(LazyVGridProps.self, from: updatedPropsData)
-        lazyVGrid.props.merge(from: updatedProps)
-
-      default:
-        print("Unsupported node type for updateChildProps: \(type(of: node))")
+    DispatchQueue.main.async { [weak self] in
+      guard let self = self else { return }
+      guard let node = self.findNode(withId: identifier, in: self.props.viewTree) else {
+        print("Node with id \(identifier) not found")
+        return
       }
-    } catch {
-      print("Failed to decode props for \(identifier): \(error)")
+
+      do {
+        let decoder = JSONDecoder()
+        let updatedPropsData = propsJson.data(using: .utf8)!
+        let presentKeys: Set<String>
+        if let dict = try JSONSerialization.jsonObject(with: updatedPropsData) as? [String: Any] {
+          presentKeys = Set(dict.keys)
+        } else {
+          presentKeys = []
+        }
+        switch node {
+        case let button as GenericNode<ButtonProps>:
+          let updatedProps = try decoder.decode(ButtonProps.self, from: updatedPropsData)
+          button.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let datePicker as GenericNode<DatePickerProps>:
+          let updatedProps = try decoder.decode(DatePickerProps.self, from: updatedPropsData)
+          datePicker.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let stepper as GenericNode<StepperProps>:
+          let updatedProps = try decoder.decode(StepperProps.self, from: updatedPropsData)
+          stepper.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let text as GenericNode<TextProps>:
+          let updatedProps = try decoder.decode(TextProps.self, from: updatedPropsData)
+          text.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let textField as GenericNode<TextFieldProps>:
+          let updatedProps = try decoder.decode(TextFieldProps.self, from: updatedPropsData)
+          textField.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let numberField as GenericNode<NumberFieldProps>:
+          let updatedProps = try decoder.decode(NumberFieldProps.self, from: updatedPropsData)
+          numberField.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let toggle as GenericNode<ToggleProps>:
+          let updatedProps = try decoder.decode(ToggleProps.self, from: updatedPropsData)
+          toggle.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let slider as GenericNode<SliderProps>:
+          let updatedProps = try decoder.decode(SliderProps.self, from: updatedPropsData)
+          slider.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let picker as GenericNode<PickerProps>:
+          let updatedProps = try decoder.decode(PickerProps.self, from: updatedPropsData)
+          picker.props.merge(from: updatedProps, presentKeys: presentKeys)
+        case let sheetPicker as GenericNode<SheetPickerProps>:
+          let updatedProps = try decoder.decode(SheetPickerProps.self, from: updatedPropsData)
+          sheetPicker.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let multiPicker as GenericNode<MultiPickerProps>:
+          let updatedProps = try decoder.decode(MultiPickerProps.self, from: updatedPropsData)
+          multiPicker.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let form as GenericNode<FormProps>:
+          let updatedProps = try decoder.decode(FormProps.self, from: updatedPropsData)
+          form.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let section as GenericNode<SectionProps>:
+          let updatedProps = try decoder.decode(SectionProps.self, from: updatedPropsData)
+          section.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let group as GenericNode<GroupProps>:
+          let updatedProps = try decoder.decode(GroupProps.self, from: updatedPropsData)
+          group.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let hstack as GenericNode<HStackProps>:
+          let updatedProps = try decoder.decode(HStackProps.self, from: updatedPropsData)
+          hstack.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let vstack as GenericNode<VStackProps>:
+          let updatedProps = try decoder.decode(VStackProps.self, from: updatedPropsData)
+          vstack.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let zstack as GenericNode<ZStackProps>:
+          let updatedProps = try decoder.decode(ZStackProps.self, from: updatedPropsData)
+          zstack.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let sheet as GenericNode<SheetProps>:
+          let updatedProps = try decoder.decode(SheetProps.self, from: updatedPropsData)
+          sheet.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let rectangle as GenericNode<RectangleProps>:
+          let updatedProps = try decoder.decode(RectangleProps.self, from: updatedPropsData)
+          rectangle.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let image as GenericNode<ImageProps>:
+          let updatedProps = try decoder.decode(ImageProps.self, from: updatedPropsData)
+          image.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let lazyVGrid as GenericNode<LazyVGridProps>:
+          let updatedProps = try decoder.decode(LazyVGridProps.self, from: updatedPropsData)
+          lazyVGrid.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        default:
+          print("Unsupported node type for updateChildProps: \(type(of: node))")
+        }
+      } catch {
+        print("Failed to decode props for \(identifier): \(error)")
+      }
     }
   }
 
