@@ -25,10 +25,18 @@ public final class LazyVGridProps: ObservableObject, Decodable {
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: LazyVGridProps) {
-    columns = other.columns
-    spacing = other.spacing
-    alignment = other.alignment
-    style = other.style
+  public func merge(from other: LazyVGridProps, presentKeys: Set<String>) {
+    if presentKeys.contains("columns") {
+      columns = other.columns
+    }
+    if presentKeys.contains("spacing") {
+      spacing = other.spacing
+    }
+    if presentKeys.contains("alignment") {
+      alignment = other.alignment
+    }
+    if presentKeys.contains("style") {
+      style = other.style
+    }
   }
 }

@@ -25,8 +25,12 @@ public final class ZStackProps: ObservableObject, Decodable {
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: ZStackProps) {
-    alignment = other.alignment
-    style = other.style
+  public func merge(from other: ZStackProps, presentKeys: Set<String>) {
+    if presentKeys.contains("alignment") {
+      alignment = other.alignment
+    }
+    if presentKeys.contains("style") {
+      style = other.style
+    }
   }
 }

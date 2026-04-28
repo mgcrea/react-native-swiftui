@@ -29,10 +29,18 @@ public final class FormProps: ObservableObject, Decodable {
         contentMargins = try container.decodeIfPresent(ContentMargins.self, forKey: .contentMargins)
     }
 
-    public func merge(from other: FormProps) {
-        style = other.style
-        disabled = other.disabled
-        scrollDisabled = other.scrollDisabled
-        contentMargins = other.contentMargins
+    public func merge(from other: FormProps, presentKeys: Set<String>) {
+        if presentKeys.contains("style") {
+            style = other.style
+        }
+        if presentKeys.contains("disabled") {
+            disabled = other.disabled
+        }
+        if presentKeys.contains("scrollDisabled") {
+            scrollDisabled = other.scrollDisabled
+        }
+        if presentKeys.contains("contentMargins") {
+            contentMargins = other.contentMargins
+        }
     }
 }

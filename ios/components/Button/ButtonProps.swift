@@ -58,10 +58,16 @@ public final class ButtonProps: ObservableObject, Decodable {
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: ButtonProps) {
-    title = other.title
-    buttonStyle = other.buttonStyle
-    style = other.style
+  public func merge(from other: ButtonProps, presentKeys: Set<String>) {
+    if presentKeys.contains("title") {
+      title = other.title
+    }
+    if presentKeys.contains("buttonStyle") {
+      buttonStyle = other.buttonStyle
+    }
+    if presentKeys.contains("style") {
+      style = other.style
+    }
   }
 }
 

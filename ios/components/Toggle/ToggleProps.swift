@@ -20,10 +20,18 @@ public final class ToggleProps: ObservableObject, Decodable {
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
   }
 
-  public func merge(from other: ToggleProps) {
-    isOn = other.isOn
-    label = other.label
-    labelStyle = other.labelStyle
-    disabled = other.disabled
+  public func merge(from other: ToggleProps, presentKeys: Set<String>) {
+    if presentKeys.contains("isOn") {
+      isOn = other.isOn
+    }
+    if presentKeys.contains("label") {
+      label = other.label
+    }
+    if presentKeys.contains("labelStyle") {
+      labelStyle = other.labelStyle
+    }
+    if presentKeys.contains("disabled") {
+      disabled = other.disabled
+    }
   }
 }

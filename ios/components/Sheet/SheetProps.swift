@@ -29,23 +29,23 @@ public final class SheetProps: ObservableObject, Decodable {
 
   public init() {}
 
-  public func merge(from other: SheetProps) {
-    if isPresented != other.isPresented {
+  public func merge(from other: SheetProps, presentKeys: Set<String>) {
+    if presentKeys.contains("isPresented"), isPresented != other.isPresented {
       isPresented = other.isPresented
     }
-    if detents != other.detents {
+    if presentKeys.contains("detents"), detents != other.detents {
       detents = other.detents
     }
-    if title != other.title {
+    if presentKeys.contains("title"), title != other.title {
       title = other.title
     }
-    if message != other.message {
+    if presentKeys.contains("message"), message != other.message {
       message = other.message
     }
-    if primaryButtonTitle != other.primaryButtonTitle {
+    if presentKeys.contains("primaryButtonTitle"), primaryButtonTitle != other.primaryButtonTitle {
       primaryButtonTitle = other.primaryButtonTitle
     }
-    if secondaryButtonTitle != other.secondaryButtonTitle {
+    if presentKeys.contains("secondaryButtonTitle"), secondaryButtonTitle != other.secondaryButtonTitle {
       secondaryButtonTitle = other.secondaryButtonTitle
     }
   }

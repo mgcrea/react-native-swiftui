@@ -30,13 +30,27 @@ public final class StepperProps: ObservableObject, Decodable {
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: StepperProps) {
-    value = other.value
-    label = other.label
-    labelStyle = other.labelStyle
-    minimum = other.minimum
-    maximum = other.maximum
-    step = other.step
-    style = other.style
+  public func merge(from other: StepperProps, presentKeys: Set<String>) {
+    if presentKeys.contains("value") {
+      value = other.value
+    }
+    if presentKeys.contains("label") {
+      label = other.label
+    }
+    if presentKeys.contains("labelStyle") {
+      labelStyle = other.labelStyle
+    }
+    if presentKeys.contains("minimum") {
+      minimum = other.minimum
+    }
+    if presentKeys.contains("maximum") {
+      maximum = other.maximum
+    }
+    if presentKeys.contains("step") {
+      step = other.step
+    }
+    if presentKeys.contains("style") {
+      style = other.style
+    }
   }
 }

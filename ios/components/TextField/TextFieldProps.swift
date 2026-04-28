@@ -92,23 +92,55 @@ final class TextFieldProps: ObservableObject, Decodable {
     return newText
   }
 
-  public func merge(from other: TextFieldProps) {
-    text = other.text
-    label = other.label
-    labelStyle = other.labelStyle
-    placeholder = other.placeholder
-    keyboardType = other.keyboardType
-    textContentType = other.textContentType
-    returnKeyType = other.returnKeyType
-    submitLabel = other.submitLabel
-    autocapitalizationType = other.autocapitalizationType
-    maxLength = other.maxLength
-    secure = other.secure
-    multiline = other.multiline
-    disabled = other.disabled
-    error = other.error
-    helperText = other.helperText
-    style = other.style
+  public func merge(from other: TextFieldProps, presentKeys: Set<String>) {
+    if presentKeys.contains("text") {
+      text = other.text
+    }
+    if presentKeys.contains("label") {
+      label = other.label
+    }
+    if presentKeys.contains("labelStyle") {
+      labelStyle = other.labelStyle
+    }
+    if presentKeys.contains("placeholder") {
+      placeholder = other.placeholder
+    }
+    if presentKeys.contains("keyboardType") {
+      keyboardType = other.keyboardType
+    }
+    if presentKeys.contains("textContentType") {
+      textContentType = other.textContentType
+    }
+    if presentKeys.contains("returnKeyType") {
+      returnKeyType = other.returnKeyType
+    }
+    if presentKeys.contains("submitLabel") {
+      submitLabel = other.submitLabel
+    }
+    if presentKeys.contains("autocapitalizationType") {
+      autocapitalizationType = other.autocapitalizationType
+    }
+    if presentKeys.contains("maxLength") {
+      maxLength = other.maxLength
+    }
+    if presentKeys.contains("secure") {
+      secure = other.secure
+    }
+    if presentKeys.contains("multiline") {
+      multiline = other.multiline
+    }
+    if presentKeys.contains("disabled") {
+      disabled = other.disabled
+    }
+    if presentKeys.contains("error") {
+      error = other.error
+    }
+    if presentKeys.contains("helperText") {
+      helperText = other.helperText
+    }
+    if presentKeys.contains("style") {
+      style = other.style
+    }
   }
 }
 

@@ -67,9 +67,11 @@ class HybridSheetView: HybridSheetViewSpec {
 
     var dict: [String: Any] = [
       "isPresented": isPresented ?? false,
-      "detents": detents ?? [],
     ]
 
+    if let detents = detents {
+      dict["detents"] = detents
+    }
     if let title = title {
       dict["title"] = title
     }

@@ -23,9 +23,15 @@ public final class HStackProps: ObservableObject, Decodable {
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: HStackProps) {
-    alignment = other.alignment
-    spacing = other.spacing
-    style = other.style
+  public func merge(from other: HStackProps, presentKeys: Set<String>) {
+    if presentKeys.contains("alignment") {
+      alignment = other.alignment
+    }
+    if presentKeys.contains("spacing") {
+      spacing = other.spacing
+    }
+    if presentKeys.contains("style") {
+      style = other.style
+    }
   }
 }

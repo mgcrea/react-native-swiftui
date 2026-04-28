@@ -99,13 +99,25 @@ public final class DatePickerProps: ObservableObject, Decodable {
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
   }
 
-  public func merge(from other: DatePickerProps) {
-    selection = other.selection
-    label = other.label
-    labelStyle = other.labelStyle
-    datePickerStyle = other.datePickerStyle
-    displayedComponents = other.displayedComponents
-    disabled = other.disabled
+  public func merge(from other: DatePickerProps, presentKeys: Set<String>) {
+    if presentKeys.contains("selection") {
+      selection = other.selection
+    }
+    if presentKeys.contains("label") {
+      label = other.label
+    }
+    if presentKeys.contains("labelStyle") {
+      labelStyle = other.labelStyle
+    }
+    if presentKeys.contains("datePickerStyle") {
+      datePickerStyle = other.datePickerStyle
+    }
+    if presentKeys.contains("displayedComponents") {
+      displayedComponents = other.displayedComponents
+    }
+    if presentKeys.contains("disabled") {
+      disabled = other.disabled
+    }
   }
 }
 

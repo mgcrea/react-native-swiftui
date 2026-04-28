@@ -147,29 +147,33 @@ public final class PickerProps: ObservableObject, Decodable {
 
   public init() {}
 
-  public func merge(from other: PickerProps) {
-    if options != other.options {
+  public func merge(from other: PickerProps, presentKeys: Set<String>) {
+    if presentKeys.contains("options"), options != other.options {
       options = other.options
     }
-    if selection != other.selection {
+    if presentKeys.contains("selection"), selection != other.selection {
       selection = other.selection
     }
-    if config != other.config {
+    if presentKeys.contains("config"), config != other.config {
       config = other.config
     }
-    if label != other.label {
+    if presentKeys.contains("label"), label != other.label {
       label = other.label
     }
-    labelStyle = other.labelStyle
-    if pickerStyle != other.pickerStyle {
+    if presentKeys.contains("labelStyle") {
+      labelStyle = other.labelStyle
+    }
+    if presentKeys.contains("pickerStyle"), pickerStyle != other.pickerStyle {
       pickerStyle = other.pickerStyle
     }
-    if controlSize != other.controlSize {
+    if presentKeys.contains("controlSize"), controlSize != other.controlSize {
       controlSize = other.controlSize
     }
-    if disabled != other.disabled {
+    if presentKeys.contains("disabled"), disabled != other.disabled {
       disabled = other.disabled
     }
-    style = other.style
+    if presentKeys.contains("style") {
+      style = other.style
+    }
   }
 }

@@ -30,11 +30,21 @@ public final class TextProps: ObservableObject, Decodable {
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: TextProps) {
-    text = other.text
-    font = other.font
-    color = other.color
-    alignment = other.alignment
-    style = other.style
+  public func merge(from other: TextProps, presentKeys: Set<String>) {
+    if presentKeys.contains("text") {
+      text = other.text
+    }
+    if presentKeys.contains("font") {
+      font = other.font
+    }
+    if presentKeys.contains("color") {
+      color = other.color
+    }
+    if presentKeys.contains("alignment") {
+      alignment = other.alignment
+    }
+    if presentKeys.contains("style") {
+      style = other.style
+    }
   }
 }

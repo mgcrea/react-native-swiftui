@@ -78,29 +78,51 @@ final class NumberFieldProps: ObservableObject, Decodable {
     return value
   }
 
-  public func merge(from other: NumberFieldProps) {
-    label = other.label
-    labelStyle = other.labelStyle
-    placeholder = other.placeholder
-    keyboardType = other.keyboardType
-    returnKeyType = other.returnKeyType
-    min = other.min
-    max = other.max
-    disabled = other.disabled
-    formatter = other.formatter
-    style = other.style
-    // Apply clamping after setting min/max
-    if let currentValue = other.value {
-      var clampedValue = currentValue
-      if let minVal = min {
-        clampedValue = Swift.max(clampedValue, minVal)
+  public func merge(from other: NumberFieldProps, presentKeys: Set<String>) {
+    if presentKeys.contains("label") {
+      label = other.label
+    }
+    if presentKeys.contains("labelStyle") {
+      labelStyle = other.labelStyle
+    }
+    if presentKeys.contains("placeholder") {
+      placeholder = other.placeholder
+    }
+    if presentKeys.contains("keyboardType") {
+      keyboardType = other.keyboardType
+    }
+    if presentKeys.contains("returnKeyType") {
+      returnKeyType = other.returnKeyType
+    }
+    if presentKeys.contains("min") {
+      min = other.min
+    }
+    if presentKeys.contains("max") {
+      max = other.max
+    }
+    if presentKeys.contains("disabled") {
+      disabled = other.disabled
+    }
+    if presentKeys.contains("formatter") {
+      formatter = other.formatter
+    }
+    if presentKeys.contains("style") {
+      style = other.style
+    }
+    if presentKeys.contains("value") {
+      // Apply clamping after setting min/max
+      if let currentValue = other.value {
+        var clampedValue = currentValue
+        if let minVal = min {
+          clampedValue = Swift.max(clampedValue, minVal)
+        }
+        if let maxVal = max {
+          clampedValue = Swift.min(clampedValue, maxVal)
+        }
+        value = clampedValue
+      } else {
+        value = other.value
       }
-      if let maxVal = max {
-        clampedValue = Swift.min(clampedValue, maxVal)
-      }
-      value = clampedValue
-    } else {
-      value = other.value
     }
   }
 }

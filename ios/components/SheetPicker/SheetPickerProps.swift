@@ -79,35 +79,35 @@ public final class SheetPickerProps: ObservableObject, Decodable {
 
   public init() {}
 
-  public func merge(from other: SheetPickerProps) {
-    if isPresented != other.isPresented {
+  public func merge(from other: SheetPickerProps, presentKeys: Set<String>) {
+    if presentKeys.contains("isPresented"), isPresented != other.isPresented {
       isPresented = other.isPresented
     }
-    if title != other.title {
+    if presentKeys.contains("title"), title != other.title {
       title = other.title
     }
-    if searchPlaceholder != other.searchPlaceholder {
+    if presentKeys.contains("searchPlaceholder"), searchPlaceholder != other.searchPlaceholder {
       searchPlaceholder = other.searchPlaceholder
     }
-    if selectedValue != other.selectedValue {
+    if presentKeys.contains("selectedValue"), selectedValue != other.selectedValue {
       selectedValue = other.selectedValue
     }
-    if options != other.options {
+    if presentKeys.contains("options"), options != other.options {
       options = other.options
     }
-    if autoDismiss != other.autoDismiss {
+    if presentKeys.contains("autoDismiss"), autoDismiss != other.autoDismiss {
       autoDismiss = other.autoDismiss
     }
-    if label != other.label {
+    if presentKeys.contains("label"), label != other.label {
       label = other.label
     }
-    if placeholder != other.placeholder {
+    if presentKeys.contains("placeholder"), placeholder != other.placeholder {
       placeholder = other.placeholder
     }
-    if disabled != other.disabled {
+    if presentKeys.contains("disabled"), disabled != other.disabled {
       disabled = other.disabled
     }
-    if displayMode != other.displayMode {
+    if presentKeys.contains("displayMode"), displayMode != other.displayMode {
       displayMode = other.displayMode
     }
   }

@@ -44,11 +44,21 @@ public final class ImageProps: ObservableObject, Decodable {
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: ImageProps) {
-    name = other.name
-    sourceUri = other.sourceUri
-    resizeMode = other.resizeMode
-    tintColor = other.tintColor
-    style = other.style
+  public func merge(from other: ImageProps, presentKeys: Set<String>) {
+    if presentKeys.contains("name") {
+      name = other.name
+    }
+    if presentKeys.contains("sourceUri") {
+      sourceUri = other.sourceUri
+    }
+    if presentKeys.contains("resizeMode") {
+      resizeMode = other.resizeMode
+    }
+    if presentKeys.contains("tintColor") {
+      tintColor = other.tintColor
+    }
+    if presentKeys.contains("style") {
+      style = other.style
+    }
   }
 }

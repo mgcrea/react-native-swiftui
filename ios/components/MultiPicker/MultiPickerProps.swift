@@ -88,12 +88,24 @@ public final class MultiPickerProps: ObservableObject, Decodable {
 
   public init() {}
 
-  public func merge(from other: MultiPickerProps) {
-    selections = other.selections
-    components = other.components
-    label = other.label
-    disabled = other.disabled
-    style = other.style
-    normalizeSelectionsToMatchComponents()
+  public func merge(from other: MultiPickerProps, presentKeys: Set<String>) {
+    if presentKeys.contains("selections") {
+      selections = other.selections
+    }
+    if presentKeys.contains("components") {
+      components = other.components
+    }
+    if presentKeys.contains("label") {
+      label = other.label
+    }
+    if presentKeys.contains("disabled") {
+      disabled = other.disabled
+    }
+    if presentKeys.contains("style") {
+      style = other.style
+    }
+    if presentKeys.contains("selections") || presentKeys.contains("components") {
+      normalizeSelectionsToMatchComponents()
+    }
   }
 }

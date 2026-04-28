@@ -12,7 +12,9 @@ public final class GroupProps: ObservableObject, Decodable {
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: GroupProps) {
-    style = other.style
+  public func merge(from other: GroupProps, presentKeys: Set<String>) {
+    if presentKeys.contains("style") {
+      style = other.style
+    }
   }
 }

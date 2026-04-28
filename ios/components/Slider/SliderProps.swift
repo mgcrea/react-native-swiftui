@@ -36,13 +36,27 @@ public final class SliderProps: ObservableObject, Decodable {
     }
   }
 
-  public func merge(from other: SliderProps) {
-    value = other.value
-    minimum = other.minimum
-    maximum = other.maximum
-    step = other.step
-    label = other.label
-    labelStyle = other.labelStyle
-    disabled = other.disabled
+  public func merge(from other: SliderProps, presentKeys: Set<String>) {
+    if presentKeys.contains("minimum") {
+      minimum = other.minimum
+    }
+    if presentKeys.contains("maximum") {
+      maximum = other.maximum
+    }
+    if presentKeys.contains("step") {
+      step = other.step
+    }
+    if presentKeys.contains("label") {
+      label = other.label
+    }
+    if presentKeys.contains("labelStyle") {
+      labelStyle = other.labelStyle
+    }
+    if presentKeys.contains("disabled") {
+      disabled = other.disabled
+    }
+    if presentKeys.contains("value") {
+      value = max(minimum, min(maximum, other.value))
+    }
   }
 }

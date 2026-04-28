@@ -22,10 +22,18 @@ public final class SectionProps: ObservableObject, Decodable {
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: SectionProps) {
-    header = other.header
-    footer = other.footer
-    isCollapsed = other.isCollapsed
-    style = other.style
+  public func merge(from other: SectionProps, presentKeys: Set<String>) {
+    if presentKeys.contains("header") {
+      header = other.header
+    }
+    if presentKeys.contains("footer") {
+      footer = other.footer
+    }
+    if presentKeys.contains("isCollapsed") {
+      isCollapsed = other.isCollapsed
+    }
+    if presentKeys.contains("style") {
+      style = other.style
+    }
   }
 }
