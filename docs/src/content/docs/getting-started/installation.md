@@ -8,8 +8,9 @@ description: How to install and set up React Native SwiftUI in your project
 Before installing, ensure your project meets these requirements:
 
 - **React Native** 0.78 or later (New Architecture enabled)
+- **`react-native-nitro-modules`** 0.36 or later
 - **iOS** 15.1 or later
-- **Node.js** 18 or later
+- **Node.js** 20.19.4 or later
 
 :::note
 This library depends on [Nitro Modules](https://nitro.margelo.com/), which requires the New Architecture. It will not work with the legacy architecture.

@@ -68,7 +68,7 @@ namespace margelo::nitro::rnswiftui::views {
 
   HybridSwiftUIRootViewComponentDescriptor::HybridSwiftUIRootViewComponentDescriptor(const react::ComponentDescriptorParameters& parameters)
     : ConcreteComponentDescriptor(parameters,
-                                  react::RawPropsParser(/* enableJsiParser */ true)) {}
+                                  react::RawPropsParser()) {}
 
   std::shared_ptr<const react::Props> HybridSwiftUIRootViewComponentDescriptor::cloneProps(const react::PropsParserContext& context,
                                                                                            const std::shared_ptr<const react::Props>& props,

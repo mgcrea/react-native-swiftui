@@ -134,7 +134,7 @@ namespace margelo::nitro::rnswiftui::views {
 
   HybridSFSymbolViewComponentDescriptor::HybridSFSymbolViewComponentDescriptor(const react::ComponentDescriptorParameters& parameters)
     : ConcreteComponentDescriptor(parameters,
-                                  react::RawPropsParser(/* enableJsiParser */ true)) {}
+                                  react::RawPropsParser()) {}
 
   std::shared_ptr<const react::Props> HybridSFSymbolViewComponentDescriptor::cloneProps(const react::PropsParserContext& context,
                                                                                         const std::shared_ptr<const react::Props>& props,

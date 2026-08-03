@@ -145,7 +145,7 @@ namespace margelo::nitro::rnswiftui::views {
 
   HybridPickerViewComponentDescriptor::HybridPickerViewComponentDescriptor(const react::ComponentDescriptorParameters& parameters)
     : ConcreteComponentDescriptor(parameters,
-                                  react::RawPropsParser(/* enableJsiParser */ true)) {}
+                                  react::RawPropsParser()) {}
 
   std::shared_ptr<const react::Props> HybridPickerViewComponentDescriptor::cloneProps(const react::PropsParserContext& context,
                                                                                       const std::shared_ptr<const react::Props>& props,

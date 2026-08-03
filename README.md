@@ -75,8 +75,11 @@ cd ios && pod install
 ### Requirements
 
 - React Native 0.78.0+ (New Architecture required)
-- `react-native-nitro-modules` 0.35+
+- `react-native-nitro-modules` 0.36+
 - iOS 15.1+
+- Node.js 20.19.4+
+
+> Built and tested against React Native 0.86.2 and `react-native-nitro-modules` 0.36.5.
 
 ### Basic Usage
 

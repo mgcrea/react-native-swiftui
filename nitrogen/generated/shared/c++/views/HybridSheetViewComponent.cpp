@@ -145,7 +145,7 @@ namespace margelo::nitro::rnswiftui::views {
 
   HybridSheetViewComponentDescriptor::HybridSheetViewComponentDescriptor(const react::ComponentDescriptorParameters& parameters)
     : ConcreteComponentDescriptor(parameters,
-                                  react::RawPropsParser(/* enableJsiParser */ true)) {}
+                                  react::RawPropsParser()) {}
 
   std::shared_ptr<const react::Props> HybridSheetViewComponentDescriptor::cloneProps(const react::PropsParserContext& context,
                                                                                      const std::shared_ptr<const react::Props>& props,
