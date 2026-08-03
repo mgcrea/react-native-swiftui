@@ -25,11 +25,27 @@ public final class SheetContainer: SwiftUIContainerView {
       self?.onSecondaryAction?()
     }
 
+    // Bound to a local before the closure: `SheetStandaloneContentView(props:
+    // self.props)` captured `self` inside an escaping @ViewBuilder stored in
+    // `hostingController.rootView`, which `self` owns — a cycle that leaked the
+    // container. The other three containers already reference `props` directly.
+    let props = props
     hostingController.rootView = AnyView(
       SheetView(props: props) {
-        SheetStandaloneContentView(props: self.props)
+        SheetStandaloneContentView(props: props)
       }
     )
+  }
+
+  @objc
+  public func tearDown() {
+    onDismiss = nil
+    onPrimaryAction = nil
+    onSecondaryAction = nil
+    props.onDismiss = nil
+    props.onPrimaryAction = nil
+    props.onSecondaryAction = nil
+    hostingController.rootView = AnyView(EmptyView())
   }
 
   @objc

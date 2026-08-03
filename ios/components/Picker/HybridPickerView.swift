@@ -81,4 +81,8 @@ class HybridPickerView: HybridPickerViewSpec {
       disabled: disabled ?? false
     )
   }
+
+  func onDropView() {
+    container.onChange = nil
+  }
 }

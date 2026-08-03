@@ -74,4 +74,9 @@ class HybridSheetPickerView: HybridSheetPickerViewSpec {
       options: mappedOptions
     )
   }
+
+  func onDropView() {
+    container.onSelect = nil
+    container.onDismiss = nil
+  }
 }

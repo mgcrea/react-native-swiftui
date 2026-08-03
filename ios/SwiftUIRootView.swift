@@ -31,17 +31,22 @@ public class SwiftUIRootView: SwiftUIContainerView {
 
   private func updateSwiftUIView(with node: (any SwiftUINode)?) {
     hostingController.rootView = AnyView(
-      node.map { AnyView(buildSwiftUIView(from: $0)) } ?? AnyView(Text("Invalid view tree"))
+      node.map { AnyView(Self.buildSwiftUIView(from: $0)) } ?? AnyView(Text("Invalid view tree"))
     )
   }
 
-  private func buildSwiftUIView(from node: any SwiftUINode) -> AnyView {
+  // Static on purpose: this builds escaping @ViewBuilder closures that are stored
+  // in `hostingController.rootView`, and `hostingController` is owned by `self`.
+  // Capturing `self` here (as `self.buildSwiftUIView(from:)` did) closed a
+  // reference cycle that leaked the entire root, its hosting controller and the
+  // whole decoded node tree on every mount. It reads nothing but its argument.
+  private static func buildSwiftUIView(from node: any SwiftUINode) -> AnyView {
     switch node {
     case let group as GenericNode<GroupProps>:
       AnyView(GroupView(props: group.props, content: {
         if let children = group.children {
           ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
+            buildSwiftUIView(from: child)
           }
         }
       }))
@@ -49,7 +54,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(HStackView(props: hstack.props, content: {
         if let children = hstack.children {
           ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
+            buildSwiftUIView(from: child)
           }
         }
       }))
@@ -57,7 +62,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(VStackView(props: vstack.props, content: {
         if let children = vstack.children {
           ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
+            buildSwiftUIView(from: child)
           }
         }
       }))
@@ -65,7 +70,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(ZStackView(props: zstack.props, content: {
         if let children = zstack.children {
           ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
+            buildSwiftUIView(from: child)
           }
         }
       }))
@@ -73,7 +78,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(FormView(props: form.props, content: {
         if let children = form.children {
           ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
+            buildSwiftUIView(from: child)
           }
         }
       }))
@@ -81,7 +86,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(SectionView(props: section.props, content: {
         if let children = section.children {
           ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
+            buildSwiftUIView(from: child)
           }
         }
       }))
@@ -89,7 +94,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(SheetView(props: sheet.props, content: {
         if let children = sheet.children {
           ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
+            buildSwiftUIView(from: child)
           }
         }
       }))
@@ -97,7 +102,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(LazyVGridView(props: lazyVGrid.props, content: {
         if let children = lazyVGrid.children {
           ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
+            buildSwiftUIView(from: child)
           }
         }
       }))
@@ -105,7 +110,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(ButtonView(props: button.props, content: {
         if let children = button.children {
           ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
+            buildSwiftUIView(from: child)
           }
         }
       }))
@@ -113,7 +118,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(StepperView(props: stepper.props, content: {
         if let children = stepper.children {
           ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
+            buildSwiftUIView(from: child)
           }
         }
       }))
@@ -121,7 +126,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
       AnyView(SliderView(props: slider.props, content: {
         if let children = slider.children {
           ForEach(children, id: \.id) { child in
-            self.buildSwiftUIView(from: child)
+            buildSwiftUIView(from: child)
           }
         }
       }))
@@ -286,6 +291,11 @@ public class SwiftUIRootView: SwiftUIContainerView {
   @objc public func tearDown() {
     cancellables.removeAll()
     onEvent = nil
+    props.onEvent = nil
+    // Drops the decoded node tree and any closures the built views hold. Without
+    // this, the rendered tree stays alive for as long as the hosting controller
+    // does, even once React has dropped the view.
+    hostingController.rootView = AnyView(EmptyView())
   }
 
   deinit {

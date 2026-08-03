@@ -87,4 +87,10 @@ class HybridSheetView: HybridSheetViewSpec {
 
     container.updateProps(with: dict, oldDictionary: [:])
   }
+
+  // Only the root hybrid implemented this, so every standalone view kept its
+  // container callbacks and hosting controller alive after React dropped it.
+  func onDropView() {
+    container.tearDown()
+  }
 }
