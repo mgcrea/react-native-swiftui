@@ -10,12 +10,9 @@ dist/
 tmp/
 *.private.tsx
 
-example/
 link-assets-manifest.json
 *.ttf
 
-AGENTS.md
-CLAUDE.md
 .claude/
 
 buildServer.json
