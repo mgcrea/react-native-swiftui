@@ -44,7 +44,7 @@ public final class ButtonProps: ObservableObject, Decodable {
   }
 
   enum CodingKeys: String, CodingKey {
-    case title, style, buttonStyle
+    case title, style, buttonStyle, disabled
   }
 
   public required init(from decoder: Decoder) throws {
@@ -55,6 +55,7 @@ public final class ButtonProps: ObservableObject, Decodable {
     } else {
       buttonStyle = .default
     }
+    disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
@@ -64,6 +65,9 @@ public final class ButtonProps: ObservableObject, Decodable {
     }
     if presentKeys.contains("buttonStyle") {
       buttonStyle = other.buttonStyle
+    }
+    if presentKeys.contains("disabled") {
+      disabled = other.disabled
     }
     if presentKeys.contains("style") {
       style = other.style

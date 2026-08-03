@@ -40,19 +40,20 @@ public final class MultiPickerProps: ObservableObject, Decodable {
     let prefix: String
     let suffix: String
 
+    /// Upper bound on generated options. See `PickerProps.PickerConfig`.
+    private static let maxGeneratedOptions = 10_000
+
     // Generate options based on numeric configuration
     func generateOptions() -> [MultiPickerOption] {
-      var options: [MultiPickerOption] = []
-      var current = min
-
-      while current <= max {
-        let valueString = "\(current)"
-        let labelString = "\(prefix)\(current)\(suffix)"
-        options.append(MultiPickerOption(label: labelString, value: valueString))
-        current += step
+      // See `PickerProps.PickerConfig.generateOptions`: a `step: 0` from JS
+      // previously hung the main thread here.
+      guard step > 0, min <= max else {
+        return []
       }
 
-      return options
+      return stride(from: min, through: max, by: step)
+        .prefix(Self.maxGeneratedOptions)
+        .map { MultiPickerOption(label: "\(prefix)\($0)\(suffix)", value: "\($0)") }
     }
   }
 

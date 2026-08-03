@@ -49,19 +49,24 @@ public final class PickerProps: ObservableObject, Decodable {
     let prefix: String
     let suffix: String
 
+    /// Upper bound on generated options. More entries than this is a bug in the
+    /// caller's config, not something a user can scroll through.
+    private static let maxGeneratedOptions = 10_000
+
     // Generate options based on numeric configuration
     func generateOptions() -> [PickerOption] {
-      var options: [PickerOption] = []
-      var current = min
-
-      while current <= max {
-        let valueString = "\(current)"
-        let labelString = "\(prefix)\(current)\(suffix)"
-        options.append(PickerOption(label: labelString, value: valueString))
-        current += step
+      // `step` arrives from JS unvalidated. The previous
+      // `while current <= max { current += step }` looped forever on the main
+      // thread for `step: 0` (and for any negative step), and allocated without
+      // bound for a large range. `stride` cannot loop forever, and the cap keeps
+      // a huge min/max from exhausting memory.
+      guard step > 0, min <= max else {
+        return []
       }
 
-      return options
+      return stride(from: min, through: max, by: step)
+        .prefix(Self.maxGeneratedOptions)
+        .map { PickerOption(label: "\(prefix)\($0)\(suffix)", value: "\($0)") }
     }
   }
 

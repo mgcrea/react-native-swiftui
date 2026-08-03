@@ -39,7 +39,7 @@ public struct SliderView<Content: View>: View {
       content()
       Slider(
         value: $localValue,
-        in: props.minimum ... props.maximum,
+        in: props.range,
         step: props.step,
         onEditingChanged: { editing in
           isEditing = editing

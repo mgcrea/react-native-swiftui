@@ -37,7 +37,7 @@ public struct StepperView<Content: View>: View {
   private func stepperContent() -> some View {
     Stepper(
       value: $props.value,
-      in: props.minimum ... props.maximum,
+      in: props.range,
       step: props.step
     ) {
       content()

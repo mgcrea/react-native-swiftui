@@ -27,13 +27,19 @@ public final class SliderProps: ObservableObject, Decodable {
     labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
 
-    // Validate ranges
-    if minimum > maximum {
-      throw DecodingError.dataCorruptedError(forKey: .minimum, in: container, debugDescription: "Minimum value must be less than or equal to maximum value")
-    }
-    if value < minimum || value > maximum {
-      value = max(minimum, min(maximum, value))
-    }
+    value = range.clamping(value)
+  }
+
+  /// Always-ordered bounds for `Slider(in:)`, which traps when
+  /// `lowerBound > upperBound`.
+  ///
+  /// `merge` sets `minimum` and `maximum` independently, so an update carrying
+  /// only one of them (`{minimum: 50}` against `maximum: 10`) transiently
+  /// inverts the range. This previously threw during decode instead, which
+  /// failed the *whole* tree in one pass and rendered "Invalid view tree" —
+  /// too large a blast radius for one bad prop, so it normalizes instead.
+  public var range: ClosedRange<Double> {
+    ClosedRange(orderedBounds: minimum, maximum)
   }
 
   public func merge(from other: SliderProps, presentKeys: Set<String>) {
@@ -56,7 +62,8 @@ public final class SliderProps: ObservableObject, Decodable {
       disabled = other.disabled
     }
     if presentKeys.contains("value") {
-      value = max(minimum, min(maximum, other.value))
+      // Clamped against the bounds set above, so one update may carry both.
+      value = range.clamping(other.value)
     }
   }
 }

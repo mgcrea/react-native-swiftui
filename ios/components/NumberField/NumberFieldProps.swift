@@ -54,28 +54,24 @@ final class NumberFieldProps: ObservableObject, Decodable {
     formatter = try container.decodeFormatter(forKey: .formatter)
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
 
-    if let currentValue = value {
-      if max != nil {
-        value = enforceMaxValue(currentValue)
-      }
-      if min != nil {
-        value = enforceMinValue(currentValue)
-      }
-    }
+    value = clamped(value)
   }
 
-  private func enforceMaxValue(_ value: Double) -> Double {
-    if let max = max {
-      return Swift.min(value, max)
+  /// Clamps into the current `min`/`max` bounds. Single implementation shared by
+  /// `init(from:)` and `merge(from:presentKeys:)`, which previously disagreed:
+  /// the init path passed the *unclamped* value into the min step, discarding
+  /// the max clamp entirely (value: 100, min: 0, max: 10 stayed 100).
+  private func clamped(_ value: Double?) -> Double? {
+    guard var result = value else {
+      return nil
     }
-    return value
-  }
-
-  private func enforceMinValue(_ value: Double) -> Double {
     if let min = min {
-      return Swift.max(value, min)
+      result = Swift.max(result, min)
     }
-    return value
+    if let max = max {
+      result = Swift.min(result, max)
+    }
+    return result
   }
 
   public func merge(from other: NumberFieldProps, presentKeys: Set<String>) {
@@ -110,19 +106,9 @@ final class NumberFieldProps: ObservableObject, Decodable {
       style = other.style
     }
     if presentKeys.contains("value") {
-      // Apply clamping after setting min/max
-      if let currentValue = other.value {
-        var clampedValue = currentValue
-        if let minVal = min {
-          clampedValue = Swift.max(clampedValue, minVal)
-        }
-        if let maxVal = max {
-          clampedValue = Swift.min(clampedValue, maxVal)
-        }
-        value = clampedValue
-      } else {
-        value = other.value
-      }
+      // Clamped against the min/max set above, so a single update carrying both
+      // bounds and a value applies them in the right order.
+      value = clamped(other.value)
     }
   }
 }

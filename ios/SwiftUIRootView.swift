@@ -160,9 +160,13 @@ public class SwiftUIRootView: SwiftUIContainerView {
         return
       }
 
+      guard let updatedPropsData = propsJson.data(using: .utf8) else {
+        print("Failed to encode props for \(identifier)")
+        return
+      }
+
       do {
         let decoder = JSONDecoder()
-        let updatedPropsData = propsJson.data(using: .utf8)!
         let presentKeys: Set<String>
         if let dict = try JSONSerialization.jsonObject(with: updatedPropsData) as? [String: Any] {
           presentKeys = Set(dict.keys)
@@ -252,6 +256,10 @@ public class SwiftUIRootView: SwiftUIContainerView {
         case let lazyVGrid as GenericNode<LazyVGridProps>:
           let updatedProps = try decoder.decode(LazyVGridProps.self, from: updatedPropsData)
           lazyVGrid.props.merge(from: updatedProps, presentKeys: presentKeys)
+
+        case let spacer as GenericNode<SpacerProps>:
+          let updatedProps = try decoder.decode(SpacerProps.self, from: updatedPropsData)
+          spacer.props.merge(from: updatedProps, presentKeys: presentKeys)
 
         default:
           print("Unsupported node type for updateChildProps: \(type(of: node))")

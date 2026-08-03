@@ -16,7 +16,9 @@ public final class SpacerProps: ObservableObject, Decodable {
     minLength = try container.decodeIfPresent(CGFloat.self, forKey: .minLength)
   }
 
-  public func merge(from other: SpacerProps) {
-    minLength = other.minLength
+  public func merge(from other: SpacerProps, presentKeys: Set<String>) {
+    if presentKeys.contains("minLength") {
+      minLength = other.minLength
+    }
   }
 }

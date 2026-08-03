@@ -28,12 +28,17 @@ public final class StepperProps: ObservableObject, Decodable {
     maximum = try container.decodeIfPresent(Int.self, forKey: .maximum) ?? 100
     step = try container.decodeIfPresent(Int.self, forKey: .step) ?? 1
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
+
+    value = range.clamping(value)
+  }
+
+  /// Always-ordered bounds for `Stepper(in:)`, which traps when
+  /// `lowerBound > upperBound`. See `SliderProps.range`.
+  public var range: ClosedRange<Int> {
+    ClosedRange(orderedBounds: minimum, maximum)
   }
 
   public func merge(from other: StepperProps, presentKeys: Set<String>) {
-    if presentKeys.contains("value") {
-      value = other.value
-    }
     if presentKeys.contains("label") {
       label = other.label
     }
@@ -51,6 +56,11 @@ public final class StepperProps: ObservableObject, Decodable {
     }
     if presentKeys.contains("style") {
       style = other.style
+    }
+    // Applied last, so an update carrying both bounds and a value clamps
+    // against the new bounds rather than the old ones.
+    if presentKeys.contains("value") {
+      value = range.clamping(other.value)
     }
   }
 }
