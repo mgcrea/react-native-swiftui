@@ -1,0 +1,15 @@
+{
+  // Typecheck-only config covering everything the build config deliberately
+  // leaves out: test files, the jest setup, and the `__mocks__` directory that
+  // has to live at the repo root for jest to substitute it for a node_modules
+  // package. Widening `rootDir` here is safe because nothing is emitted.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "emitDeclarationOnly": false,
+    "declaration": false,
+    "rootDir": "."
+  },
+  "include": ["src", "test", "__mocks__"],
+  "exclude": []
+}

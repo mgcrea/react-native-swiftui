@@ -13,8 +13,14 @@ export function useSwiftUINode<T extends SwiftUINodeProps, U extends SwiftUINode
   props: T,
   events?: U,
 ) {
-  const { registerNode, unregisterNode, registerEvents, updateNodeProps, recordRenderOrder } =
-    useSwiftUIContext();
+  const {
+    registerNode,
+    unregisterNode,
+    registerEvents,
+    unregisterEvents,
+    updateNodeProps,
+    recordRenderOrder,
+  } = useSwiftUIContext();
   const { parentId } = useSwiftUIParentContext();
   const generatedId = useId();
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -40,8 +46,15 @@ export function useSwiftUINode<T extends SwiftUINodeProps, U extends SwiftUINode
     if (events) {
       registerEvents(id, events);
     }
+    // Cleanup lives here rather than in `unregisterNode`: this effect and the
+    // registration effect above have different deps, so a re-parent runs that
+    // one's cleanup without re-running this one. Tearing handlers down there
+    // left them permanently unregistered.
+    return () => {
+      unregisterEvents(id);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, registerEvents, ...eventsKeys, ...eventsValues]);
+  }, [id, registerEvents, unregisterEvents, ...eventsKeys, ...eventsValues]);
 
   const memoizedProps = useDeepMemo(props);
   useEffect(() => {

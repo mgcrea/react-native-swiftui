@@ -12,5 +12,9 @@
       "src/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Build config: emits declarations for the published package only. Tests are
+  // typechecked separately via tsconfig.check.json, which can reach outside
+  // `rootDir` to the jest mocks.
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }

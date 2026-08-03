@@ -75,6 +75,7 @@ export const SwiftUIRoot = ({
     getNodes,
     renderSequence,
     commitRenderSequence,
+    flushPendingProps,
   } = useSwiftUIContext();
 
   const log = useCallback(
@@ -124,6 +125,9 @@ export const SwiftUIRoot = ({
       ref={nativeRef}
       hybridRef={callback((ref) => {
         hybridRef.current = ref;
+        // Nothing re-renders on this assignment, so anything buffered while the
+        // native view was attaching has to be drained here.
+        flushPendingProps();
       })}
       onEvent={callback(handleEvent)}
       style={style}
