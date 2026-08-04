@@ -24,8 +24,13 @@ See the [migration guide](https://mgcrea.github.io/react-native-swiftui/guides/m
 - **ios:** apply text styles on containers, stop color leaking into tint ([14d56733](https://github.com/mgcrea/react-native-swiftui/commit/14d56733517413b3c06605f715bda22095a759d4))
 - **ios:** stop JS-driven updates echoing back as user events ([0517529a](https://github.com/mgcrea/react-native-swiftui/commit/0517529adf9fa69efa55ac31e95ebcb1e8c1f454))
 
+### Performance
+
+- **ios:** look child props up by id instead of walking the tree ([82f36467](https://github.com/mgcrea/react-native-swiftui/commit/82f36467fde5c9229d88ae17532ae289c879ec9b))
+
 ### Refactors
 
+- **ios:** use the supported ForEach form in MultiPicker ([2a009176](https://github.com/mgcrea/react-native-swiftui/commit/2a00917643cd45427f649e6fe2fc64ad2343774a))
 - **js:** factor out the container and parsed-event boilerplate ([7aa72ff6](https://github.com/mgcrea/react-native-swiftui/commit/7aa72ff67bedaaff7621ba3f661a9fc3b1ee0bc4))
 - **ios:** one labeled-content view, and fix the labels it exposed ([b8fd5f19](https://github.com/mgcrea/react-native-swiftui/commit/b8fd5f19e9b5299574f7633b1e0826dec13965a5))
 - **ios:** one merge contract, and stop republishing unchanged props ([e765672c](https://github.com/mgcrea/react-native-swiftui/commit/e765672c973099120b39302e6a05e15b3a059a7b))
