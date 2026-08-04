@@ -33,6 +33,7 @@ public final class SheetPickerProps: ObservableObject, Decodable {
   @Published public var searchPlaceholder: String = "Search"
   @Published public var selectedValue: String = ""
   @Published public var options: [SheetPickerOption] = []
+  /// Live contents of the search field, owned by the view. props-parity:internal
   @Published public var searchText: String = ""
   @Published public var autoDismiss: Bool = true
   @Published public var label: String = ""

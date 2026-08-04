@@ -57,7 +57,12 @@ const parse = (range) => {
         type,
         scope: scope ?? null,
         breaking: Boolean(bang) || Boolean(footer),
-        breakingNote: footer ? footer[1].trim().split(/\n\s*\n/)[0].replace(/\s+/g, " ") : null,
+        breakingNote: footer
+          ? footer[1]
+              .trim()
+              .split(/\n\s*\n/)[0]
+              .replace(/\s+/g, " ")
+          : null,
         description,
         body,
       };
@@ -142,5 +147,10 @@ for (const r of releases) {
   parts.push(text);
 }
 
-process.stdout.write(parts.join("\n").replace(/\n{3,}/g, "\n\n").trimEnd() + "\n");
+process.stdout.write(
+  parts
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trimEnd() + "\n",
+);
 process.stderr.write(`releases: ${releases.length}, entries rendered: ${total}\n`);

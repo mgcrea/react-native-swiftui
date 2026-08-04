@@ -27,11 +27,12 @@
     "nitrogen": "npx nitrogen",
     "changelog": "node scripts/generate-changelog.mjs > CHANGELOG.md",
     "lint": "oxlint --deny-warnings --report-unused-disable-directives src/",
-    "format": "oxfmt --write src/",
-    "format:check": "oxfmt --check src/",
+    "format": "oxfmt --write src/ scripts/",
+    "format:check": "oxfmt --check src/ scripts/",
     "check": "tsc --noEmit -p tsconfig.check.json",
+    "check:props": "node scripts/check-props-parity.mjs",
     "spec": "NODE_OPTIONS=--experimental-require-module jest",
-    "test": "npm run lint && npm run check && npm run spec",
+    "test": "npm run lint && npm run check && npm run check:props && npm run spec",
     "prepare": "npm run build"
   },
   "peerDependencies": {

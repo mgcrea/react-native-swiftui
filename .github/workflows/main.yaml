@@ -43,6 +43,8 @@ jobs:
         run: pnpm run format:check
       - name: TypeScript 🔍
         run: pnpm run check
+      - name: Swift props parity 🔍
+        run: pnpm run check:props
       - name: Jest 🔍
         run: pnpm run spec
   build:

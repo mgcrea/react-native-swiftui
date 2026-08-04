@@ -9,6 +9,7 @@ public final class PickerProps: ObservableObject, Decodable {
   @Published var label: String = ""
   @Published var labelStyle: StyleProps?
   @Published var pickerStyle: PickerStyle = .default
+  /// Set by `PickerContainer`, never sent from JS. props-parity:internal
   @Published var isRootView: Bool = false
   @Published var controlSize: ControlSize?
   @Published var disabled: Bool = false
