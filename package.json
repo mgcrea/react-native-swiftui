@@ -24,7 +24,7 @@
     "install:ios": "cd example; npm run install:ios",
     "open:ios": "cd example; npm run open:ios",
     "nitrogen": "npx nitrogen",
-    "lint": "oxlint src/",
+    "lint": "oxlint --deny-warnings --report-unused-disable-directives src/",
     "format": "oxfmt --write src/",
     "format:check": "oxfmt --check src/",
     "check": "tsc --noEmit -p tsconfig.check.json",

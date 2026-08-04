@@ -70,7 +70,6 @@ export const Picker = <T extends string>({
 
   // Prefer value over selection
   const resolvedSelection = value ?? selection;
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-conversion
   const normalizedSelection = resolvedSelection ? String(resolvedSelection) : undefined;
   const normalizedConfig = useMemo(
     () =>

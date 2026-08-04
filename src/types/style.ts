@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type { ColorValue, StyleProp, TextStyle, ViewStyle } from "react-native";
 
 export type NativeViewStyle = Pick<

@@ -267,7 +267,6 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
   return <SwiftUIContext.Provider value={context}>{children}</SwiftUIContext.Provider>;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useSwiftUIContext = () => {
   const context = useContext(SwiftUIContext);
   if (!context) throw new Error("useSwiftUIContext must be used within a SwiftUIProvider");

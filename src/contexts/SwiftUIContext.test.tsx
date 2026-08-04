@@ -21,7 +21,6 @@ const renderContext = () => {
 };
 
 const attach = (context: SwiftUIContextValue, hybrid: ReturnType<typeof createHybrid>) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   context.hybridRef.current = hybrid as any;
 };
 

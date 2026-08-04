@@ -100,13 +100,15 @@ export const SwiftUIRoot = ({
 
   const [viewTreeJson, setViewTreeJson] = useState<string | undefined>(undefined);
 
-  // Rebuild view tree when nodes or order changes
+  // Rebuild view tree when nodes or order changes. The registry is read through
+  // `getNodes()` inside the effect rather than closing over the value computed
+  // during render, so the dependency list can be honest: the version keys remain
+  // the actual change signal, and everything else here is referentially stable.
   useEffect(() => {
-    const viewTree = buildViewTree(nodes, renderSequence.current);
+    const viewTree = buildViewTree(getNodes(), renderSequence.current);
     log(`updating view tree`, viewTree);
     setViewTreeJson(JSON.stringify(viewTree));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [nodesKey, renderSequenceKey]);
+  }, [nodesKey, renderSequenceKey, getNodes, renderSequence, log]);
 
   const handleEvent = useCallback(
     (name: string, value: string, type: string, id: string) => {
@@ -140,7 +142,6 @@ export const SwiftUIRoot = ({
 
 export const SwiftUI = ({ children, debug, ...props }: PropsWithChildren<SwiftUIProps>): ReactElement => {
   const generatedId = useId();
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
   const id = props.id || `root:${generatedId}`;
   return (
     <SwiftUIProvider id={id} debug={debug}>

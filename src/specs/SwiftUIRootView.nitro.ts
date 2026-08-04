@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
 import type { HybridView, HybridViewMethods, HybridViewProps } from "react-native-nitro-modules";
 
 export interface SwiftUIRootViewProps extends HybridViewProps {

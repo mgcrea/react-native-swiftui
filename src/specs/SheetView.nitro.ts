@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-/* eslint-disable @typescript-eslint/no-empty-object-type */
 import type { HybridView, HybridViewMethods, HybridViewProps } from "react-native-nitro-modules";
 
 export interface SheetViewProps extends HybridViewProps {
