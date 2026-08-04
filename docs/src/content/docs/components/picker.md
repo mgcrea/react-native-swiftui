@@ -37,7 +37,7 @@ const options = [
 | `value` | `string` | - | Currently selected value (preferred) |
 | `selection` | `string` | - | Currently selected value (deprecated, use `value`) |
 | `options` | `readonly { value: string; label: string; icon?: string }[]` | - | Array of options |
-| `config` | `NativePickerConfig` | - | Configuration for numeric pickers |
+| `config` | `PickerConfig` | - | Configuration for numeric pickers |
 | `label` | `string` | - | Label text |
 | `labelStyle` | `StyleProp<NativeTextStyle>` | - | Style for the label text |
 | `pickerStyle` | `"default" \| "inline" \| "menu" \| "segmented" \| "wheel"` | `"default"` | Visual style |

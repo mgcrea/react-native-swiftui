@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { NativeLabelStyleProps, NativeTextStyle, WithId } from "../../types";
-import type { SheetPickerOption } from "../SwiftUISheetPicker";
+import type { NativeLabelStyleProps, NativeTextStyle, SheetPickerOption, WithId } from "../../types";
 
 export type NativeSheetPickerOptionInput = SheetPickerOption | string;
 

@@ -32,7 +32,7 @@ const [isPresented, setIsPresented] = useState(false);
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `isPresented` | `boolean` | `false` | Whether sheet is visible |
-| `detents` | `NativeSheetDetent[]` | - | Sheet height options |
+| `detents` | `SheetDetent[]` | - | Sheet height options |
 | `title` | `string` | - | Sheet title |
 | `message` | `string` | - | Sheet message/subtitle |
 | `primaryButtonTitle` | `string` | - | Primary action button title |

@@ -4,21 +4,12 @@ import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-
 
 import PickerViewConfig from "../../nitrogen/generated/shared/json/PickerViewConfig.json";
 import type { PickerViewMethods, PickerViewProps } from "../specs/PickerView.nitro";
-import type { NativeTextStyle } from "../types";
+import type { ControlSize, NativeTextStyle, PickerOption, PickerStyle } from "../types";
 
 const NativePickerView = getHostComponent<PickerViewProps, PickerViewMethods>(
   "PickerView",
   () => PickerViewConfig as ViewConfig<PickerViewProps>,
 );
-
-export type PickerStyle = "default" | "inline" | "menu" | "segmented" | "wheel";
-export type ControlSize = "mini" | "small" | "regular" | "large" | "extraLarge";
-
-export type PickerOption = {
-  value: string;
-  label?: string;
-  icon?: string;
-};
 
 const DEFAULT_HEIGHTS: Record<PickerStyle, number> = {
   default: 44,
@@ -35,7 +26,9 @@ export type SwiftUIPickerProps = ViewProps & {
   selection?: string;
   label?: string;
   labelColor?: string;
-  options?: PickerOption[];
+  // `readonly` to match the declarative API, which already accepts it. Without
+  // this a caller's `as const` option list is rejected here but fine there.
+  options?: readonly PickerOption[];
   pickerStyle?: PickerStyle;
   controlSize?: ControlSize;
   disabled?: boolean;
@@ -46,13 +39,17 @@ export type SwiftUIPickerProps = ViewProps & {
 };
 
 export const SwiftUIPicker = forwardRef<NativePickerComponentRef, SwiftUIPickerProps>(
-  ({ pickerStyle, style, onChange, onFocus: _onFocus, onBlur: _onBlur, ...restProps }, ref) => {
+  ({ pickerStyle, style, options, onChange, onFocus: _onFocus, onBlur: _onBlur, ...restProps }, ref) => {
     const defaultHeight = DEFAULT_HEIGHTS[pickerStyle ?? "default"];
     const composedStyle: StyleProp<ViewStyle> = [{ minHeight: defaultHeight }, style];
+    // Copied because the generated nitro props type is a mutable array, while the
+    // public prop is readonly so callers can pass an `as const` list.
+    const nativeOptions = options ? [...options] : undefined;
 
     return (
       <NativePickerView
         {...restProps}
+        options={nativeOptions}
         onNativeChange={
           onChange
             ? callback((value: string) => {

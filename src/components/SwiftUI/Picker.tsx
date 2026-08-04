@@ -1,27 +1,18 @@
 import { type ReactNode, useMemo } from "react";
 
 import { useNormalizedStyles, useSwiftUINode, useParsedEvent, castToOptionValue } from "../../hooks";
-import type { NativeLabelStyleProps, NativeTextStyle, NativeTextStyleProps, WithId } from "../../types";
+import type {
+  ControlSize,
+  NativeLabelStyleProps,
+  NativeTextStyle,
+  NativeTextStyleProps,
+  PickerConfig,
+  PickerOption,
+  PickerStyle,
+  WithId,
+} from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/picker
-
-export type NativePickerStyle = "default" | "inline" | "menu" | "segmented" | "wheel";
-
-export type NativeControlSize = "mini" | "small" | "regular" | "large" | "extraLarge";
-
-export type NativePickerOption<T extends string> = {
-  value: T;
-  label: string;
-  icon?: string;
-};
-
-export type NativePickerConfig = {
-  min: number;
-  max: number;
-  step?: number;
-  prefix?: string;
-  suffix?: string;
-};
 
 const DEFAULT_PICKER_CONFIG = {
   min: 0,
@@ -29,18 +20,18 @@ const DEFAULT_PICKER_CONFIG = {
   step: 1,
   prefix: "",
   suffix: "",
-} satisfies NativePickerConfig;
+} satisfies PickerConfig;
 
 export type NativePickerProps<T extends string> = WithId<
   NativeTextStyleProps &
     NativeLabelStyleProps & {
-      options?: readonly NativePickerOption<T>[];
-      config?: NativePickerConfig;
+      options?: readonly PickerOption<T>[];
+      config?: PickerConfig;
       value?: T;
       selection?: T;
       label?: string;
-      pickerStyle?: NativePickerStyle;
-      controlSize?: NativeControlSize;
+      pickerStyle?: PickerStyle;
+      controlSize?: ControlSize;
       disabled?: boolean;
       onChange?: (value: T) => void;
       onFocus?: () => void;

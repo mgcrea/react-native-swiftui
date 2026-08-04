@@ -4,6 +4,7 @@ import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-
 
 import SheetViewConfig from "../../nitrogen/generated/shared/json/SheetViewConfig.json";
 import type { SheetViewMethods, SheetViewProps } from "../specs/SheetView.nitro";
+import type { SheetDetent } from "../types";
 
 const NativeSheetView = getHostComponent<SheetViewProps, SheetViewMethods>(
   "SheetView",
@@ -12,7 +13,7 @@ const NativeSheetView = getHostComponent<SheetViewProps, SheetViewMethods>(
 
 export type SwiftUISheetProps = ViewProps & {
   isPresented?: boolean;
-  detents?: string[];
+  detents?: SheetDetent[];
   title?: string;
   message?: string;
   primaryButtonTitle?: string;

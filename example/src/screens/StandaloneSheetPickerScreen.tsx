@@ -74,7 +74,7 @@ export function StandaloneSheetPickerScreen() {
         options={fruits}
         selectedValue={selectedValue}
         autoDismiss={true}
-        onSelect={setSelectedValue}
+        onChange={setSelectedValue}
         onDismiss={() => setIsPresented(false)}
       />
     </ScreenContainer>

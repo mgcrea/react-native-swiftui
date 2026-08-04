@@ -90,6 +90,8 @@ export default defineConfig({
             { label: "Dynamic Lists", slug: "guides/dynamic-lists" },
             { label: "Styling", slug: "guides/styling" },
             { label: "Event Handling", slug: "guides/event-handling" },
+            { label: "Tailwind", slug: "guides/tailwind" },
+            { label: "Migrating to 0.18", slug: "guides/migrating-to-0-18" },
           ],
         },
         {

@@ -2,15 +2,13 @@ import type { PropsWithChildren } from "react";
 
 import { SwiftUIParentIdProvider } from "../../contexts";
 import { useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId } from "../../types";
+import type { FunctionComponentWithId, SheetDetent } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/view/sheet(ispresented:ondismiss:content:)
 
-export type NativeSheetDetent = "medium" | "large" | `fraction:${number}` | `height:${number}`;
-
 export type NativeSheetProps = {
   isPresented?: boolean;
-  detents?: NativeSheetDetent[];
+  detents?: SheetDetent[];
   title?: string;
   message?: string;
   primaryButtonTitle?: string;

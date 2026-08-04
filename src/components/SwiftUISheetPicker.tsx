@@ -4,25 +4,25 @@ import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-
 
 import SheetPickerViewConfig from "../../nitrogen/generated/shared/json/SheetPickerViewConfig.json";
 import type { SheetPickerViewMethods, SheetPickerViewProps } from "../specs/SheetPickerView.nitro";
+import type { SheetPickerOption } from "../types";
 
 const NativeSheetPickerView = getHostComponent<SheetPickerViewProps, SheetPickerViewMethods>(
   "SheetPickerView",
   () => SheetPickerViewConfig as ViewConfig<SheetPickerViewProps>,
 );
 
-export type SheetPickerOption = {
-  label?: string;
-  value: string;
-};
-
 export type SwiftUISheetPickerProps = ViewProps & {
   isPresented?: boolean;
   title?: string;
   searchPlaceholder?: string;
   selectedValue?: string;
-  options: SheetPickerOption[];
+  options: readonly SheetPickerOption[];
   autoDismiss?: boolean;
-  onSelect?: (value: string) => void;
+  /**
+   * Named `onChange` to match every other component in the library. The nitro
+   * prop underneath is still `onNativeSelect`.
+   */
+  onChange?: (value: string) => void;
   onDismiss?: () => void;
 };
 
@@ -32,9 +32,12 @@ export type SwiftUISheetPickerHandle = {
 };
 
 export const SwiftUISheetPicker = forwardRef<SwiftUISheetPickerHandle, SwiftUISheetPickerProps>(
-  function SwiftUISheetPickerComponent({ onSelect, onDismiss, ...props }, ref) {
+  function SwiftUISheetPickerComponent({ onChange, onDismiss, options, ...props }, ref) {
     const nativeRef = useRef<React.ComponentRef<typeof NativeSheetPickerView>>(null);
     const autoDismiss = props.autoDismiss ?? true;
+    // Copied because the generated nitro props type is a mutable array, while the
+    // public prop is readonly so callers can pass an `as const` list.
+    const nativeOptions = [...options];
 
     useImperativeHandle(ref, () => ({
       present: () => {
@@ -49,14 +52,15 @@ export const SwiftUISheetPicker = forwardRef<SwiftUISheetPickerHandle, SwiftUISh
       <NativeSheetPickerView
         ref={nativeRef}
         onNativeSelect={
-          onSelect
+          onChange
             ? callback((value: string) => {
-                onSelect(value);
+                onChange(value);
               })
             : undefined
         }
         onNativeDismiss={onDismiss ? callback(onDismiss) : undefined}
         {...props}
+        options={nativeOptions}
         autoDismiss={autoDismiss}
       />
     );

@@ -27,7 +27,7 @@ const [isOpen, setIsOpen] = useState(false);
   options={fruits}
   title="Choose a Fruit"
   searchPlaceholder="Search fruits..."
-  onSelect={(value) => setSelected(value)}
+  onChange={(value) => setSelected(value)}
   onDismiss={() => setIsOpen(false)}
 />
 ```
@@ -42,7 +42,7 @@ const pickerRef = useRef<SwiftUISheetPickerHandle>(null);
 <SwiftUISheetPicker
   ref={pickerRef}
   options={options}
-  onSelect={handleSelect}
+  onChange={handleSelect}
 />
 ```
 
@@ -58,7 +58,7 @@ const pickerRef = useRef<SwiftUISheetPickerHandle>(null);
 | `searchPlaceholder` | `string` | - | Search input placeholder |
 | `placeholder` | `string` | - | Value placeholder |
 | `autoDismiss` | `boolean` | `true` | Auto-dismiss after selection |
-| `onSelect` | `(value: string) => void` | - | Selection callback |
+| `onChange` | `(value: string) => void` | - | Selection callback |
 | `onDismiss` | `() => void` | - | Dismiss callback |
 
 ## Ref Handle
@@ -113,7 +113,7 @@ const [showPicker, setShowPicker] = useState(false);
   options={countries}
   title="Select Country"
   searchPlaceholder="Search countries..."
-  onSelect={setCountry}
+  onChange={setCountry}
   onDismiss={() => setShowPicker(false)}
 />
 ```
@@ -143,7 +143,7 @@ const closePicker = () => {
     title="Choose Item"
     searchPlaceholder="Search..."
     autoDismiss={true}
-    onSelect={(value) => {
+    onChange={(value) => {
       setSelected(value);
       console.log('Selected:', value);
     }}
@@ -165,7 +165,7 @@ const [isOpen, setIsOpen] = useState(false);
   selectedValue={selected}
   options={options}
   autoDismiss={false}
-  onSelect={(value) => {
+  onChange={(value) => {
     setSelected(value);
     // Picker stays open
   }}
@@ -198,7 +198,7 @@ const [showStatePicker, setShowStatePicker] = useState(false);
   options={usStates}
   title="Select State"
   searchPlaceholder="Search states..."
-  onSelect={setState}
+  onChange={setState}
   onDismiss={() => setShowStatePicker(false)}
 />
 ```
@@ -217,7 +217,7 @@ const allCities = generateCityList(); // Large array
   options={allCities}
   title="Select City"
   searchPlaceholder="Search cities..."
-  onSelect={setCity}
+  onChange={setCity}
   onDismiss={() => setShowCities(false)}
 />
 ```
@@ -242,7 +242,7 @@ const [showPicker, setShowPicker] = useState(false);
   options={currencies}
   title="Select Currency"
   searchPlaceholder="Search..."
-  onSelect={setCurrency}
+  onChange={setCurrency}
   onDismiss={() => setShowPicker(false)}
 />
 ```
