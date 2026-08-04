@@ -160,7 +160,7 @@ public class SwiftUIRootView: SwiftUIContainerView {
   @objc public func updateChildProps(_ identifier: String, props propsJson: String) {
     DispatchQueue.main.async { [weak self] in
       guard let self = self else { return }
-      guard let node = self.findNode(withId: identifier, in: self.props.viewTree) else {
+      guard let node = self.props.nodeIndex[identifier] else {
         print("Node with id \(identifier) not found")
         return
       }
@@ -275,26 +275,15 @@ public class SwiftUIRootView: SwiftUIContainerView {
     }
   }
 
-  private func findNode(withId id: String, in node: (any SwiftUINode)?) -> (any SwiftUINode)? {
-    guard let node = node else { return nil }
-    if node.id == id { return node }
-    if let children = node.children {
-      for child in children {
-        if let found = findNode(withId: id, in: child) {
-          return found
-        }
-      }
-    }
-    return nil
-  }
-
   @objc public func tearDown() {
+    // Must come first: dropping the tree below republishes `viewTree`, and a
+    // live subscription would rebuild the very views this is tearing down.
     cancellables.removeAll()
     onEvent = nil
-    props.onEvent = nil
-    // Drops the decoded node tree and any closures the built views hold. Without
-    // this, the rendered tree stays alive for as long as the hosting controller
-    // does, even once React has dropped the view.
+    // Drops the decoded node tree, the id index and any closures the built views
+    // hold. Without this, the rendered tree stays alive for as long as the
+    // hosting controller does, even once React has dropped the view.
+    props.tearDown()
     hostingController.rootView = AnyView(EmptyView())
   }
 

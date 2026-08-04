@@ -2,25 +2,40 @@ import SwiftUI
 
 final class SwiftUIRootProps: ObservableObject {
   @Published private(set) var viewTree: (any SwiftUINode)?
-  @Published var pickerSelections: [String: String] = [:]
-  @Published var dateSelections: [String: Date] = [:]
-  @Published var textFieldValues: [String: String] = [:]
+  /// `id` -> node, so `updateChildProps` can look a node up directly. It sits on
+  /// the path of every keystroke, and used to walk the whole tree per update.
+  /// Built on the same recursion that binds the event handlers, so it costs no
+  /// extra traversal, and holds nodes already retained by `viewTree`.
+  private(set) var nodeIndex: [String: any SwiftUINode] = [:]
   public var onEvent: ((String, String, String, String?) -> Void)?
 
   func update(with newDictionary: [String: Any]) {
     if let jsonString = newDictionary["viewTree"] as? String {
       do {
-        viewTree = try decodeSwiftUINode(from: jsonString)
-        bindEventHandlers(from: viewTree)
+        // Wire the tree up before publishing it, so nothing can observe a tree
+        // whose handlers are not yet attached.
+        let decoded = try decodeSwiftUINode(from: jsonString)
+        nodeIndex = [:]
+        indexAndBindEvents(from: decoded)
+        viewTree = decoded
       } catch {
         print("Failed to decode view tree: \(error)")
+        nodeIndex = [:]
         viewTree = nil
       }
     }
   }
 
-  private func bindEventHandlers(from node: (any SwiftUINode)?) {
+  func tearDown() {
+    onEvent = nil
+    nodeIndex = [:]
+    viewTree = nil
+  }
+
+  /// One walk, two jobs: record every node by id and attach its event closures.
+  private func indexAndBindEvents(from node: (any SwiftUINode)?) {
     guard let node = node else { return }
+    nodeIndex[node.id] = node
     if let picker = node as? GenericNode<PickerProps> {
       picker.props.onChange = { [weak self] value in
         self?.onEvent?("change", "Picker", picker.id, value)
@@ -120,7 +135,7 @@ final class SwiftUIRootProps: ObservableObject {
       }
     }
     if let children = node.children {
-      children.forEach { bindEventHandlers(from: $0) }
+      children.forEach { indexAndBindEvents(from: $0) }
     }
   }
 }
