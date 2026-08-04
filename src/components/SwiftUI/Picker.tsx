@@ -1,6 +1,6 @@
 import { type ReactNode, useMemo } from "react";
 
-import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import { useNormalizedStyles, useSwiftUINode, useParsedEvent, castToOptionValue } from "../../hooks";
 import type { NativeLabelStyleProps, NativeTextStyle, NativeTextStyleProps } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/picker
@@ -58,15 +58,8 @@ export const Picker = <T extends string>({
   labelStyle,
   ...otherProps
 }: NativePickerProps<T>): ReactNode => {
-  const onChange = useMemo(
-    () =>
-      onChangeProp
-        ? (val: string) => {
-            onChangeProp(val as T); // Cast string to T
-          }
-        : undefined,
-    [onChangeProp],
-  );
+  // The only "parse" is the T cast; native sends the option's own value back.
+  const onChange = useParsedEvent(castToOptionValue<T>, onChangeProp);
 
   // Prefer value over selection
   const resolvedSelection = value ?? selection;

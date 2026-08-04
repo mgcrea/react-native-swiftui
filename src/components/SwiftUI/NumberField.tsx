@@ -1,6 +1,4 @@
-import { useMemo } from "react";
-
-import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import { useNormalizedStyles, useSwiftUINode, useParsedEvent, parseNumberOrNull } from "../../hooks";
 import type {
   FunctionComponentWithId,
   NativeLabelStyleProps,
@@ -44,16 +42,7 @@ export const NumberField: FunctionComponentWithId<NativeNumberFieldProps> = ({
   labelStyle,
   ...otherProps
 }) => {
-  const onChange = useMemo(
-    () =>
-      onChangeProp
-        ? (date: string) => {
-            const parsedFloat = parseFloat(date);
-            onChangeProp(!isNaN(parsedFloat) ? parsedFloat : null); // Convert string to number
-          }
-        : undefined,
-    [onChangeProp],
-  );
+  const onChange = useParsedEvent(parseNumberOrNull, onChangeProp);
 
   const normalizedStyle = useNormalizedStyles<NativeTextStyle>(style);
   const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);

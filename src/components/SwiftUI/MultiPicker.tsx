@@ -1,6 +1,6 @@
 import { type ReactNode, useMemo } from "react";
 
-import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import { useNormalizedStyles, useSwiftUINode, useParsedEvent, parseJsonArray } from "../../hooks";
 import type { NativeLabelStyleProps, NativeTextStyle, NativeTextStyleProps } from "../../types";
 import { fillArray } from "../../utils";
 
@@ -52,16 +52,7 @@ export const MultiPicker = <T extends string>({
   labelStyle,
   ...otherProps
 }: NativeMultiPickerProps<T>): ReactNode => {
-  const onChange = useMemo(
-    () =>
-      onChangeProp
-        ? (value: string) => {
-            const parsedValue = JSON.parse(value) as T[];
-            onChangeProp(parsedValue);
-          }
-        : undefined,
-    [onChangeProp],
-  );
+  const onChange = useParsedEvent(parseJsonArray<T>, onChangeProp);
 
   // Ensure selections array matches components length by truncating first, then padding
   const normalizedSelections = selections

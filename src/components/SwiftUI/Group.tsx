@@ -1,21 +1,8 @@
-import { type PropsWithChildren } from "react";
+import type { NativeViewStyleProps } from "../../types";
+import { createContainerComponent } from "./createContainerComponent";
 
-import { SwiftUIParentIdProvider } from "../../contexts";
-import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { FunctionComponentWithId, NativeViewStyle, NativeViewStyleProps } from "../../types";
-
-// https://developer.apple.com/documentation/swiftui/form
+// https://developer.apple.com/documentation/swiftui/group
 
 export type NativeGroupProps = NativeViewStyleProps & {};
 
-export const Group: FunctionComponentWithId<PropsWithChildren<NativeGroupProps>> = ({
-  children,
-  style,
-  ...otherProps
-}) => {
-  const normalizedStyles = useNormalizedStyles<NativeViewStyle>(style);
-  const { id } = useSwiftUINode("Group", { style: normalizedStyles, ...otherProps });
-
-  return <SwiftUIParentIdProvider id={id}>{children}</SwiftUIParentIdProvider>;
-};
-Group.displayName = "Group";
+export const Group = createContainerComponent<NativeGroupProps>("Group");

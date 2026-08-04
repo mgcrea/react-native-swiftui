@@ -1,6 +1,4 @@
-import { useMemo } from "react";
-
-import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import { useNormalizedStyles, useSwiftUINode, useParsedEvent, parseDate } from "../../hooks";
 import type { FunctionComponentWithId, NativeLabelStyleProps, NativeTextStyle } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/datepickerstyle
@@ -28,19 +26,7 @@ export const DatePicker: FunctionComponentWithId<NativeDatePickerProps> = ({
   labelStyle,
   ...otherProps
 }) => {
-  const onChange = useMemo(
-    () =>
-      onChangeProp
-        ? (date: string) => {
-            let parsedDate = new Date(date);
-            if (isNaN(parsedDate.getTime())) {
-              parsedDate = new Date();
-            }
-            onChangeProp(parsedDate);
-          }
-        : undefined,
-    [onChangeProp],
-  );
+  const onChange = useParsedEvent(parseDate, onChangeProp);
 
   const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
 

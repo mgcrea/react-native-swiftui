@@ -1,7 +1,7 @@
-import { type PropsWithChildren, useMemo } from "react";
+import { type PropsWithChildren } from "react";
 
 import { SwiftUIParentIdProvider } from "../../contexts";
-import { useDebounce, useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import { useDebounce, useNormalizedStyles, useSwiftUINode, useParsedEvent, parseNumber } from "../../hooks";
 import type { FunctionComponentWithId, NativeLabelStyleProps, NativeTextStyle } from "../../types";
 
 export type NativeSliderProps = NativeLabelStyleProps & {
@@ -25,15 +25,7 @@ export const Slider: FunctionComponentWithId<PropsWithChildren<NativeSliderProps
   labelStyle,
   ...otherProps
 }) => {
-  const onChange = useMemo(
-    () =>
-      onChangeProp
-        ? (value: string) => {
-            onChangeProp(parseFloat(value)); // Cast string to float
-          }
-        : undefined,
-    [onChangeProp],
-  );
+  const onChange = useParsedEvent(parseNumber, onChangeProp);
 
   const debouncedValue = useDebounce(value, 100);
   const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);

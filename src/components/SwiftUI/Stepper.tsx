@@ -1,7 +1,7 @@
-import { type PropsWithChildren, useMemo } from "react";
+import { type PropsWithChildren } from "react";
 
 import { SwiftUIParentIdProvider } from "../../contexts";
-import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import { useNormalizedStyles, useSwiftUINode, useParsedEvent, parseNumber } from "../../hooks";
 import type {
   FunctionComponentWithId,
   NativeLabelStyleProps,
@@ -34,15 +34,7 @@ export const Stepper: FunctionComponentWithId<PropsWithChildren<NativeStepperPro
 }) => {
   const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
   const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
-  const onChange = useMemo(
-    () =>
-      onChangeProp
-        ? (value: string) => {
-            onChangeProp(parseFloat(value)); // Cast string to float
-          }
-        : undefined,
-    [onChangeProp],
-  );
+  const onChange = useParsedEvent(parseNumber, onChangeProp);
 
   const { id } = useSwiftUINode(
     "Stepper",

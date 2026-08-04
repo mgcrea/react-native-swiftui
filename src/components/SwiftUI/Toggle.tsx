@@ -1,6 +1,4 @@
-import { useMemo } from "react";
-
-import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import { useNormalizedStyles, useSwiftUINode, useParsedEvent, parseBoolean } from "../../hooks";
 import type { FunctionComponentWithId, NativeLabelStyleProps, NativeTextStyle } from "../../types";
 
 export type NativeToggleProps = NativeLabelStyleProps & {
@@ -15,15 +13,7 @@ export const Toggle: FunctionComponentWithId<NativeToggleProps> = ({
   labelStyle,
   ...otherProps
 }) => {
-  const onChange = useMemo(
-    () =>
-      onChangeProp
-        ? (value: string) => {
-            onChangeProp(value === "true"); // Cast string to boolean
-          }
-        : undefined,
-    [onChangeProp],
-  );
+  const onChange = useParsedEvent(parseBoolean, onChangeProp);
 
   const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
 
