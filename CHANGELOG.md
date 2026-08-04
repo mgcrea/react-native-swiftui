@@ -6,7 +6,7 @@ Generated from the commit history, which follows
 [Conventional Commits](https://www.conventionalcommits.org/). Chore, docs, style,
 test and CI commits are omitted; see the full log for those.
 
-## 0.18.0 — unreleased
+## [0.18.0](https://github.com/mgcrea/react-native-swiftui/releases/tag/0.18.0) — 2026-08-04
 
 ### ⚠ BREAKING CHANGES
 
