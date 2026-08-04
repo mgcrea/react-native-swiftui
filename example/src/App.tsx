@@ -13,6 +13,7 @@ import { StandaloneSheetPickerScreen } from './screens/StandaloneSheetPickerScre
 import { ReactHookFormScreen } from './screens/ReactHookFormScreen';
 import { TanStackFormScreen } from './screens/TanStackFormScreen';
 import { TextFieldValidationScreen } from './screens/TextFieldValidationScreen';
+import { EdgeCasesScreen } from './screens/EdgeCasesScreen';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -27,6 +28,7 @@ export type RootStackParamList = {
   ReactHookForm: undefined;
   TanStackForm: undefined;
   TextFieldValidation: undefined;
+  EdgeCases: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -46,6 +48,7 @@ const SCREENS: (keyof RootStackParamList)[] = [
   'ReactHookForm',
   'TanStackForm',
   'TextFieldValidation',
+  'EdgeCases',
 ];
 
 const linking: LinkingOptions<RootStackParamList> = {
@@ -121,6 +124,11 @@ function App(): React.JSX.Element {
           name="TextFieldValidation"
           component={TextFieldValidationScreen}
           options={{ title: 'TextField Validation' }}
+        />
+        <Stack.Screen
+          name="EdgeCases"
+          component={EdgeCasesScreen}
+          options={{ title: 'Edge Cases' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

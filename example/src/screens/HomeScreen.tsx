@@ -69,6 +69,11 @@ const examples: ExampleItem[] = [
     title: 'TextField Validation',
     description: 'Error states and helper text',
   },
+  {
+    name: 'EdgeCases',
+    title: 'Edge Cases',
+    description: 'NumberField clamping, inverted bounds, zero step',
+  },
 ];
 
 export function HomeScreen({ navigation }: Props) {
