@@ -15,6 +15,44 @@ const propsSentFor = (id: string) =>
     .map(([, json]) => JSON.parse(json) as Record<string, unknown>);
 
 describe("SwiftUI", () => {
+  // Picker and MultiPicker were the only 2 of 22 components whose props type
+  // omitted `id`. The runtime already carried it through `...otherProps`; the gap
+  // was type-level, so this asserts both halves at once — it would not compile
+  // without the type, and would not pass without the runtime path.
+  it.each([
+    [
+      "Picker",
+      "picker-id",
+      (selection: string) => (
+        <SwiftUI.Picker
+          id="picker-id"
+          selection={selection}
+          options={[
+            { value: "a", label: "A" },
+            { value: "b", label: "B" },
+          ]}
+        />
+      ),
+    ],
+    [
+      "MultiPicker",
+      "multi-id",
+      (selection: string) => (
+        <SwiftUI.MultiPicker id="multi-id" components={[{ options: ["a", "b"] }]} selections={[selection]} />
+      ),
+    ],
+  ])("honours an explicit id on %s", (_name, expectedId, renderWith) => {
+    const { rerender } = render(<SwiftUI>{renderWith("a")}</SwiftUI>);
+    // The prop has to actually change: useDeepMemo short-circuits an identical
+    // re-render, so no update — and no node id — would cross the bridge at all.
+    rerender(<SwiftUI>{renderWith("b")}</SwiftUI>);
+
+    const ids = hybridInstances.flatMap((hybrid) =>
+      hybrid.updateChildProps.mock.calls.map(([nodeId]) => nodeId),
+    );
+    expect(ids).toContain(expectedId);
+  });
+
   it("sends prop updates for a child node across the bridge", () => {
     const { rerender } = render(
       <SwiftUI>

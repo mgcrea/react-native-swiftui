@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from "react";
 
 import { useNormalizedStyles, useSwiftUINode, useParsedEvent, castToOptionValue } from "../../hooks";
-import type { NativeLabelStyleProps, NativeTextStyle, NativeTextStyleProps } from "../../types";
+import type { NativeLabelStyleProps, NativeTextStyle, NativeTextStyleProps, WithId } from "../../types";
 
 // https://developer.apple.com/documentation/swiftui/picker
 
@@ -31,20 +31,22 @@ const DEFAULT_PICKER_CONFIG = {
   suffix: "",
 } satisfies NativePickerConfig;
 
-export type NativePickerProps<T extends string> = NativeTextStyleProps &
-  NativeLabelStyleProps & {
-    options?: readonly NativePickerOption<T>[];
-    config?: NativePickerConfig;
-    value?: T;
-    selection?: T;
-    label?: string;
-    pickerStyle?: NativePickerStyle;
-    controlSize?: NativeControlSize;
-    disabled?: boolean;
-    onChange?: (value: T) => void;
-    onFocus?: () => void;
-    onBlur?: () => void;
-  };
+export type NativePickerProps<T extends string> = WithId<
+  NativeTextStyleProps &
+    NativeLabelStyleProps & {
+      options?: readonly NativePickerOption<T>[];
+      config?: NativePickerConfig;
+      value?: T;
+      selection?: T;
+      label?: string;
+      pickerStyle?: NativePickerStyle;
+      controlSize?: NativeControlSize;
+      disabled?: boolean;
+      onChange?: (value: T) => void;
+      onFocus?: () => void;
+      onBlur?: () => void;
+    }
+>;
 
 export const Picker = <T extends string>({
   value,
