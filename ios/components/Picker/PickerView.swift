@@ -5,9 +5,13 @@ import SwiftUI
 public struct PickerView: View {
   @ObservedObject var props: PickerProps
   @FocusState private var isFocused: Bool
+  /// Bound by the control instead of `props`, so a props-driven update can be
+  /// told apart from a user selection. See `pickerContent()`.
+  @State private var localSelection: String
 
   public init(props: PickerProps, onSelectionChanged _: ((String) -> Void)? = nil) {
     self.props = props
+    _localSelection = State(initialValue: props.selection)
   }
 
   public var body: some View {
@@ -24,7 +28,7 @@ public struct PickerView: View {
   @ViewBuilder
   private func pickerContent() -> some View {
     props.pickerStyle.applyStyle(
-      Picker(selection: $props.selection, label: labelView()) {
+      Picker(selection: $localSelection, label: labelView()) {
         ForEach(props.computedOptions) { option in
           if props.pickerStyle == .segmented, let icon = option.icon {
             Label(option.label, systemImage: icon).tag(option.value)
@@ -36,8 +40,16 @@ public struct PickerView: View {
       .onChange(of: isFocused) { newValue in
         newValue ? props.onFocus?() : props.onBlur?()
       }
-      .onChange(of: props.selection) { newValue in
+      .onChange(of: localSelection) { newValue in
+        // The props observer below assigns local first, so a JS-driven update is
+        // already equal here and emits nothing.
+        guard newValue != props.selection else { return }
+        props.selection = newValue
         props.onChange?(newValue)
+      }
+      .onChange(of: props.selection) { newValue in
+        // Sync only — never emits.
+        localSelection = newValue
       }
     )
     .modifier(ControlSizeModifier(controlSize: props.controlSize))
