@@ -43,8 +43,19 @@ public struct MultiPickerView: View {
           .frame(width: geometry.size.width, height: 33)
 
         HStack(spacing: 0) {
-          ForEach(0 ..< props.components.count, id: \.self) { index in
-            let component = props.components[index]
+          // `ForEach(0..<n)` is documented as valid only for a *constant* range
+          // — it reads the range once and does not identify views across
+          // updates. `components.count` comes from JS and can change, so this
+          // was outside the API contract.
+          //
+          // Note: on iOS 26.5 the range form was measured to behave correctly
+          // here, with no runtime warning, so this is hardening rather than a
+          // fix for an observed symptom. The collection initializer is the
+          // supported way to express a changing count. `\.offset` keeps the
+          // index-based identity `selectionBinding(at:)` relies on, and avoids
+          // the collision `\.element` would cause for two identically
+          // configured components.
+          ForEach(Array(props.components.enumerated()), id: \.offset) { index, component in
             ZStack(alignment: Alignment(horizontal: .trailing, vertical: .center)) {
               if !component.label.isEmpty && !component.computedOptions.isEmpty {
                 Text(component.label)

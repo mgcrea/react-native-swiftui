@@ -17,6 +17,9 @@ import { ScreenContainer } from '../components';
  *   guards the step and returns an empty list.
  * - NumberField clamps to min/max on both the decode and merge paths, which
  *   previously disagreed: `{ value: 100, min: 0, max: 10 }` stayed 100.
+ * - A MultiPicker whose component count changes at runtime hit
+ *   `ForEach(0..<count)`, which SwiftUI only supports for a *constant* range.
+ *   Nothing else varies the count, so the mis-diff never showed up.
  *
  * Every control below should render, stay responsive, and clamp — nothing here
  * should freeze or crash the app.
@@ -26,6 +29,22 @@ const SAFE_CONFIG = { min: 0, max: 50, step: 10, suffix: ' pt' };
 // step: 0 is the hang case; it should yield no options rather than spin.
 const ZERO_STEP_CONFIG = { min: 0, max: 100, step: 0 };
 
+const HOURS = Array.from({ length: 24 }, (_, i) => ({
+  label: `${i}`,
+  value: `${i}`,
+}));
+const MINUTES = Array.from({ length: 60 }, (_, i) => ({
+  label: `${i}`,
+  value: `${i}`,
+}));
+const SECONDS = MINUTES;
+
+const WHEELS = [
+  { label: 'hour', options: HOURS },
+  { label: 'min', options: MINUTES },
+  { label: 'sec', options: SECONDS },
+];
+
 export function EdgeCasesScreen() {
   const [amount, setAmount] = useState<number | null>(5);
   const [inverted, setInverted] = useState(false);
@@ -33,6 +52,8 @@ export function EdgeCasesScreen() {
   const [stepperValue, setStepperValue] = useState(3);
   const [safePick, setSafePick] = useState('10');
   const [zeroStepPick, setZeroStepPick] = useState('');
+  const [wheelCount, setWheelCount] = useState(3);
+  const [duration, setDuration] = useState<string[]>(['1', '30', '45']);
 
   // Flipping this sends minimum > maximum in a single update, which is the
   // merge path that used to trap: init validated the ordering, merge did not.
@@ -108,6 +129,23 @@ export function EdgeCasesScreen() {
               config={ZERO_STEP_CONFIG}
               value={zeroStepPick}
               onChange={setZeroStepPick}
+            />
+          </SwiftUI.Section>
+
+          <SwiftUI.Section
+            header="Varying wheel count"
+            footer={`${wheelCount} wheel(s). Toggling should re-render cleanly and keep each selection on its own wheel.`}>
+            <SwiftUI.Text text={`Selections: ${duration.join(', ')}`} />
+            <SwiftUI.MultiPicker
+              label="Duration"
+              components={WHEELS.slice(0, wheelCount)}
+              selections={duration.slice(0, wheelCount)}
+              onChange={setDuration}
+              style={{ height: 216 }}
+            />
+            <SwiftUI.Button
+              title={wheelCount === 3 ? 'Drop to 2 wheels' : 'Back to 3 wheels'}
+              onPress={() => setWheelCount(c => (c === 3 ? 2 : 3))}
             />
           </SwiftUI.Section>
         </SwiftUI.Form>
