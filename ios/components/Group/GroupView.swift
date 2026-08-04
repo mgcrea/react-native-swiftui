@@ -13,6 +13,6 @@ public struct GroupView<Content: View>: View {
     Group {
       content()
     }
-    .applyViewStyles(props.style)
+    .applyStyles(props.style)
   }
 }

@@ -13,6 +13,6 @@ public struct VStackView<Content: View>: View {
     VStack(alignment: props.alignment, spacing: props.spacing) {
       content()
     }
-    .applyViewStyles(props.style)
+    .applyStyles(props.style)
   }
 }

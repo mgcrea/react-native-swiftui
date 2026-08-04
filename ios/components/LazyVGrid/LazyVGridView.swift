@@ -17,6 +17,6 @@ public struct LazyVGridView<Content: View>: View {
     ) {
       content()
     }
-    .applyViewStyles(props.style)
+    .applyStyles(props.style)
   }
 }

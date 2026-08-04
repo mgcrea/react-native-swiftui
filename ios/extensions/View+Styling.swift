@@ -62,11 +62,11 @@ extension View {
   func applyBoxStyles(_ style: StyleProps?) -> some View {
     guard let style = style else { return AnyView(self) }
 
-    return AnyView(AnyView(applyFrameStyles(style)
-        .modifier(AbsolutePositionModifier(style: style))
-        .applyIf(style.padding != nil) { $0.padding(style.padding!) }
-        .applyIf(style.paddingHorizontal != nil) { $0.padding(.horizontal, style.paddingHorizontal!) }
-        .applyIf(style.paddingVertical != nil) { $0.padding(.vertical, style.paddingVertical!) })
+    return AnyView(applyFrameStyles(style)
+      .modifier(AbsolutePositionModifier(style: style))
+      .applyIf(style.padding != nil) { $0.padding(style.padding!) }
+      .applyIf(style.paddingHorizontal != nil) { $0.padding(.horizontal, style.paddingHorizontal!) }
+      .applyIf(style.paddingVertical != nil) { $0.padding(.vertical, style.paddingVertical!) }
       .applyIf(style.paddingLeft != nil) { $0.padding(.leading, style.paddingLeft!) }
       .applyIf(style.paddingRight != nil) { $0.padding(.trailing, style.paddingRight!) }
       .applyIf(style.paddingTop != nil) { $0.padding(.top, style.paddingTop!) }
@@ -91,17 +91,34 @@ extension View {
                 .stroke(style.borderColor != nil ? Color(value: style.borderColor!) : .black, lineWidth: style.borderWidth!)
             )
           }
-          .applyIf(style.cornerRadius ?? style.borderRadius != nil) {
+          // Parenthesised: `??` binds tighter than `!=`, so this always meant
+          // `(cornerRadius ?? borderRadius) != nil` — correct, but it read like
+          // a precedence bug.
+          .applyIf((style.cornerRadius ?? style.borderRadius) != nil) {
             $0.cornerRadius(style.cornerRadius ?? style.borderRadius ?? 0)
           }
       )
   }
 
   private func applyTextStyles(_ style: StyleProps) -> some View {
-    return applyIf(style.color != nil) { $0.foregroundStyle(Color(value: style.color!)).tint(Color(value: style.color!)) }
-      .applyIf(style.font != nil) { $0.font(style.font!) }
-      .applyIf(style.fontFamily != nil) { $0.font(.custom(style.fontFamily!, size: style.fontSize ?? 17)) }
-      .applyIf(style.fontFamily == nil && style.fontSize != nil) { $0.font(.system(size: style.fontSize!)) }
+    // No `color` handling here: `applyViewStyles` already applies it as
+    // `foregroundStyle`. Doing it again also set `.tint`, so `color: 'red'`
+    // silently recoloured the control tint whenever `tint`/`tintColor` were
+    // absent — which is not what anyone writing a text colour expects.
+    //
+    // Font precedence is spelled out rather than left to SwiftUI's
+    // innermost-modifier-wins ordering. The chained form applied `.font` up to
+    // three times and the winner depended on nesting order, so `font` plus
+    // `fontFamily` silently dropped `fontFamily`.
+    return applyIf(style.font != nil || style.fontFamily != nil || style.fontSize != nil) { view in
+      if let font = style.font {
+        return AnyView(view.font(font))
+      }
+      if let fontFamily = style.fontFamily {
+        return AnyView(view.font(.custom(fontFamily, size: style.fontSize ?? 17)))
+      }
+      return AnyView(view.font(.system(size: style.fontSize!)))
+    }
       .applyIf(style.fontWeight != nil) { view in
         if #available(iOS 16.0, *) {
           return AnyView(view.fontWeight(style.fontWeight!))

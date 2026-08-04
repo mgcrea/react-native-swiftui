@@ -21,6 +21,6 @@ public struct SectionView<Content: View>: View {
         EmptyView() // Hide content when collapsed
       }
     }
-    .applyViewStyles(props.style)
+    .applyStyles(props.style)
   }
 }
