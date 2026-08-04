@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct GridItemConfig: Decodable {
+public struct GridItemConfig: Decodable, Equatable {
   let type: String // "fixed", "flexible", "adaptive"
   let fixed: CGFloat?
   let minimum: CGFloat?

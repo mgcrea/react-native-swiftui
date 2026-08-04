@@ -23,17 +23,9 @@ public final class SectionProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: SectionProps, presentKeys: Set<String>) {
-    if presentKeys.contains("header") {
-      header = other.header
-    }
-    if presentKeys.contains("footer") {
-      footer = other.footer
-    }
-    if presentKeys.contains("isCollapsed") {
-      isCollapsed = other.isCollapsed
-    }
-    if presentKeys.contains("style") {
-      style = other.style
-    }
+    assign(\.header, from: other, key: "header", presentKeys: presentKeys)
+    assign(\.footer, from: other, key: "footer", presentKeys: presentKeys)
+    assign(\.isCollapsed, from: other, key: "isCollapsed", presentKeys: presentKeys)
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
   }
 }

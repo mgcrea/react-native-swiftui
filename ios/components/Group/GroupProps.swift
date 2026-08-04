@@ -13,8 +13,6 @@ public final class GroupProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: GroupProps, presentKeys: Set<String>) {
-    if presentKeys.contains("style") {
-      style = other.style
-    }
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
   }
 }

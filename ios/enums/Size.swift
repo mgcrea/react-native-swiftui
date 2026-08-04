@@ -1,4 +1,4 @@
-public enum Size: Decodable {
+public enum Size: Decodable, Equatable {
   case finite(CGFloat)
   case percentage(Double)
 

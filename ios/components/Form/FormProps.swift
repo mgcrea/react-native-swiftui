@@ -1,7 +1,7 @@
 // FormProps.swift
 import SwiftUI
 
-public struct ContentMargins: Decodable {
+public struct ContentMargins: Decodable, Equatable {
     public var top: CGFloat?
     public var leading: CGFloat?
     public var bottom: CGFloat?
@@ -30,17 +30,9 @@ public final class FormProps: ObservableObject, Decodable {
     }
 
     public func merge(from other: FormProps, presentKeys: Set<String>) {
-        if presentKeys.contains("style") {
-            style = other.style
-        }
-        if presentKeys.contains("disabled") {
-            disabled = other.disabled
-        }
-        if presentKeys.contains("scrollDisabled") {
-            scrollDisabled = other.scrollDisabled
-        }
-        if presentKeys.contains("contentMargins") {
-            contentMargins = other.contentMargins
-        }
+        assign(\.style, from: other, key: "style", presentKeys: presentKeys)
+        assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
+        assign(\.scrollDisabled, from: other, key: "scrollDisabled", presentKeys: presentKeys)
+        assign(\.contentMargins, from: other, key: "contentMargins", presentKeys: presentKeys)
     }
 }

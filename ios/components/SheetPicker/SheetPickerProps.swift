@@ -80,36 +80,16 @@ public final class SheetPickerProps: ObservableObject, Decodable {
   public init() {}
 
   public func merge(from other: SheetPickerProps, presentKeys: Set<String>) {
-    if presentKeys.contains("isPresented"), isPresented != other.isPresented {
-      isPresented = other.isPresented
-    }
-    if presentKeys.contains("title"), title != other.title {
-      title = other.title
-    }
-    if presentKeys.contains("searchPlaceholder"), searchPlaceholder != other.searchPlaceholder {
-      searchPlaceholder = other.searchPlaceholder
-    }
-    if presentKeys.contains("selectedValue"), selectedValue != other.selectedValue {
-      selectedValue = other.selectedValue
-    }
-    if presentKeys.contains("options"), options != other.options {
-      options = other.options
-    }
-    if presentKeys.contains("autoDismiss"), autoDismiss != other.autoDismiss {
-      autoDismiss = other.autoDismiss
-    }
-    if presentKeys.contains("label"), label != other.label {
-      label = other.label
-    }
-    if presentKeys.contains("placeholder"), placeholder != other.placeholder {
-      placeholder = other.placeholder
-    }
-    if presentKeys.contains("disabled"), disabled != other.disabled {
-      disabled = other.disabled
-    }
-    if presentKeys.contains("displayMode"), displayMode != other.displayMode {
-      displayMode = other.displayMode
-    }
+    assign(\.isPresented, from: other, key: "isPresented", presentKeys: presentKeys)
+    assign(\.title, from: other, key: "title", presentKeys: presentKeys)
+    assign(\.searchPlaceholder, from: other, key: "searchPlaceholder", presentKeys: presentKeys)
+    assign(\.selectedValue, from: other, key: "selectedValue", presentKeys: presentKeys)
+    assign(\.options, from: other, key: "options", presentKeys: presentKeys)
+    assign(\.autoDismiss, from: other, key: "autoDismiss", presentKeys: presentKeys)
+    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
+    assign(\.placeholder, from: other, key: "placeholder", presentKeys: presentKeys)
+    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
+    assign(\.displayMode, from: other, key: "displayMode", presentKeys: presentKeys)
   }
 
   public var filteredOptions: [SheetPickerOption] {

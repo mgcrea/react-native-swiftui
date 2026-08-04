@@ -153,32 +153,14 @@ public final class PickerProps: ObservableObject, Decodable {
   public init() {}
 
   public func merge(from other: PickerProps, presentKeys: Set<String>) {
-    if presentKeys.contains("options"), options != other.options {
-      options = other.options
-    }
-    if presentKeys.contains("selection"), selection != other.selection {
-      selection = other.selection
-    }
-    if presentKeys.contains("config"), config != other.config {
-      config = other.config
-    }
-    if presentKeys.contains("label"), label != other.label {
-      label = other.label
-    }
-    if presentKeys.contains("labelStyle") {
-      labelStyle = other.labelStyle
-    }
-    if presentKeys.contains("pickerStyle"), pickerStyle != other.pickerStyle {
-      pickerStyle = other.pickerStyle
-    }
-    if presentKeys.contains("controlSize"), controlSize != other.controlSize {
-      controlSize = other.controlSize
-    }
-    if presentKeys.contains("disabled"), disabled != other.disabled {
-      disabled = other.disabled
-    }
-    if presentKeys.contains("style") {
-      style = other.style
-    }
+    assign(\.options, from: other, key: "options", presentKeys: presentKeys)
+    assign(\.selection, from: other, key: "selection", presentKeys: presentKeys)
+    assign(\.config, from: other, key: "config", presentKeys: presentKeys)
+    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
+    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
+    assign(\.pickerStyle, from: other, key: "pickerStyle", presentKeys: presentKeys)
+    assign(\.controlSize, from: other, key: "controlSize", presentKeys: presentKeys)
+    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
   }
 }

@@ -32,7 +32,9 @@ public final class ImageProps: ObservableObject, Decodable {
   }
 
   enum CodingKeys: String, CodingKey {
-    case name, sourceUri, isSystemImage, resizeMode, tintColor, style
+    // No `isSystemImage`: there is no such property, so the key decoded nothing.
+    // System symbols are selected by a `system:` prefix on `name` (see ImageView).
+    case name, sourceUri, resizeMode, tintColor, style
   }
 
   public required init(from decoder: Decoder) throws {
@@ -45,20 +47,10 @@ public final class ImageProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: ImageProps, presentKeys: Set<String>) {
-    if presentKeys.contains("name") {
-      name = other.name
-    }
-    if presentKeys.contains("sourceUri") {
-      sourceUri = other.sourceUri
-    }
-    if presentKeys.contains("resizeMode") {
-      resizeMode = other.resizeMode
-    }
-    if presentKeys.contains("tintColor") {
-      tintColor = other.tintColor
-    }
-    if presentKeys.contains("style") {
-      style = other.style
-    }
+    assign(\.name, from: other, key: "name", presentKeys: presentKeys)
+    assign(\.sourceUri, from: other, key: "sourceUri", presentKeys: presentKeys)
+    assign(\.resizeMode, from: other, key: "resizeMode", presentKeys: presentKeys)
+    assign(\.tintColor, from: other, key: "tintColor", presentKeys: presentKeys)
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
   }
 }

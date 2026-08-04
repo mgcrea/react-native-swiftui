@@ -100,24 +100,12 @@ public final class DatePickerProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: DatePickerProps, presentKeys: Set<String>) {
-    if presentKeys.contains("selection") {
-      selection = other.selection
-    }
-    if presentKeys.contains("label") {
-      label = other.label
-    }
-    if presentKeys.contains("labelStyle") {
-      labelStyle = other.labelStyle
-    }
-    if presentKeys.contains("datePickerStyle") {
-      datePickerStyle = other.datePickerStyle
-    }
-    if presentKeys.contains("displayedComponents") {
-      displayedComponents = other.displayedComponents
-    }
-    if presentKeys.contains("disabled") {
-      disabled = other.disabled
-    }
+    assign(\.selection, from: other, key: "selection", presentKeys: presentKeys)
+    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
+    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
+    assign(\.datePickerStyle, from: other, key: "datePickerStyle", presentKeys: presentKeys)
+    assign(\.displayedComponents, from: other, key: "displayedComponents", presentKeys: presentKeys)
+    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
   }
 }
 

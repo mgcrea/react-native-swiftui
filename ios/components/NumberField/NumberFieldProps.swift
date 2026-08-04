@@ -75,41 +75,19 @@ final class NumberFieldProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: NumberFieldProps, presentKeys: Set<String>) {
-    if presentKeys.contains("label") {
-      label = other.label
-    }
-    if presentKeys.contains("labelStyle") {
-      labelStyle = other.labelStyle
-    }
-    if presentKeys.contains("placeholder") {
-      placeholder = other.placeholder
-    }
-    if presentKeys.contains("keyboardType") {
-      keyboardType = other.keyboardType
-    }
-    if presentKeys.contains("returnKeyType") {
-      returnKeyType = other.returnKeyType
-    }
-    if presentKeys.contains("min") {
-      min = other.min
-    }
-    if presentKeys.contains("max") {
-      max = other.max
-    }
-    if presentKeys.contains("disabled") {
-      disabled = other.disabled
-    }
-    if presentKeys.contains("formatter") {
-      formatter = other.formatter
-    }
-    if presentKeys.contains("style") {
-      style = other.style
-    }
-    if presentKeys.contains("value") {
-      // Clamped against the min/max set above, so a single update carrying both
-      // bounds and a value applies them in the right order.
-      value = clamped(other.value)
-    }
+    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
+    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
+    assign(\.placeholder, from: other, key: "placeholder", presentKeys: presentKeys)
+    assign(\.keyboardType, from: other, key: "keyboardType", presentKeys: presentKeys)
+    assign(\.returnKeyType, from: other, key: "returnKeyType", presentKeys: presentKeys)
+    assign(\.min, from: other, key: "min", presentKeys: presentKeys)
+    assign(\.max, from: other, key: "max", presentKeys: presentKeys)
+    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
+    assign(\.formatter, from: other, key: "formatter", presentKeys: presentKeys)
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
+    // Clamped against the min/max set above, so a single update carrying both
+    // bounds and a value applies them in the right order.
+    assign(\.value, to: clamped(other.value), key: "value", presentKeys: presentKeys)
   }
 }
 

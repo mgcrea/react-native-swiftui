@@ -1,16 +1,16 @@
 import Foundation
 
-public enum ColorValue: Decodable {
+public enum ColorValue: Decodable, Equatable {
   case string(String)
   case semantic(SemanticColor)
   case dynamic(DynamicColor)
 
   // Represents a semantic color, e.g., {"semantic": ["systemGreen"]}
-  public struct SemanticColor: Decodable {
+  public struct SemanticColor: Decodable, Equatable {
     let semantic: [String]
   }
 
-  public enum ColorVariant: Decodable {
+  public enum ColorVariant: Decodable, Equatable {
     case string(String)
     case semantic(SemanticColor)
 
@@ -27,7 +27,7 @@ public enum ColorValue: Decodable {
   }
 
   // Represents the light/dark pair, e.g., {"light": {...}, "dark": {...}}
-  public struct DynamicColor: Decodable {
+  public struct DynamicColor: Decodable, Equatable {
     let light: ColorVariant
     let dark: ColorVariant
   }

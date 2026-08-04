@@ -111,11 +111,6 @@ private struct NodeWrapper: Decodable {
 }
 
 // Empty props for components like Group that have no props
-final class EmptyProps: ObservableObject, Decodable {
-  init() {}
-  func merge(from _: EmptyProps) {}
-}
-
 // JSON decoding utility
 enum JSONDecodingError: Error {
   case invalidJSON

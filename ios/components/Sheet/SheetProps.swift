@@ -30,24 +30,12 @@ public final class SheetProps: ObservableObject, Decodable {
   public init() {}
 
   public func merge(from other: SheetProps, presentKeys: Set<String>) {
-    if presentKeys.contains("isPresented"), isPresented != other.isPresented {
-      isPresented = other.isPresented
-    }
-    if presentKeys.contains("detents"), detents != other.detents {
-      detents = other.detents
-    }
-    if presentKeys.contains("title"), title != other.title {
-      title = other.title
-    }
-    if presentKeys.contains("message"), message != other.message {
-      message = other.message
-    }
-    if presentKeys.contains("primaryButtonTitle"), primaryButtonTitle != other.primaryButtonTitle {
-      primaryButtonTitle = other.primaryButtonTitle
-    }
-    if presentKeys.contains("secondaryButtonTitle"), secondaryButtonTitle != other.secondaryButtonTitle {
-      secondaryButtonTitle = other.secondaryButtonTitle
-    }
+    assign(\.isPresented, from: other, key: "isPresented", presentKeys: presentKeys)
+    assign(\.detents, from: other, key: "detents", presentKeys: presentKeys)
+    assign(\.title, from: other, key: "title", presentKeys: presentKeys)
+    assign(\.message, from: other, key: "message", presentKeys: presentKeys)
+    assign(\.primaryButtonTitle, from: other, key: "primaryButtonTitle", presentKeys: presentKeys)
+    assign(\.secondaryButtonTitle, from: other, key: "secondaryButtonTitle", presentKeys: presentKeys)
   }
 
   // Helper to convert to PresentationDetent on iOS 16+

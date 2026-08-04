@@ -26,11 +26,7 @@ public final class ZStackProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: ZStackProps, presentKeys: Set<String>) {
-    if presentKeys.contains("alignment") {
-      alignment = other.alignment
-    }
-    if presentKeys.contains("style") {
-      style = other.style
-    }
+    assign(\.alignment, from: other, key: "alignment", presentKeys: presentKeys)
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
   }
 }

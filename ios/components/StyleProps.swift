@@ -1,6 +1,11 @@
 import SwiftUI
 
-public struct StyleProps: Decodable {
+/// `Equatable` so `merge(from:presentKeys:)` can skip assigning an unchanged
+/// value. Without it, every prop update carrying a `style` key republished the
+/// `@Published` property and re-rendered the subtree even when nothing changed —
+/// and it blocked a uniform compare-before-assign guard in every props class,
+/// which is what let JS-driven updates echo back to JS as `onChange`.
+public struct StyleProps: Decodable, Equatable {
   // ViewStyle
   public var color: ColorValue? // alias for foregroundColor
   public var accentColor: ColorValue?

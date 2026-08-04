@@ -43,27 +43,13 @@ public final class SliderProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: SliderProps, presentKeys: Set<String>) {
-    if presentKeys.contains("minimum") {
-      minimum = other.minimum
-    }
-    if presentKeys.contains("maximum") {
-      maximum = other.maximum
-    }
-    if presentKeys.contains("step") {
-      step = other.step
-    }
-    if presentKeys.contains("label") {
-      label = other.label
-    }
-    if presentKeys.contains("labelStyle") {
-      labelStyle = other.labelStyle
-    }
-    if presentKeys.contains("disabled") {
-      disabled = other.disabled
-    }
-    if presentKeys.contains("value") {
-      // Clamped against the bounds set above, so one update may carry both.
-      value = range.clamping(other.value)
-    }
+    assign(\.minimum, from: other, key: "minimum", presentKeys: presentKeys)
+    assign(\.maximum, from: other, key: "maximum", presentKeys: presentKeys)
+    assign(\.step, from: other, key: "step", presentKeys: presentKeys)
+    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
+    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
+    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
+    // Clamped against the bounds set above, so one update may carry both.
+    assign(\.value, to: range.clamping(other.value), key: "value", presentKeys: presentKeys)
   }
 }

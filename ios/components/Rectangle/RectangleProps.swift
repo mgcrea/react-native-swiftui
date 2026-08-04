@@ -17,8 +17,6 @@ public final class RectangleProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: RectangleProps, presentKeys: Set<String>) {
-    if presentKeys.contains("style") {
-      style = other.style
-    }
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
   }
 }

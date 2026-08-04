@@ -26,17 +26,9 @@ public final class LazyVGridProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: LazyVGridProps, presentKeys: Set<String>) {
-    if presentKeys.contains("columns") {
-      columns = other.columns
-    }
-    if presentKeys.contains("spacing") {
-      spacing = other.spacing
-    }
-    if presentKeys.contains("alignment") {
-      alignment = other.alignment
-    }
-    if presentKeys.contains("style") {
-      style = other.style
-    }
+    assign(\.columns, from: other, key: "columns", presentKeys: presentKeys)
+    assign(\.spacing, from: other, key: "spacing", presentKeys: presentKeys)
+    assign(\.alignment, from: other, key: "alignment", presentKeys: presentKeys)
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
   }
 }

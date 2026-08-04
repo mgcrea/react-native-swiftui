@@ -31,18 +31,6 @@ public final class SFSymbolProps: ObservableObject, Decodable {
     colors = try container.decodeIfPresent([String].self, forKey: .colors)
   }
 
-  public func merge(from other: SFSymbolProps) {
-    name = other.name
-    size = other.size
-    textStyle = other.textStyle
-    weight = other.weight
-    scale = other.scale
-    renderingMode = other.renderingMode
-    resizeMode = other.resizeMode
-    variableValue = other.variableValue
-    colors = other.colors
-  }
-
   // MARK: - Computed Properties for SwiftUI
 
   var fontValue: Font {

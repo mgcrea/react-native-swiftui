@@ -60,18 +60,10 @@ public final class ButtonProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: ButtonProps, presentKeys: Set<String>) {
-    if presentKeys.contains("title") {
-      title = other.title
-    }
-    if presentKeys.contains("buttonStyle") {
-      buttonStyle = other.buttonStyle
-    }
-    if presentKeys.contains("disabled") {
-      disabled = other.disabled
-    }
-    if presentKeys.contains("style") {
-      style = other.style
-    }
+    assign(\.title, from: other, key: "title", presentKeys: presentKeys)
+    assign(\.buttonStyle, from: other, key: "buttonStyle", presentKeys: presentKeys)
+    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
   }
 }
 

@@ -21,17 +21,9 @@ public final class ToggleProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: ToggleProps, presentKeys: Set<String>) {
-    if presentKeys.contains("isOn") {
-      isOn = other.isOn
-    }
-    if presentKeys.contains("label") {
-      label = other.label
-    }
-    if presentKeys.contains("labelStyle") {
-      labelStyle = other.labelStyle
-    }
-    if presentKeys.contains("disabled") {
-      disabled = other.disabled
-    }
+    assign(\.isOn, from: other, key: "isOn", presentKeys: presentKeys)
+    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
+    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
+    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
   }
 }

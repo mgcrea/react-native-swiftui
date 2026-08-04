@@ -39,28 +39,14 @@ public final class StepperProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: StepperProps, presentKeys: Set<String>) {
-    if presentKeys.contains("label") {
-      label = other.label
-    }
-    if presentKeys.contains("labelStyle") {
-      labelStyle = other.labelStyle
-    }
-    if presentKeys.contains("minimum") {
-      minimum = other.minimum
-    }
-    if presentKeys.contains("maximum") {
-      maximum = other.maximum
-    }
-    if presentKeys.contains("step") {
-      step = other.step
-    }
-    if presentKeys.contains("style") {
-      style = other.style
-    }
+    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
+    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
+    assign(\.minimum, from: other, key: "minimum", presentKeys: presentKeys)
+    assign(\.maximum, from: other, key: "maximum", presentKeys: presentKeys)
+    assign(\.step, from: other, key: "step", presentKeys: presentKeys)
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
     // Applied last, so an update carrying both bounds and a value clamps
     // against the new bounds rather than the old ones.
-    if presentKeys.contains("value") {
-      value = range.clamping(other.value)
-    }
+    assign(\.value, to: range.clamping(other.value), key: "value", presentKeys: presentKeys)
   }
 }

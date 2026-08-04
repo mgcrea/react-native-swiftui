@@ -31,20 +31,10 @@ public final class TextProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: TextProps, presentKeys: Set<String>) {
-    if presentKeys.contains("text") {
-      text = other.text
-    }
-    if presentKeys.contains("font") {
-      font = other.font
-    }
-    if presentKeys.contains("color") {
-      color = other.color
-    }
-    if presentKeys.contains("alignment") {
-      alignment = other.alignment
-    }
-    if presentKeys.contains("style") {
-      style = other.style
-    }
+    assign(\.text, from: other, key: "text", presentKeys: presentKeys)
+    assign(\.font, from: other, key: "font", presentKeys: presentKeys)
+    assign(\.color, from: other, key: "color", presentKeys: presentKeys)
+    assign(\.alignment, from: other, key: "alignment", presentKeys: presentKeys)
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
   }
 }

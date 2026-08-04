@@ -17,8 +17,6 @@ public final class SpacerProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: SpacerProps, presentKeys: Set<String>) {
-    if presentKeys.contains("minLength") {
-      minLength = other.minLength
-    }
+    assign(\.minLength, from: other, key: "minLength", presentKeys: presentKeys)
   }
 }

@@ -93,54 +93,27 @@ final class TextFieldProps: ObservableObject, Decodable {
   }
 
   public func merge(from other: TextFieldProps, presentKeys: Set<String>) {
-    if presentKeys.contains("text") {
-      text = other.text
-    }
-    if presentKeys.contains("label") {
-      label = other.label
-    }
-    if presentKeys.contains("labelStyle") {
-      labelStyle = other.labelStyle
-    }
-    if presentKeys.contains("placeholder") {
-      placeholder = other.placeholder
-    }
-    if presentKeys.contains("keyboardType") {
-      keyboardType = other.keyboardType
-    }
-    if presentKeys.contains("textContentType") {
-      textContentType = other.textContentType
-    }
-    if presentKeys.contains("returnKeyType") {
-      returnKeyType = other.returnKeyType
-    }
+    assign(\.text, from: other, key: "text", presentKeys: presentKeys)
+    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
+    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
+    assign(\.placeholder, from: other, key: "placeholder", presentKeys: presentKeys)
+    assign(\.keyboardType, from: other, key: "keyboardType", presentKeys: presentKeys)
+    assign(\.textContentType, from: other, key: "textContentType", presentKeys: presentKeys)
+    assign(\.returnKeyType, from: other, key: "returnKeyType", presentKeys: presentKeys)
+    // SwiftUI's `SubmitLabel` is an opaque struct with no public members and no
+    // `Equatable` conformance, so this one cannot compare before assigning and
+    // stays unconditional. It drives no `onChange`, so it cannot echo.
     if presentKeys.contains("submitLabel") {
       submitLabel = other.submitLabel
     }
-    if presentKeys.contains("autocapitalizationType") {
-      autocapitalizationType = other.autocapitalizationType
-    }
-    if presentKeys.contains("maxLength") {
-      maxLength = other.maxLength
-    }
-    if presentKeys.contains("secure") {
-      secure = other.secure
-    }
-    if presentKeys.contains("multiline") {
-      multiline = other.multiline
-    }
-    if presentKeys.contains("disabled") {
-      disabled = other.disabled
-    }
-    if presentKeys.contains("error") {
-      error = other.error
-    }
-    if presentKeys.contains("helperText") {
-      helperText = other.helperText
-    }
-    if presentKeys.contains("style") {
-      style = other.style
-    }
+    assign(\.autocapitalizationType, from: other, key: "autocapitalizationType", presentKeys: presentKeys)
+    assign(\.maxLength, from: other, key: "maxLength", presentKeys: presentKeys)
+    assign(\.secure, from: other, key: "secure", presentKeys: presentKeys)
+    assign(\.multiline, from: other, key: "multiline", presentKeys: presentKeys)
+    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
+    assign(\.error, from: other, key: "error", presentKeys: presentKeys)
+    assign(\.helperText, from: other, key: "helperText", presentKeys: presentKeys)
+    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
   }
 }
 
