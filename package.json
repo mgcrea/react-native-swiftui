@@ -9,6 +9,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
+    "CHANGELOG.md",
     "*.podspec",
     "nitro.json",
     "src",
@@ -24,6 +25,7 @@
     "install:ios": "cd example; npm run install:ios",
     "open:ios": "cd example; npm run open:ios",
     "nitrogen": "npx nitrogen",
+    "changelog": "node scripts/generate-changelog.mjs > CHANGELOG.md",
     "lint": "oxlint --deny-warnings --report-unused-disable-directives src/",
     "format": "oxfmt --write src/",
     "format:check": "oxfmt --check src/",
