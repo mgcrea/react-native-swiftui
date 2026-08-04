@@ -18,6 +18,14 @@ const migrationGuide = (version) => {
 // after the newest tag belong to it.
 const PENDING = JSON.parse(readFileSync("package.json", "utf8")).version;
 
+/**
+ * `--release-date` marks the pending version as shipping now rather than
+ * "unreleased". release-it passes it from the `after:bump` hook, once
+ * package.json carries the new version but before the tag exists — the tag link
+ * resolves as soon as the same run pushes it.
+ */
+const RELEASE_DATE = process.argv.includes("--release-date") ? new Date().toISOString().slice(0, 10) : null;
+
 const REPO = "https://github.com/mgcrea/react-native-swiftui";
 const SEP = "";
 const REC = "";
@@ -119,7 +127,7 @@ const releases = [];
 // Unreleased: everything after the newest tag.
 const newest = tags[tags.length - 1];
 const unreleased = parse(`${newest}..HEAD`);
-if (unreleased.length) releases.push({ version: PENDING, date: null, commits: unreleased });
+if (unreleased.length) releases.push({ version: PENDING, date: RELEASE_DATE, commits: unreleased });
 
 for (let i = tags.length - 1; i >= 0; i--) {
   const tag = tags[i];

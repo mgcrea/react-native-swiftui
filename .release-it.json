@@ -6,5 +6,8 @@
   "github": {
     "release": true,
     "releaseName": "v${version}"
+  },
+  "hooks": {
+    "after:bump": "node scripts/generate-changelog.mjs --release-date > CHANGELOG.md && git add CHANGELOG.md"
   }
 }
