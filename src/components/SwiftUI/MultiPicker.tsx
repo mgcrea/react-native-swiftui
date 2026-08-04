@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from "react";
 
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type { NativeTextStyle, NativeTextStyleProps } from "../../types";
+import type { NativeLabelStyleProps, NativeTextStyle, NativeTextStyleProps } from "../../types";
 import { fillArray } from "../../utils";
 
 // https://developer.apple.com/documentation/swiftui/picker
@@ -31,24 +31,25 @@ export type NativeMultiPickerComponent<T extends string> = {
   // width?: number; // @TODO
 };
 
-export type NativeMultiPickerProps<T extends string> = NativeTextStyleProps & {
-  components: NativeMultiPickerComponent<T>[];
-  selections?: T[];
-  label?: string;
-  disabled?: boolean;
-  onChange?: (value: T[]) => void;
-  onFocus?: () => void;
-  onBlur?: () => void;
-};
+export type NativeMultiPickerProps<T extends string> = NativeTextStyleProps &
+  NativeLabelStyleProps & {
+    components: NativeMultiPickerComponent<T>[];
+    selections?: T[];
+    label?: string;
+    disabled?: boolean;
+    onChange?: (value: T[]) => void;
+    onFocus?: () => void;
+    onBlur?: () => void;
+  };
 
 export const MultiPicker = <T extends string>({
   components,
   selections,
-  label: _label,
   onChange: onChangeProp,
   onFocus,
   onBlur,
   style,
+  labelStyle,
   ...otherProps
 }: NativeMultiPickerProps<T>): ReactNode => {
   const onChange = useMemo(
@@ -81,6 +82,7 @@ export const MultiPicker = <T extends string>({
     [components],
   );
   const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
+  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
 
   useSwiftUINode(
     "MultiPicker",
@@ -88,6 +90,9 @@ export const MultiPicker = <T extends string>({
       components: normalizedComponents,
       selections: normalizedSelections,
       style: normalizedStyles,
+      labelStyle: normalizedLabelStyle,
+      // `label` reaches native through here. It used to be destructured into an
+      // unused `_label` and silently dropped, so the documented prop did nothing.
       ...otherProps,
     },
     {

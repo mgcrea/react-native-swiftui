@@ -56,20 +56,15 @@ public struct SheetPickerView: View {
     if props.label.isEmpty {
       selectionLabel
         .frame(maxWidth: .infinity, alignment: .leading)
-    } else if #available(iOS 16.0, *) {
-      LabeledContent {
-        selectionLabel
-      } label: {
-        Text(props.label)
-      }
     } else {
-      HStack(alignment: .firstTextBaseline, spacing: 8) {
-        Text(props.label)
-          .foregroundColor(.primary)
-        Spacer()
+      LabeledContentView(
+        label: props.label,
+        labelStyle: props.labelStyle,
+        spacing: 8,
+        fallbackPadding: 4
+      ) {
         selectionLabel
       }
-      .padding(.vertical, 4)
     }
   }
 

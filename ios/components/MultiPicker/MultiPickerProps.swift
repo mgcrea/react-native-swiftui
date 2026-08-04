@@ -6,6 +6,7 @@ public final class MultiPickerProps: ObservableObject, Decodable {
   @Published var components: [MultiPickerComponent] = []
   @Published var selections: [String] = []
   @Published var label: String = ""
+  @Published var labelStyle: StyleProps?
   @Published var disabled: Bool = false
   @Published public var style: StyleProps?
   // Events
@@ -59,7 +60,7 @@ public final class MultiPickerProps: ObservableObject, Decodable {
 
   // Coding keys for decoding
   enum CodingKeys: String, CodingKey, CaseIterable {
-    case components, selections, label, disabled, style
+    case components, selections, label, labelStyle, disabled, style
   }
 
   // Decodable initializer
@@ -68,6 +69,7 @@ public final class MultiPickerProps: ObservableObject, Decodable {
     selections = try container.decodeIfPresent([String].self, forKey: .selections) ?? []
     components = try container.decodeIfPresent([MultiPickerComponent].self, forKey: .components) ?? []
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+    labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
     normalizeSelectionsToMatchComponents()
@@ -93,6 +95,7 @@ public final class MultiPickerProps: ObservableObject, Decodable {
     assign(\.selections, from: other, key: "selections", presentKeys: presentKeys)
     assign(\.components, from: other, key: "components", presentKeys: presentKeys)
     assign(\.label, from: other, key: "label", presentKeys: presentKeys)
+    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
     assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
     assign(\.style, from: other, key: "style", presentKeys: presentKeys)
     if presentKeys.contains("selections") || presentKeys.contains("components") {

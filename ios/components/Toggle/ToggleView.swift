@@ -13,24 +13,8 @@ public struct ToggleView: View {
   }
 
   public var body: some View {
-    if props.label.isEmpty {
+    LabeledContentView(label: props.label, labelStyle: props.labelStyle) {
       toggleContent()
-    } else {
-      if #available(iOS 16.0, *) {
-        LabeledContent {
-          toggleContent()
-        } label: {
-          Text(props.label)
-            .applyStyles(props.labelStyle)
-        }
-      } else {
-        HStack {
-          Text(props.label)
-            .applyStyles(props.labelStyle)
-          Spacer()
-          toggleContent()
-        }
-      }
     }
   }
 

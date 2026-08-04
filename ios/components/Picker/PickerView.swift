@@ -20,7 +20,9 @@ public struct PickerView: View {
       if props.label.isEmpty || (!props.isRootView && props.pickerStyle != .segmented) {
         pickerContent()
       } else {
-        labeledPicker()
+        LabeledContentView(label: props.label, labelStyle: props.labelStyle, fallbackPadding: 4) {
+          pickerContent()
+        }
       }
     }
   }
@@ -54,26 +56,6 @@ public struct PickerView: View {
     )
     .modifier(ControlSizeModifier(controlSize: props.controlSize))
     .applyStyles(props.style)
-  }
-
-  @ViewBuilder
-  private func labeledPicker() -> some View {
-    if #available(iOS 16.0, *) {
-      LabeledContent {
-        pickerContent()
-      } label: {
-        labelView()
-      }
-    } else {
-      HStack(alignment: .firstTextBaseline) {
-        labelView()
-          .font(.body)
-        Spacer()
-        pickerContent()
-          .foregroundColor(.secondary)
-      }
-      .padding(.vertical, 4)
-    }
   }
 
   @ViewBuilder

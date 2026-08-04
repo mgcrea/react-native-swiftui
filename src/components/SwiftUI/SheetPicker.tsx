@@ -1,22 +1,24 @@
 import { useMemo } from "react";
 
-import { useSwiftUINode } from "../../hooks";
-import type { WithId } from "../../types";
+import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
+import type { NativeLabelStyleProps, NativeTextStyle, WithId } from "../../types";
 import type { SheetPickerOption } from "../SwiftUISheetPicker";
 
 export type NativeSheetPickerOptionInput = SheetPickerOption | string;
 
-export type NativeSheetPickerProps = WithId<{
-  label?: string;
-  selectedValue?: string;
-  options?: readonly NativeSheetPickerOptionInput[];
-  title?: string;
-  searchPlaceholder?: string;
-  placeholder?: string;
-  autoDismiss?: boolean;
-  disabled?: boolean;
-  isPresented?: boolean;
-}>;
+export type NativeSheetPickerProps = WithId<
+  NativeLabelStyleProps & {
+    label?: string;
+    selectedValue?: string;
+    options?: readonly NativeSheetPickerOptionInput[];
+    title?: string;
+    searchPlaceholder?: string;
+    placeholder?: string;
+    autoDismiss?: boolean;
+    disabled?: boolean;
+    isPresented?: boolean;
+  }
+>;
 
 export type NativeSheetPickerEvents = {
   onChange?: (value: string) => void;
@@ -39,8 +41,10 @@ export const SheetPicker = ({
   isPresented,
   onChange,
   onDismiss,
+  labelStyle,
   ...otherProps
 }: SheetPickerProps) => {
+  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
   const normalizedOptions = useMemo(() => {
     if (!options || options.length === 0) {
       return [];
@@ -61,6 +65,7 @@ export const SheetPicker = ({
     {
       ...otherProps,
       label,
+      labelStyle: normalizedLabelStyle,
       title: title ?? label ?? "",
       selectedValue,
       options: normalizedOptions,

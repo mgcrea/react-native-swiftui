@@ -15,23 +15,8 @@ public struct DatePickerView: View {
   }
 
   public var body: some View {
-    if props.label.isEmpty {
+    LabeledContentView(label: props.label, labelStyle: props.labelStyle) {
       datePickerContent()
-    } else {
-      if #available(iOS 16.0, *) {
-        LabeledContent {
-          datePickerContent()
-        } label: {
-          Text(props.label)
-            .applyStyles(props.labelStyle)
-        }
-      } else {
-        HStack {
-          Text(props.label)
-            .applyStyles(props.labelStyle)
-          datePickerContent()
-        }
-      }
     }
   }
 

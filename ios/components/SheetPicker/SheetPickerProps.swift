@@ -36,6 +36,7 @@ public final class SheetPickerProps: ObservableObject, Decodable {
   @Published public var searchText: String = ""
   @Published public var autoDismiss: Bool = true
   @Published public var label: String = ""
+  @Published public var labelStyle: StyleProps?
   @Published public var placeholder: String = ""
   @Published public var disabled: Bool = false
   @Published public var displayMode: SheetPickerDisplayMode = .standalone
@@ -52,6 +53,7 @@ public final class SheetPickerProps: ObservableObject, Decodable {
     case options
     case autoDismiss
     case label
+    case labelStyle
     case placeholder
     case disabled
     case displayMode
@@ -66,6 +68,7 @@ public final class SheetPickerProps: ObservableObject, Decodable {
     options = try container.decodeIfPresent([SheetPickerOption].self, forKey: .options) ?? []
     autoDismiss = try container.decodeIfPresent(Bool.self, forKey: .autoDismiss) ?? true
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+    labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
     placeholder = try container.decodeIfPresent(String.self, forKey: .placeholder) ?? ""
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
     if let displayModeString = try container.decodeIfPresent(String.self, forKey: .displayMode),
@@ -87,6 +90,7 @@ public final class SheetPickerProps: ObservableObject, Decodable {
     assign(\.options, from: other, key: "options", presentKeys: presentKeys)
     assign(\.autoDismiss, from: other, key: "autoDismiss", presentKeys: presentKeys)
     assign(\.label, from: other, key: "label", presentKeys: presentKeys)
+    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
     assign(\.placeholder, from: other, key: "placeholder", presentKeys: presentKeys)
     assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
     assign(\.displayMode, from: other, key: "displayMode", presentKeys: presentKeys)

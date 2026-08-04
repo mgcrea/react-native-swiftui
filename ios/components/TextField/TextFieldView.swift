@@ -16,23 +16,8 @@ struct TextFieldView: View {
 
   var body: some View {
     VStack(alignment: .leading, spacing: 4) {
-      if props.label.isEmpty {
+      LabeledContentView(label: props.label, labelStyle: props.labelStyle) {
         inputField()
-      } else {
-        if #available(iOS 16.0, *) {
-          LabeledContent {
-            inputField()
-          } label: {
-            Text(props.label)
-              .applyStyles(props.labelStyle)
-          }
-        } else {
-          HStack {
-            Text(props.label)
-              .applyStyles(props.labelStyle)
-            inputField()
-          }
-        }
       }
 
       if !props.helperText.isEmpty {

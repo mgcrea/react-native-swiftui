@@ -28,19 +28,8 @@ public struct MultiPickerView: View {
   }
 
   public var body: some View {
-    if props.label.isEmpty {
+    LabeledContentView(label: props.label, labelStyle: props.labelStyle) {
       multiPickerContent()
-    } else {
-      if #available(iOS 16.0, *) {
-        LabeledContent(props.label) {
-          multiPickerContent()
-        }
-      } else {
-        HStack {
-          Text(props.label)
-          multiPickerContent()
-        }
-      }
     }
   }
 

@@ -13,23 +13,8 @@ public struct SliderView<Content: View>: View {
   }
 
   public var body: some View {
-    if props.label.isEmpty {
+    LabeledContentView(label: props.label, labelStyle: props.labelStyle) {
       sliderContent()
-    } else {
-      if #available(iOS 16.0, *) {
-        LabeledContent {
-          sliderContent()
-        } label: {
-          Text(props.label)
-            .applyStyles(props.labelStyle)
-        }
-      } else {
-        HStack {
-          Text(props.label)
-            .applyStyles(props.labelStyle)
-          sliderContent()
-        }
-      }
     }
   }
 
