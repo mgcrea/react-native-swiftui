@@ -65,27 +65,14 @@ class HybridSheetView: HybridSheetViewSpec {
   func afterUpdate() {
     guard needsUpdate else { return }
 
-    var dict: [String: Any] = [
-      "isPresented": isPresented ?? false,
-    ]
-
-    if let detents = detents {
-      dict["detents"] = detents
-    }
-    if let title = title {
-      dict["title"] = title
-    }
-    if let message = message {
-      dict["message"] = message
-    }
-    if let primaryButtonTitle = primaryButtonTitle {
-      dict["primaryButtonTitle"] = primaryButtonTitle
-    }
-    if let secondaryButtonTitle = secondaryButtonTitle {
-      dict["secondaryButtonTitle"] = secondaryButtonTitle
-    }
-
-    container.updateProps(with: dict, oldDictionary: [:])
+    container.update(
+      isPresented: isPresented ?? false,
+      detents: detents,
+      title: title,
+      message: message,
+      primaryButtonTitle: primaryButtonTitle,
+      secondaryButtonTitle: secondaryButtonTitle
+    )
   }
 
   // Only the root hybrid implemented this, so every standalone view kept its

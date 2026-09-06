@@ -48,50 +48,26 @@ public final class SheetContainer: SwiftUIContainerView {
     hostingController.rootView = AnyView(EmptyView())
   }
 
-  @objc
-  public func updateProps(with newDictionary: [String: Any], oldDictionary _: [String: Any]) {
-    if let isPresented = newDictionary["isPresented"] as? Bool,
-       isPresented != props.isPresented
-    {
-      props.isPresented = isPresented
-    }
-
-    if let detents = newDictionary["detents"] as? [String],
-       detents != props.detents
-    {
-      props.detents = detents
-    }
-
-    if let title = newDictionary["title"] as? String,
-       title != props.title
-    {
-      props.title = title
-    } else if newDictionary["title"] == nil, !props.title.isEmpty {
-      props.title = ""
-    }
-
-    if let message = newDictionary["message"] as? String,
-       message != props.message
-    {
-      props.message = message
-    } else if newDictionary["message"] == nil, !props.message.isEmpty {
-      props.message = ""
-    }
-
-    if let primaryTitle = newDictionary["primaryButtonTitle"] as? String,
-       primaryTitle != props.primaryButtonTitle
-    {
-      props.primaryButtonTitle = primaryTitle
-    } else if newDictionary["primaryButtonTitle"] == nil, props.primaryButtonTitle != nil {
-      props.primaryButtonTitle = nil
-    }
-
-    if let secondaryTitle = newDictionary["secondaryButtonTitle"] as? String,
-       secondaryTitle != props.secondaryButtonTitle
-    {
-      props.secondaryButtonTitle = secondaryTitle
-    } else if newDictionary["secondaryButtonTitle"] == nil, props.secondaryButtonTitle != nil {
-      props.secondaryButtonTitle = nil
-    }
+  /// Typed like the other containers. This used to take a `[String: Any]` that
+  /// `HybridSheetView` boxed field by field and this side unboxed with `as?`
+  /// casts — and the two halves disagreed: an absent `detents` key never reset
+  /// the value, while the four string fields did.
+  func update(
+    isPresented: Bool,
+    detents: [String]?,
+    title: String?,
+    message: String?,
+    primaryButtonTitle: String?,
+    secondaryButtonTitle: String?
+  ) {
+    if props.isPresented != isPresented { props.isPresented = isPresented }
+    let resolvedDetents = detents ?? SheetProps.defaultDetents
+    if props.detents != resolvedDetents { props.detents = resolvedDetents }
+    let resolvedTitle = title ?? ""
+    if props.title != resolvedTitle { props.title = resolvedTitle }
+    let resolvedMessage = message ?? ""
+    if props.message != resolvedMessage { props.message = resolvedMessage }
+    if props.primaryButtonTitle != primaryButtonTitle { props.primaryButtonTitle = primaryButtonTitle }
+    if props.secondaryButtonTitle != secondaryButtonTitle { props.secondaryButtonTitle = secondaryButtonTitle }
   }
 }
