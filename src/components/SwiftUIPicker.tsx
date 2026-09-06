@@ -1,10 +1,11 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useMemo } from "react";
 import type { StyleProp, ViewProps, ViewStyle } from "react-native";
-import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-modules";
+import { getHostComponent, type ViewConfig } from "react-native-nitro-modules";
 
 import PickerViewConfig from "../../nitrogen/generated/shared/json/PickerViewConfig.json";
 import type { PickerViewMethods, PickerViewProps } from "../specs/PickerView.nitro";
 import type { ControlSize, NativeTextStyle, PickerOption, PickerStyle } from "../types";
+import { useNativeCallback } from "../utils";
 
 const NativePickerView = getHostComponent<PickerViewProps, PickerViewMethods>(
   "PickerView",
@@ -32,31 +33,29 @@ export type SwiftUIPickerProps = ViewProps & {
   pickerStyle?: PickerStyle;
   controlSize?: ControlSize;
   disabled?: boolean;
+  // No `onFocus`/`onBlur`: they were declared here, destructured and discarded.
+  // The nitro spec has no focus callbacks, so they never fired.
   onChange?: (value: string) => void;
-  onFocus?: () => void;
-  onBlur?: () => void;
   style?: StyleProp<ViewStyle & Pick<NativeTextStyle, "tint">>;
 };
 
 export const SwiftUIPicker = forwardRef<NativePickerComponentRef, SwiftUIPickerProps>(
-  ({ pickerStyle, style, options, onChange, onFocus: _onFocus, onBlur: _onBlur, ...restProps }, ref) => {
-    const defaultHeight = DEFAULT_HEIGHTS[pickerStyle ?? "default"];
-    const composedStyle: StyleProp<ViewStyle> = [{ minHeight: defaultHeight }, style];
+  ({ pickerStyle, style, options, onChange, ...restProps }, ref) => {
+    // Memoized: a new array identity per render re-set the native prop each time.
+    const composedStyle: StyleProp<ViewStyle> = useMemo(
+      () => [{ minHeight: DEFAULT_HEIGHTS[pickerStyle ?? "default"] }, style],
+      [pickerStyle, style],
+    );
     // Copied because the generated nitro props type is a mutable array, while the
     // public prop is readonly so callers can pass an `as const` list.
-    const nativeOptions = options ? [...options] : undefined;
+    const nativeOptions = useMemo(() => (options ? [...options] : undefined), [options]);
+    const onNativeChange = useNativeCallback(onChange);
 
     return (
       <NativePickerView
         {...restProps}
         options={nativeOptions}
-        onNativeChange={
-          onChange
-            ? callback((value: string) => {
-                onChange(value);
-              })
-            : undefined
-        }
+        onNativeChange={onNativeChange}
         pickerStyle={pickerStyle}
         style={composedStyle}
         ref={ref}

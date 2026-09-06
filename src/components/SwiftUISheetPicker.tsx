@@ -1,10 +1,12 @@
-import React, { forwardRef, useImperativeHandle, useRef } from "react";
+import React, { forwardRef, useMemo } from "react";
 import type { ViewProps } from "react-native";
-import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-modules";
+import { getHostComponent, type ViewConfig } from "react-native-nitro-modules";
 
 import SheetPickerViewConfig from "../../nitrogen/generated/shared/json/SheetPickerViewConfig.json";
+import { usePresentableHandle, type PresentableHandle } from "../hooks";
 import type { SheetPickerViewMethods, SheetPickerViewProps } from "../specs/SheetPickerView.nitro";
 import type { SheetPickerOption } from "../types";
+import { useNativeCallback } from "../utils";
 
 const NativeSheetPickerView = getHostComponent<SheetPickerViewProps, SheetPickerViewMethods>(
   "SheetPickerView",
@@ -26,39 +28,23 @@ export type SwiftUISheetPickerProps = ViewProps & {
   onDismiss?: () => void;
 };
 
-export type SwiftUISheetPickerHandle = {
-  present: () => void;
-  dismiss: () => void;
-};
+export type SwiftUISheetPickerHandle = PresentableHandle;
 
 export const SwiftUISheetPicker = forwardRef<SwiftUISheetPickerHandle, SwiftUISheetPickerProps>(
   function SwiftUISheetPickerComponent({ onChange, onDismiss, options, ...props }, ref) {
-    const nativeRef = useRef<React.ComponentRef<typeof NativeSheetPickerView>>(null);
+    const nativeRef = usePresentableHandle<React.ComponentRef<typeof NativeSheetPickerView>>(ref);
     const autoDismiss = props.autoDismiss ?? true;
     // Copied because the generated nitro props type is a mutable array, while the
     // public prop is readonly so callers can pass an `as const` list.
-    const nativeOptions = [...options];
-
-    useImperativeHandle(ref, () => ({
-      present: () => {
-        nativeRef.current?.setNativeProps({ isPresented: true });
-      },
-      dismiss: () => {
-        nativeRef.current?.setNativeProps({ isPresented: false });
-      },
-    }));
+    const nativeOptions = useMemo(() => [...options], [options]);
+    const onNativeSelect = useNativeCallback(onChange);
+    const onNativeDismiss = useNativeCallback(onDismiss);
 
     return (
       <NativeSheetPickerView
         ref={nativeRef}
-        onNativeSelect={
-          onChange
-            ? callback((value: string) => {
-                onChange(value);
-              })
-            : undefined
-        }
-        onNativeDismiss={onDismiss ? callback(onDismiss) : undefined}
+        onNativeSelect={onNativeSelect}
+        onNativeDismiss={onNativeDismiss}
         {...props}
         options={nativeOptions}
         autoDismiss={autoDismiss}

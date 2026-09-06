@@ -4,3 +4,4 @@ export * from "./viewTree";
 export * from "./serialize";
 export * from "./diffProps";
 export * from "./options";
+export * from "./nitro";
