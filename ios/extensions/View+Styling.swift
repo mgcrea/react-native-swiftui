@@ -1,134 +1,30 @@
 import SwiftUI
 
+// MARK: - Entry points
+
 extension View {
+  /// Applies every box, colour and text style in `style`. `nil` adds nothing.
+  ///
+  /// This used to be a chain of four functions, each returning `AnyView`, so
+  /// every styled view sat behind four type erasures. `AnyView` hides a view's
+  /// structure from SwiftUI's diffing, which then rebuilds the subtree on any
+  /// change. A `ViewModifier` keeps the structure visible. Each style key is
+  /// still applied conditionally: a `Section` inside a `Form` stops being a
+  /// section once a layout modifier wraps it, so an unconditional `.padding(0)`
+  /// is not a no-op there.
   func applyStyles(_ style: StyleProps?) -> some View {
-    guard let style = style else { return AnyView(self) }
-    return AnyView(
-      applyViewStyles(style)
-        .applyTextStyles(style)
-    )
+    modifier(StyleModifier(style: style))
   }
 
-  func applyFrameStyles(_ style: StyleProps?) -> some View {
-    guard let style = style else { return AnyView(self) }
-
-    let needsGeometry = [style.width, style.minWidth, style.maxWidth, style.height, style.minHeight, style.maxHeight].contains { size in
-      if case let .percentage(fraction) = size {
-        return fraction != 1.0
-      }
-      return false
-    }
-
-    if needsGeometry {
-      return AnyView(
-        GeometryReader { geometry in
-          let width = style.width?.calculate(from: geometry.size.width)
-          let minWidth = style.minWidth?.calculate(from: geometry.size.width)
-          let maxWidth = style.maxWidth?.calculate(from: geometry.size.width)
-          let height = style.height?.calculate(from: geometry.size.height)
-          let minHeight = style.minHeight?.calculate(from: geometry.size.height)
-          let maxHeight = style.maxHeight?.calculate(from: geometry.size.height)
-
-          self.frame(
-            minWidth: minWidth,
-            idealWidth: width,
-            maxWidth: maxWidth,
-            minHeight: minHeight,
-            idealHeight: height,
-            maxHeight: maxHeight
-          )
-        }
-      )
+  /// Applies `transform` when `value` is non-nil. The previous form,
+  /// `applyIf(x != nil) { $0.foo(x!) }`, force-unwrapped at every call site.
+  @ViewBuilder
+  func applyIfLet<T, V: View>(_ value: T?, transform: (Self, T) -> V) -> some View {
+    if let value {
+      transform(self, value)
     } else {
-      let params = computeFrameParameters(from: style)
-
-      if params.maxHeight == nil && params.maxWidth == nil && params.minWidth == nil && params.minHeight == nil {
-        return AnyView(frame(width: params.width, height: params.height))
-      }
-
-      return AnyView(
-        frame(
-          minWidth: params.minWidth,
-          idealWidth: params.width,
-          maxWidth: params.maxWidth,
-          minHeight: params.minHeight,
-          idealHeight: params.height,
-          maxHeight: params.maxHeight
-        )
-      )
+      self
     }
-  }
-
-  func applyBoxStyles(_ style: StyleProps?) -> some View {
-    guard let style = style else { return AnyView(self) }
-
-    return AnyView(applyFrameStyles(style)
-      .modifier(AbsolutePositionModifier(style: style))
-      .applyIf(style.padding != nil) { $0.padding(style.padding!) }
-      .applyIf(style.paddingHorizontal != nil) { $0.padding(.horizontal, style.paddingHorizontal!) }
-      .applyIf(style.paddingVertical != nil) { $0.padding(.vertical, style.paddingVertical!) }
-      .applyIf(style.paddingLeft != nil) { $0.padding(.leading, style.paddingLeft!) }
-      .applyIf(style.paddingRight != nil) { $0.padding(.trailing, style.paddingRight!) }
-      .applyIf(style.paddingTop != nil) { $0.padding(.top, style.paddingTop!) }
-      .applyIf(style.paddingBottom != nil) { $0.padding(.bottom, style.paddingBottom!) })
-  }
-
-  func applyViewStyles(_ style: StyleProps?) -> some View {
-    guard let style = style else { return AnyView(self) }
-    return
-      AnyView(
-        applyBoxStyles(style)
-          .applyIf(style.backgroundColor != nil) { $0.background(Color(value: style.backgroundColor!)) }
-          .applyIf(style.color != nil || style.foregroundColor != nil) { $0.foregroundStyle(Color(value: style.color ?? style.foregroundColor!)) }
-          .applyIf(style.accentColor != nil) { $0.accentColor(Color(value: style.accentColor!)) }
-          .applyIf(style.tint != nil || style.tintColor != nil) {
-            $0.tint(Color(value: style.tint ?? style.tintColor!))
-          }
-          .applyIf(style.preferredColorScheme != nil) { $0.preferredColorScheme(style.preferredColorScheme!) }
-          .applyIf(style.borderWidth != nil) { view in
-            view.overlay(
-              RoundedRectangle(cornerRadius: style.cornerRadius ?? style.borderRadius ?? 0)
-                .stroke(style.borderColor != nil ? Color(value: style.borderColor!) : .black, lineWidth: style.borderWidth!)
-            )
-          }
-          // Parenthesised: `??` binds tighter than `!=`, so this always meant
-          // `(cornerRadius ?? borderRadius) != nil` — correct, but it read like
-          // a precedence bug.
-          .applyIf((style.cornerRadius ?? style.borderRadius) != nil) {
-            $0.cornerRadius(style.cornerRadius ?? style.borderRadius ?? 0)
-          }
-      )
-  }
-
-  private func applyTextStyles(_ style: StyleProps) -> some View {
-    // No `color` handling here: `applyViewStyles` already applies it as
-    // `foregroundStyle`. Doing it again also set `.tint`, so `color: 'red'`
-    // silently recoloured the control tint whenever `tint`/`tintColor` were
-    // absent — which is not what anyone writing a text colour expects.
-    //
-    // Font precedence is spelled out rather than left to SwiftUI's
-    // innermost-modifier-wins ordering. The chained form applied `.font` up to
-    // three times and the winner depended on nesting order, so `font` plus
-    // `fontFamily` silently dropped `fontFamily`.
-    return applyIf(style.font != nil || style.fontFamily != nil || style.fontSize != nil) { view in
-      if let font = style.font {
-        return AnyView(view.font(font))
-      }
-      if let fontFamily = style.fontFamily {
-        return AnyView(view.font(.custom(fontFamily, size: style.fontSize ?? 17)))
-      }
-      return AnyView(view.font(.system(size: style.fontSize!)))
-    }
-      .applyIf(style.fontWeight != nil) { view in
-        if #available(iOS 16.0, *) {
-          return AnyView(view.fontWeight(style.fontWeight!))
-        } else {
-          return AnyView(view)
-        }
-      }
-      .applyIf(style.textAlign != nil) {
-        $0.multilineTextAlignment(style.textAlign!)
-      }
   }
 
   @ViewBuilder
@@ -143,17 +39,152 @@ extension View {
 
 extension Shape {
   func applyShapeStyles(_ style: StyleProps?) -> some View {
-    guard let style = style else { return AnyView(self) }
-    return AnyView(
-      applyIf(style.backgroundColor != nil) { $0.fill(Color(value: style.backgroundColor!)) }
-        .applyBoxStyles(style))
+    applyIfLet(style?.backgroundColor) { shape, color in shape.fill(Color(value: color)) }
+      .modifier(BoxModifier(style: style))
+  }
+}
+
+// MARK: - Modifiers
+
+/// Frame, position and padding.
+private struct BoxModifier: ViewModifier {
+  let style: StyleProps?
+
+  func body(content: Content) -> some View {
+    content
+      .modifier(FrameModifier(style: style))
+      .modifier(AbsolutePositionModifier(style: style))
+      .applyIfLet(style?.padding) { view, value in view.padding(value) }
+      .applyIfLet(style?.paddingHorizontal) { view, value in view.padding(.horizontal, value) }
+      .applyIfLet(style?.paddingVertical) { view, value in view.padding(.vertical, value) }
+      .applyIfLet(style?.paddingLeft) { view, value in view.padding(.leading, value) }
+      .applyIfLet(style?.paddingRight) { view, value in view.padding(.trailing, value) }
+      .applyIfLet(style?.paddingTop) { view, value in view.padding(.top, value) }
+      .applyIfLet(style?.paddingBottom) { view, value in view.padding(.bottom, value) }
+  }
+}
+
+private struct StyleModifier: ViewModifier {
+  let style: StyleProps?
+
+  func body(content: Content) -> some View {
+    content
+      .modifier(BoxModifier(style: style))
+      .applyIfLet(style?.backgroundColor) { view, color in view.background(Color(value: color)) }
+      // `color` is an alias for `foregroundColor`. Applied once, as
+      // `foregroundStyle` only: applying it again in the text pass also set
+      // `.tint`, so `color: 'red'` silently recoloured the control tint.
+      .applyIfLet(style?.color ?? style?.foregroundColor) { view, color in view.foregroundStyle(Color(value: color)) }
+      .applyIfLet(style?.accentColor) { view, color in view.accentColor(Color(value: color)) }
+      .applyIfLet(style?.tint ?? style?.tintColor) { view, color in view.tint(Color(value: color)) }
+      .applyIfLet(style?.preferredColorScheme) { view, scheme in view.preferredColorScheme(scheme) }
+      .applyIfLet(style?.borderWidth) { view, width in
+        view.overlay(
+          RoundedRectangle(cornerRadius: style?.cornerRadius ?? style?.borderRadius ?? 0)
+            .stroke(style?.borderColor.map { Color(value: $0) } ?? .black, lineWidth: width)
+        )
+      }
+      .applyIfLet(style?.cornerRadius ?? style?.borderRadius) { view, radius in view.cornerRadius(radius) }
+      .modifier(TextStyleModifier(style: style))
+  }
+}
+
+/// Font precedence is spelled out rather than left to SwiftUI's
+/// innermost-modifier-wins ordering. The chained form applied `.font` up to
+/// three times and the winner depended on nesting order, so `font` plus
+/// `fontFamily` silently dropped `fontFamily`.
+private struct TextStyleModifier: ViewModifier {
+  let style: StyleProps?
+
+  func body(content: Content) -> some View {
+    font(content)
+      .modifier(FontWeightModifier(weight: style?.fontWeight))
+      .applyIfLet(style?.textAlign) { view, alignment in view.multilineTextAlignment(alignment) }
+  }
+
+  @ViewBuilder
+  private func font(_ content: Content) -> some View {
+    if let font = style?.font {
+      content.font(font)
+    } else if let family = style?.fontFamily {
+      content.font(.custom(family, size: style?.fontSize ?? 17))
+    } else if let size = style?.fontSize {
+      content.font(.system(size: size))
+    } else {
+      content
+    }
+  }
+}
+
+private struct FontWeightModifier: ViewModifier {
+  let weight: Font.Weight?
+
+  func body(content: Content) -> some View {
+    if #available(iOS 16.0, *), let weight {
+      content.fontWeight(weight)
+    } else {
+      content
+    }
+  }
+}
+
+private struct FrameModifier: ViewModifier {
+  let style: StyleProps?
+
+  func body(content: Content) -> some View {
+    if let style, style.needsGeometry {
+      GeometryReader { geometry in
+        content.frame(
+          minWidth: style.minWidth?.calculate(from: geometry.size.width),
+          idealWidth: style.width?.calculate(from: geometry.size.width),
+          maxWidth: style.maxWidth?.calculate(from: geometry.size.width),
+          minHeight: style.minHeight?.calculate(from: geometry.size.height),
+          idealHeight: style.height?.calculate(from: geometry.size.height),
+          maxHeight: style.maxHeight?.calculate(from: geometry.size.height)
+        )
+      }
+    } else if let style {
+      let params = computeFrameParameters(from: style)
+      if params.hasBounds {
+        content.frame(
+          minWidth: params.minWidth,
+          idealWidth: params.width,
+          maxWidth: params.maxWidth,
+          minHeight: params.minHeight,
+          idealHeight: params.height,
+          maxHeight: params.maxHeight
+        )
+      } else {
+        // Fixed, not ideal: `.frame(width:)` pins the size, `idealWidth:` only
+        // proposes it.
+        content.frame(width: params.width, height: params.height)
+      }
+    } else {
+      content
+    }
+  }
+}
+
+private extension StyleProps {
+  /// A percentage other than 100% needs the parent's size to resolve.
+  var needsGeometry: Bool {
+    isFractional(width) || isFractional(minWidth) || isFractional(maxWidth)
+      || isFractional(height) || isFractional(minHeight) || isFractional(maxHeight)
+  }
+
+  private func isFractional(_ size: Size?) -> Bool {
+    if case let .percentage(fraction) = size {
+      return fraction != 1.0
+    }
+    return false
   }
 }
 
 struct AbsolutePositionModifier: ViewModifier {
-  let style: StyleProps
+  let style: StyleProps?
+
   func body(content: Content) -> some View {
-    if style.position == "absolute" {
+    if let style, style.position == "absolute" {
       // Use .position() for absolute positioning relative to parent
       content.position(
         x: (style.left ?? 0) + (style.right != nil ? UIScreen.main.bounds.width - (style.right ?? 0) : 0),

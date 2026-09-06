@@ -41,7 +41,7 @@ struct LabeledContentView<Content: View>: View {
         Spacer()
         content()
       }
-      .applyIf(fallbackPadding != nil) { $0.padding(.vertical, fallbackPadding!) }
+      .applyIfLet(fallbackPadding) { view, padding in view.padding(.vertical, padding) }
     }
   }
 }

@@ -43,11 +43,9 @@ struct TextFieldView: View {
     .textContentType(props.textContentType)
     .autocapitalization(props.autocapitalizationType ?? .sentences)
     .focused($isFocused)
-    .applyIf(props.submitLabel != nil) {
-      $0.submitLabel(props.submitLabel!)
-    }
+    .applyIfLet(props.submitLabel) { view, label in view.submitLabel(label) }
     .applyStyles(props.style)
-    .disabled(props.disabled).foregroundStyle(props.disabled ? .gray : .primary)
+    .disabledStyle(props.disabled)
     .onChange(of: isFocused) { newValue in
       newValue ? props.onFocus?() : props.onBlur?()
     }
@@ -69,15 +67,6 @@ struct TextFieldView: View {
       // Sync only — never emits.
       localText = newValue
     }
-    .toolbar {
-      ToolbarItemGroup(placement: .keyboard) {
-        if isFocused {
-          Spacer()
-          Button("Done") {
-            isFocused = false
-          }
-        }
-      }
-    }
+    .keyboardDoneToolbar(isFocused: $isFocused)
   }
 }

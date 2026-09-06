@@ -26,7 +26,7 @@ struct NumberFieldView: View {
       .focused($isFocused)
       .keyboardType(props.keyboardType)
       .applyStyles(props.style)
-      .disabled(props.disabled).foregroundStyle(props.disabled ? .gray : .primary)
+      .disabledStyle(props.disabled)
       .onChange(of: isFocused) { newValue in
         newValue ? props.onFocus?() : props.onBlur?()
       }
@@ -40,15 +40,7 @@ struct NumberFieldView: View {
       .onChange(of: props.value) { newValue in
         // Sync only — never emits.
         localValue = newValue
-      }.toolbar {
-        ToolbarItemGroup(placement: .keyboard) {
-          if isFocused {
-            Spacer()
-            Button("Done") {
-              isFocused = false
-            }
-          }
-        }
       }
+      .keyboardDoneToolbar(isFocused: $isFocused)
   }
 }
