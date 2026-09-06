@@ -4,8 +4,10 @@ import { useRef } from "react";
  * Deep equality check for objects.
  * Handles nested objects like `style` props correctly.
  */
-function deepEqual(a: unknown, b: unknown): boolean {
+export function deepEqual(a: unknown, b: unknown): boolean {
   if (a === b) return true;
+  // `NaN !== NaN`; without this a NaN prop re-crossed the bridge every render.
+  if (typeof a === "number" && typeof b === "number") return Number.isNaN(a) && Number.isNaN(b);
   if (typeof a !== "object" || typeof b !== "object") return false;
   if (a === null || b === null) return false;
 
@@ -35,6 +37,9 @@ function deepEqual(a: unknown, b: unknown): boolean {
   if (keysA.length !== keysB.length) return false;
 
   for (const key of keysA) {
+    // Same key count is not the same key set: `{a: undefined}` vs `{b: undefined}`
+    // compared equal before this check.
+    if (!Object.prototype.hasOwnProperty.call(objB, key)) return false;
     if (!deepEqual(objA[key], objB[key])) {
       return false;
     }
@@ -47,12 +52,17 @@ function deepEqual(a: unknown, b: unknown): boolean {
  * Returns the same reference if the object hasn't changed.
  */
 export function useDeepMemo<T extends Record<string, unknown>>(obj: T): T {
+  // A render-time memo by value: the ref *is* the memo, and it has to be read
+  // and written during render to hand back a stable reference.
+  /* oxlint-disable react/refs */
   const ref = useRef<T | null>(null);
   ref.current ??= obj;
 
   if (!deepEqual(ref.current, obj)) {
-    ref.current = { ...obj };
+    // The caller's object is already a fresh literal; copying it again bought nothing.
+    ref.current = obj;
   }
 
   return ref.current;
+  /* oxlint-enable react/refs */
 }

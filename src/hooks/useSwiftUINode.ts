@@ -3,7 +3,7 @@ import { useEffect, useId, useRef } from "react";
 import { useSwiftUIContext, useSwiftUIParentContext, type EventHandler } from "../contexts";
 import { useDeepMemo } from "../hooks";
 import type { WithId } from "../types";
-import { lowercaseFirstLetter } from "../utils";
+import { diffProps, lowercaseFirstLetter } from "../utils";
 
 export type SwiftUINodeProps = WithId<Record<string, unknown>>;
 export type SwiftUINodeEvents = Record<string, EventHandler | undefined>;
@@ -31,6 +31,7 @@ export function useSwiftUINode<T extends SwiftUINodeProps, U extends SwiftUINode
   // `updateNodeProps` effect — so this stays out of that effect's dependencies
   // rather than re-registering the node on every prop change.
   const propsRef = useRef(props);
+  // oxlint-disable-next-line react/refs
   propsRef.current = props;
 
   // Record the render order every render
@@ -67,12 +68,20 @@ export function useSwiftUINode<T extends SwiftUINodeProps, U extends SwiftUINode
   }, [id, unregisterEvents]);
 
   const memoizedProps = useDeepMemo(props);
+  // What native last received for this node, so only the changed keys cross the
+  // bridge. The registry itself merges, so a partial payload is safe there too.
+  const sentProps = useRef(memoizedProps);
   useEffect(() => {
     if (isInitialRender.current) {
       isInitialRender.current = false;
       return;
     }
-    updateNodeProps(id, memoizedProps);
+    const changed = diffProps(sentProps.current, memoizedProps);
+    sentProps.current = memoizedProps;
+    if (Object.keys(changed).length === 0) {
+      return;
+    }
+    updateNodeProps(id, changed);
   }, [id, memoizedProps, updateNodeProps]);
 
   return {
