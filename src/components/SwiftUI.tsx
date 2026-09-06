@@ -6,6 +6,7 @@ import {
   useEffect,
   useId,
   useLayoutEffect,
+  useMemo,
   useState,
 } from "react";
 import { callback, getHostComponent, type ViewConfig } from "react-native-nitro-modules";
@@ -67,15 +68,14 @@ export const SwiftUIRoot = ({
   debug = false,
 }: PropsWithChildren<SwiftUIProps>): ReactNode => {
   const {
-    nativeRef,
-    hybridRef,
     getEventHandler,
     nodesKey,
     renderSequenceKey,
     getNodes,
     renderSequence,
+    resetRenderSequence,
     commitRenderSequence,
-    flushPendingProps,
+    attachHybrid,
   } = useSwiftUIContext();
 
   const log = useCallback(
@@ -87,11 +87,10 @@ export const SwiftUIRoot = ({
     [rootId, debug],
   );
 
-  const nodes = getNodes();
-  log(`rendering with ${nodes.size} nodes`);
+  if (debug) log(`rendering with ${getNodes().size} nodes`);
 
   // Reset sequence before children render so it's rebuilt fresh each time
-  renderSequence.current = [];
+  resetRenderSequence();
 
   // After render, commit the sequence - use layout effect to run synchronously
   useLayoutEffect(() => {
@@ -104,11 +103,18 @@ export const SwiftUIRoot = ({
   // `getNodes()` inside the effect rather than closing over the value computed
   // during render, so the dependency list can be honest: the version keys remain
   // the actual change signal, and everything else here is referentially stable.
+  // The tree can only be built once the children have rendered and recorded
+  // their order, which is why this is an effect keyed on the version signals and
+  // not a value derived during render.
   useEffect(() => {
     const viewTree = buildViewTree(getNodes(), renderSequence.current);
-    log(`updating view tree`, viewTree);
+    if (debug) log(`updating view tree`, viewTree);
+    // Plain `JSON.stringify`, unlike `serializeProps` for updates: on a first
+    // decode an absent key and a `null` one both leave the default in place, so
+    // the sentinel would only pad the payload here.
+    // oxlint-disable-next-line react/set-state-in-effect
     setViewTreeJson(JSON.stringify(viewTree));
-  }, [nodesKey, renderSequenceKey, getNodes, renderSequence, log]);
+  }, [nodesKey, renderSequenceKey, getNodes, renderSequence, debug, log]);
 
   const handleEvent = useCallback(
     (name: string, value: string, type: string, id: string) => {
@@ -122,16 +128,16 @@ export const SwiftUIRoot = ({
     [getEventHandler, log, rootOnEvent],
   );
 
+  // Nitro's `callback()` returns a fresh `{ f }` wrapper on every call, so an
+  // inline `callback(...)` re-set both native props on every root render and
+  // re-ran the hybridRef closure each time. Memoized on the underlying handler.
+  const onHybridRef = useMemo(() => callback(attachHybrid), [attachHybrid]);
+  const onNativeEvent = useMemo(() => callback(handleEvent), [handleEvent]);
+
   return (
     <NativeSwiftUIRootView
-      ref={nativeRef}
-      hybridRef={callback((ref) => {
-        hybridRef.current = ref;
-        // Nothing re-renders on this assignment, so anything buffered while the
-        // native view was attaching has to be drained here.
-        flushPendingProps();
-      })}
-      onEvent={callback(handleEvent)}
+      hybridRef={onHybridRef}
+      onEvent={onNativeEvent}
       style={style}
       viewTree={viewTreeJson}
     >

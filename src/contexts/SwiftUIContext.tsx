@@ -1,6 +1,5 @@
 // src/contexts/SwiftUIContext.tsx
 import {
-  type ComponentRef,
   createContext,
   type FunctionComponent,
   type PropsWithChildren,
@@ -11,31 +10,25 @@ import {
   useRef,
   useState,
 } from "react";
-import type { ReactNativeView } from "react-native-nitro-modules";
-import type {
-  SwiftUIRootView,
-  SwiftUIRootViewMethods,
-  SwiftUIRootViewProps,
-} from "src/specs/SwiftUIRootView.nitro";
+import type { SwiftUIRootView } from "src/specs/SwiftUIRootView.nitro";
 import type { ViewTreeNode } from "src/types";
+import { serializeProps } from "../utils/serialize";
 
 export type EventHandler = (...args: string[]) => void;
 export type EventRegistry = Map<string, Map<string, EventHandler>>;
 export type NodeRegistry = Map<string, { node: ViewTreeNode; parentId?: string }>;
-
-export type SwiftUIRootViewRef = ComponentRef<ReactNativeView<SwiftUIRootViewProps, SwiftUIRootViewMethods>>;
 
 export type SwiftUIContextValue = {
   getEventHandler: (id: string, name: string) => EventHandler | undefined;
   nodesKey: string;
   renderSequenceKey: string;
   getNodes: () => NodeRegistry;
-  nativeRef: RefObject<SwiftUIRootViewRef | null>;
   hybridRef: RefObject<SwiftUIRootView | null>;
   recordRenderOrder: (id: string) => void;
+  resetRenderSequence: () => void;
   commitRenderSequence: () => void;
+  attachHybrid: (hybrid: SwiftUIRootView) => void;
   registerEvents: (id: string, events: Record<string, EventHandler | undefined>) => void;
-  registerEvent: (id: string, name: string, handler: EventHandler) => void;
   registerNode: (node: ViewTreeNode, parentId?: string) => void;
   renderSequence: RefObject<string[]>;
   unregisterEvents: (id: string) => void;
@@ -44,16 +37,17 @@ export type SwiftUIContextValue = {
   flushPendingProps: () => void;
 };
 
-/**
- * `JSON.stringify` omits keys whose value is `undefined`, and the Swift side
- * deliberately skips keys absent from the payload (`merge(from:presentKeys:)`).
- * Without a sentinel, clearing a prop (`maxLength: 10` -> `undefined`) would be
- * indistinguishable from not mentioning it, and so impossible.
- */
-const serializeProps = (props: Record<string, unknown>) =>
-  JSON.stringify(props, (_key, value: unknown) => (value === undefined ? null : value));
-
 const SwiftUIContext = createContext<SwiftUIContextValue | undefined>(undefined);
+
+const getEventHandlersForId = (registry: EventRegistry, id: string) => {
+  const handlersForId = registry.get(id);
+  if (handlersForId) {
+    return handlersForId;
+  }
+  const newHandlersForId = new Map<string, EventHandler>();
+  registry.set(id, newHandlersForId);
+  return newHandlersForId;
+};
 
 export type SwiftUIProviderProps = {
   id: string;
@@ -71,7 +65,6 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
   const [renderSequenceVersion, setRenderSequenceVersion] = useState(0);
   const renderSequence = useRef<string[]>([]);
   const previousRenderSequence = useRef<string[]>([]);
-  const nativeRef = useRef<SwiftUIRootViewRef | null>(null);
   const hybridRef = useRef<SwiftUIRootView | null>(null);
   // Prop updates that arrived before the native view attached, merged per node.
   const pendingProps = useRef<Map<string, Record<string, unknown>>>(new Map());
@@ -93,33 +86,10 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
     return eventRegistry.current.get(id)?.get(name);
   }, []);
 
-  const getEventHandlersForId = (id: string) => {
-    const handlersForId = eventRegistry.current.get(id);
-    if (handlersForId) {
-      return handlersForId;
-    }
-    const newHandlersForId = new Map<string, EventHandler>();
-    eventRegistry.current.set(id, newHandlersForId);
-    return newHandlersForId;
-  };
-  const registerEvent = useCallback(
-    (id: string, name: string, handler: EventHandler) => {
-      const handlersForId = getEventHandlersForId(id);
-      if (handlersForId.has(name)) {
-        log(`overwriting existing event handler for ${id}:${name}`);
-      }
-      handlersForId.set(name, handler);
-    },
-    [log],
-  );
-
   const registerEvents = useCallback((id: string, events: Record<string, EventHandler | undefined>) => {
-    const handlersForId = getEventHandlersForId(id);
+    const handlersForId = getEventHandlersForId(eventRegistry.current, id);
     Object.entries(events).forEach(([name, handler]) => {
       if (handler) {
-        // if (handlersForId.has(name)) {
-        //   console.log(`Overwriting existing event handler for ${id}:${name}`);
-        // }
         handlersForId.set(name, handler);
       } else {
         handlersForId.delete(name);
@@ -129,11 +99,11 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
 
   const registerNode = useCallback(
     (node: ViewTreeNode, parentId?: string) => {
-      log(`registering node with id=${node.id}`, { node, parentId });
+      if (debug) log(`registering node with id=${node.id}`, { node, parentId });
       nodeRegistry.current.set(node.id, { node, parentId });
       setNodeRegistryVersion((prev) => prev + 1);
     },
-    [log],
+    [debug, log],
   );
 
   const unregisterNode = useCallback(
@@ -169,6 +139,11 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
     renderSequence.current.push(id);
   }, []);
 
+  /** Called by the root during render, before its children record themselves. */
+  const resetRenderSequence = useCallback(() => {
+    renderSequence.current = [];
+  }, []);
+
   const commitRenderSequence = useCallback(() => {
     // After render, check if order actually changed and only then bump version
     const currentSequence = renderSequence.current;
@@ -191,7 +166,7 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
         log(`[warn] node with id=${id} not found`);
         return;
       }
-      log(`updating node with id=${id}`, { props });
+      if (debug) log(`updating node with id=${id}`, { props });
 
       // Always merge into the registry, even with no hybrid ref: the view tree
       // is rebuilt from it, so bailing out early dropped the update on both
@@ -208,7 +183,7 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
 
       hybridRef.current.updateChildProps(id, serializeProps(props));
     },
-    [log],
+    [debug, log],
   );
 
   /** Drains anything buffered before the native view attached. */
@@ -220,10 +195,23 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
     const buffered = pendingProps.current;
     pendingProps.current = new Map();
     buffered.forEach((props, id) => {
-      log(`flushing buffered props for id=${id}`, { props });
+      if (debug) log(`flushing buffered props for id=${id}`, { props });
       hybrid.updateChildProps(id, serializeProps(props));
     });
-  }, [log]);
+  }, [debug, log]);
+
+  /**
+   * Native hands the hybrid over through a callback that triggers no
+   * re-render, so anything buffered while the view was attaching is drained
+   * here, at the one moment it is known to exist.
+   */
+  const attachHybrid = useCallback(
+    (hybrid: SwiftUIRootView) => {
+      hybridRef.current = hybrid;
+      flushPendingProps();
+    },
+    [flushPendingProps],
+  );
 
   // Memoized: an unstable context value re-renders the whole subtree and, worse,
   // hands the native bridge a fresh `onEvent`/`hybridRef` callback on every
@@ -234,12 +222,12 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
       nodesKey,
       renderSequenceKey,
       getNodes,
-      nativeRef,
       hybridRef,
       recordRenderOrder,
+      resetRenderSequence,
       commitRenderSequence,
+      attachHybrid,
       registerEvents,
-      registerEvent,
       registerNode,
       renderSequence,
       unregisterEvents,
@@ -253,9 +241,10 @@ export const SwiftUIProvider: FunctionComponent<PropsWithChildren<SwiftUIProvide
       renderSequenceKey,
       getNodes,
       recordRenderOrder,
+      resetRenderSequence,
       commitRenderSequence,
+      attachHybrid,
       registerEvents,
-      registerEvent,
       registerNode,
       unregisterEvents,
       unregisterNode,
