@@ -1,5 +1,7 @@
+import type { PropsWithChildren } from "react";
+
 import type { NativeViewStyleProps } from "../../types";
-import { createContainerComponent } from "./createContainerComponent";
+import { createNodeComponent } from "./createNodeComponent";
 
 // https://developer.apple.com/documentation/swiftui/section
 
@@ -9,4 +11,6 @@ export type NativeSectionProps = NativeViewStyleProps & {
   isCollapsed?: boolean;
 };
 
-export const Section = createContainerComponent<NativeSectionProps>("Section");
+export const Section = createNodeComponent<PropsWithChildren<NativeSectionProps>>("Section", {
+  container: true,
+});

@@ -1,10 +1,6 @@
-import { useNormalizedStyles, useSwiftUINode, useParsedEvent, parseNumberOrNull } from "../../hooks";
-import type {
-  FunctionComponentWithId,
-  NativeLabelStyleProps,
-  NativeTextStyle,
-  NativeTextStyleProps,
-} from "../../types";
+import { parseNumberOrNull } from "../../hooks";
+import type { NativeLabelStyleProps, NativeTextStyleProps } from "../../types";
+import { createNodeComponent } from "./createNodeComponent";
 import type { NativeKeyboardType, NativeReturnKeyType } from "./TextField";
 
 export type NumberFormatter =
@@ -34,25 +30,6 @@ export type NativeNumberFieldProps<T = number> = NativeTextStyleProps &
     onBlur?: () => void;
   };
 
-export const NumberField: FunctionComponentWithId<NativeNumberFieldProps> = ({
-  onChange: onChangeProp,
-  onFocus,
-  onBlur,
-  style,
-  labelStyle,
-  ...otherProps
-}) => {
-  const onChange = useParsedEvent(parseNumberOrNull, onChangeProp);
-
-  const normalizedStyle = useNormalizedStyles<NativeTextStyle>(style);
-  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
-
-  useSwiftUINode(
-    "NumberField",
-    { style: normalizedStyle, labelStyle: normalizedLabelStyle, ...otherProps },
-    { change: onChange, focus: onFocus, blur: onBlur },
-  );
-
-  return null;
-};
-NumberField.displayName = "NumberField";
+export const NumberField = createNodeComponent<NativeNumberFieldProps, number | null>("NumberField", {
+  parse: parseNumberOrNull,
+});

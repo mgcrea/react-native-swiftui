@@ -1,5 +1,6 @@
-import { useNormalizedStyles, useSwiftUINode, useParsedEvent, parseDate } from "../../hooks";
-import type { FunctionComponentWithId, NativeLabelStyleProps, NativeTextStyle } from "../../types";
+import { parseDate } from "../../hooks";
+import type { NativeLabelStyleProps } from "../../types";
+import { createNodeComponent } from "./createNodeComponent";
 
 // https://developer.apple.com/documentation/swiftui/datepickerstyle
 export type NativeDatePickerStyle = "default" | "compact" | "field" | "graphical" | "stepperField" | "wheel";
@@ -19,22 +20,4 @@ export type NativeDatePickerProps = NativeLabelStyleProps & {
   onBlur?: () => void;
 };
 
-export const DatePicker: FunctionComponentWithId<NativeDatePickerProps> = ({
-  onChange: onChangeProp,
-  onFocus,
-  onBlur,
-  labelStyle,
-  ...otherProps
-}) => {
-  const onChange = useParsedEvent(parseDate, onChangeProp);
-
-  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
-
-  useSwiftUINode(
-    "DatePicker",
-    { labelStyle: normalizedLabelStyle, ...otherProps },
-    { change: onChange, focus: onFocus, blur: onBlur },
-  );
-  return null;
-};
-DatePicker.displayName = "DatePicker";
+export const DatePicker = createNodeComponent<NativeDatePickerProps, Date>("DatePicker", { parse: parseDate });

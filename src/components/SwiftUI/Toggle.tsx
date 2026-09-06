@@ -1,5 +1,6 @@
-import { useNormalizedStyles, useSwiftUINode, useParsedEvent, parseBoolean } from "../../hooks";
-import type { FunctionComponentWithId, NativeLabelStyleProps, NativeTextStyle } from "../../types";
+import { parseBoolean } from "../../hooks";
+import type { NativeLabelStyleProps } from "../../types";
+import { createNodeComponent } from "./createNodeComponent";
 
 export type NativeToggleProps = NativeLabelStyleProps & {
   isOn: boolean;
@@ -8,23 +9,4 @@ export type NativeToggleProps = NativeLabelStyleProps & {
   onChange?: (value: boolean) => void;
 };
 
-export const Toggle: FunctionComponentWithId<NativeToggleProps> = ({
-  onChange: onChangeProp,
-  labelStyle,
-  ...otherProps
-}) => {
-  const onChange = useParsedEvent(parseBoolean, onChangeProp);
-
-  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
-
-  useSwiftUINode(
-    "Toggle",
-    { labelStyle: normalizedLabelStyle, ...otherProps },
-    {
-      change: onChange,
-    },
-  );
-
-  return null;
-};
-Toggle.displayName = "Toggle";
+export const Toggle = createNodeComponent<NativeToggleProps, boolean>("Toggle", { parse: parseBoolean });

@@ -1,5 +1,7 @@
+import type { PropsWithChildren } from "react";
+
 import type { NativeViewStyleProps } from "../../types";
-import { createContainerComponent } from "./createContainerComponent";
+import { createNodeComponent } from "./createNodeComponent";
 
 // https://developer.apple.com/documentation/swiftui/hstack
 export type NativeHStackProps = NativeViewStyleProps & {
@@ -7,4 +9,4 @@ export type NativeHStackProps = NativeViewStyleProps & {
   spacing?: number;
 };
 
-export const HStack = createContainerComponent<NativeHStackProps>("HStack");
+export const HStack = createNodeComponent<PropsWithChildren<NativeHStackProps>>("HStack", { container: true });

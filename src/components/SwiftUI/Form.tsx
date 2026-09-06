@@ -1,5 +1,7 @@
+import type { PropsWithChildren } from "react";
+
 import type { NativeViewStyleProps } from "../../types";
-import { createContainerComponent } from "./createContainerComponent";
+import { createNodeComponent } from "./createNodeComponent";
 
 // https://developer.apple.com/documentation/swiftui/form
 
@@ -16,4 +18,4 @@ export type NativeFormProps = NativeViewStyleProps & {
   contentMargins?: NativeFormContentMargins;
 };
 
-export const Form = createContainerComponent<NativeFormProps>("Form");
+export const Form = createNodeComponent<PropsWithChildren<NativeFormProps>>("Form", { container: true });

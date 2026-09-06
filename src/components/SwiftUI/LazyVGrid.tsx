@@ -1,6 +1,10 @@
+import type { PropsWithChildren } from "react";
+
 import type { NativeLazyVGridProps } from "../../types";
-import { createContainerComponent } from "./createContainerComponent";
+import { createNodeComponent } from "./createNodeComponent";
 
 // https://developer.apple.com/documentation/swiftui/lazyvgrid
 
-export const LazyVGrid = createContainerComponent<NativeLazyVGridProps>("LazyVGrid");
+export const LazyVGrid = createNodeComponent<PropsWithChildren<NativeLazyVGridProps>>("LazyVGrid", {
+  container: true,
+});

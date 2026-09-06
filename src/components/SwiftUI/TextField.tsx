@@ -1,10 +1,5 @@
-import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
-import type {
-  FunctionComponentWithId,
-  NativeLabelStyleProps,
-  NativeTextStyle,
-  NativeTextStyleProps,
-} from "../../types";
+import type { NativeLabelStyleProps, NativeTextStyleProps } from "../../types";
+import { createNodeComponent } from "./createNodeComponent";
 
 export type NativeKeyboardType = "default" | "numberPad" | "emailAddress" | "decimalPad";
 export type NativeTextContentType = "username" | "password" | "emailAddress";
@@ -42,22 +37,4 @@ export type NativeTextFieldProps<T = string> = NativeTextStyleProps &
     onBlur?: () => void;
   };
 
-export const TextField: FunctionComponentWithId<NativeTextFieldProps> = ({
-  onChange,
-  onFocus,
-  onBlur,
-  style,
-  labelStyle,
-  ...otherProps
-}) => {
-  const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
-  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
-  useSwiftUINode(
-    "TextField",
-    { style: normalizedStyles, labelStyle: normalizedLabelStyle, ...otherProps },
-    { change: onChange, focus: onFocus, blur: onBlur },
-  );
-
-  return null;
-};
-TextField.displayName = "TextField";
+export const TextField = createNodeComponent<NativeTextFieldProps>("TextField");

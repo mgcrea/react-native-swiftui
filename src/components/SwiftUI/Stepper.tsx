@@ -1,13 +1,8 @@
-import { type PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 
-import { SwiftUIParentIdProvider } from "../../contexts";
-import { useNormalizedStyles, useSwiftUINode, useParsedEvent, parseNumber } from "../../hooks";
-import type {
-  FunctionComponentWithId,
-  NativeLabelStyleProps,
-  NativeTextStyle,
-  NativeTextStyleProps,
-} from "../../types";
+import { parseNumber } from "../../hooks";
+import type { NativeLabelStyleProps, NativeTextStyleProps } from "../../types";
+import { createNodeComponent } from "./createNodeComponent";
 
 // https://developer.apple.com/documentation/swiftui/stepper
 
@@ -23,29 +18,7 @@ export type NativeStepperProps = NativeTextStyleProps &
     onBlur?: () => void;
   };
 
-export const Stepper: FunctionComponentWithId<PropsWithChildren<NativeStepperProps>> = ({
-  children,
-  onChange: onChangeProp,
-  onFocus,
-  onBlur,
-  style,
-  labelStyle,
-  ...otherProps
-}) => {
-  const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
-  const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
-  const onChange = useParsedEvent(parseNumber, onChangeProp);
-
-  const { id } = useSwiftUINode(
-    "Stepper",
-    { style: normalizedStyles, labelStyle: normalizedLabelStyle, ...otherProps },
-    {
-      change: onChange,
-      focus: onFocus,
-      blur: onBlur,
-    },
-  );
-
-  return <SwiftUIParentIdProvider id={id}>{children}</SwiftUIParentIdProvider>;
-};
-Stepper.displayName = "Stepper";
+export const Stepper = createNodeComponent<PropsWithChildren<NativeStepperProps>, number>("Stepper", {
+  parse: parseNumber,
+  container: true,
+});

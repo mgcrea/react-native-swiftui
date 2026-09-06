@@ -1,5 +1,7 @@
+import type { PropsWithChildren } from "react";
+
 import type { NativeViewStyleProps } from "../../types";
-import { createContainerComponent } from "./createContainerComponent";
+import { createNodeComponent } from "./createNodeComponent";
 
 // https://developer.apple.com/documentation/swiftui/zstack
 export type NativeZStackProps = NativeViewStyleProps & {
@@ -15,4 +17,4 @@ export type NativeZStackProps = NativeViewStyleProps & {
     | "bottomTrailing";
 };
 
-export const ZStack = createContainerComponent<NativeZStackProps>("ZStack");
+export const ZStack = createNodeComponent<PropsWithChildren<NativeZStackProps>>("ZStack", { container: true });
