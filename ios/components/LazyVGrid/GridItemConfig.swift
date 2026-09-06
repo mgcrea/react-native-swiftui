@@ -24,19 +24,7 @@ public struct GridItemConfig: Decodable, Equatable {
     default:
       size = .flexible() // Fallback
     }
-    let alignmentValue = alignment.flatMap { Alignment(from: $0) }
+    let alignmentValue = alignment.flatMap(Alignment.init(name:))
     return GridItem(size, spacing: spacing, alignment: alignmentValue)
-  }
-}
-
-// Helper to map string alignment to SwiftUI Alignment
-private extension Alignment {
-  init?(from string: String) {
-    switch string {
-    case "leading": self = .leading
-    case "center": self = .center
-    case "trailing": self = .trailing
-    default: return nil
-    }
   }
 }

@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Props
 
-public final class DatePickerProps: ObservableObject, Decodable {
+public final class DatePickerProps: NodeProps {
   @Published var selection: Date = .init()
   @Published var label: String = ""
   @Published var labelStyle: StyleProps?
@@ -51,6 +51,9 @@ public final class DatePickerProps: ObservableObject, Decodable {
 
   public init() {}
 
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
+
   enum CodingKeys: String, CodingKey {
     case label, labelStyle, selection, displayedComponents, datePickerStyle, disabled
   }
@@ -58,94 +61,52 @@ public final class DatePickerProps: ObservableObject, Decodable {
   // Decodable initializer
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    presentKeys = container.presentKeys
 
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
     labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
 
     // Ensure we have at least one component
     displayedComponents = try container.decodeDatePickerComponents(forKey: .displayedComponents)
-    // Decode selection as ISO8601 date string
+    // Decode selection as ISO8601 date string. An unparseable date falls back
+    // rather than throwing: a throw here failed the whole tree decode and
+    // rendered "Invalid view tree" (see SliderProps for the same precedent).
     let selectionString = try container.decodeIfPresent(String.self, forKey: .selection) ?? ""
-    if !selectionString.isEmpty {
-      let formatter = ISO8601DateFormatter()
-      formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-
-      if let date = formatter.date(from: selectionString) {
-        selection = date
-      } else {
-        // Try more permissive formats if strict ISO8601 fails
-        let fallbackFormatter = DateFormatter()
-        fallbackFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-
-        if let date = fallbackFormatter.date(from: selectionString) {
-          selection = date
-        } else {
-          throw DecodingError.dataCorruptedError(
-            forKey: .selection,
-            in: container,
-            debugDescription: "Invalid date format: \(selectionString)"
-          )
-        }
-      }
+    if selectionString.isEmpty {
+      selection = Calendar.current.startOfDay(for: Date())
+    } else if let date = ISO8601.date(from: selectionString) {
+      selection = date
     } else {
-      var calendar = Calendar.current
-//      calendar.timeZone = TimeZone(identifier: "UTC")!
-      selection = calendar.startOfDay(for: Date())
+      print("DatePicker: invalid date \"\(selectionString)\", falling back to now")
+      selection = Date()
     }
 
-    // Decode datePickerStyle
-    let styleString = try container.decodeIfPresent(String.self, forKey: .datePickerStyle) ?? "default"
-    datePickerStyle = DatePickerStyle(rawValue: styleString) ?? .default
+    datePickerStyle = try container.decodeEnum(DatePickerStyle.self, forKey: .datePickerStyle, default: .default)
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
   }
 
-  public func merge(from other: DatePickerProps, presentKeys: Set<String>) {
-    assign(\.selection, from: other, key: "selection", presentKeys: presentKeys)
-    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
-    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
-    assign(\.datePickerStyle, from: other, key: "datePickerStyle", presentKeys: presentKeys)
-    assign(\.displayedComponents, from: other, key: "displayedComponents", presentKeys: presentKeys)
-    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
+  public func merge(from other: DatePickerProps) {
+    assign(\.selection, .selection, from: other)
+    assign(\.label, .label, from: other)
+    assign(\.labelStyle, .labelStyle, from: other)
+    assign(\.datePickerStyle, .datePickerStyle, from: other)
+    assign(\.displayedComponents, .displayedComponents, from: other)
+    assign(\.disabled, .disabled, from: other)
   }
 }
 
-extension KeyedDecodingContainer {
-  func decodeDatePickerComponents(forKey key: Key) throws -> DatePickerComponents {
-    var datePickerComponents: DatePickerComponents = .date // Default to date
-    if let componentArray = try? decodeIfPresent([String].self, forKey: key) {
-      // Handle array of components: ["date", "hourAndMinute"]
-      datePickerComponents = []
-      for component in componentArray {
-        switch component.lowercased() {
-        case "date":
-          datePickerComponents.insert(.date)
-        case "hourandminute":
-          datePickerComponents.insert(.hourAndMinute)
-//        case "era", "epoch":
-//          if #available(iOS 16.0, *) {
-//            datePickerComponents.insert(.era)
-//          }
-        default:
-          break
-        }
-      }
-    } else if let singleComponent = try? decodeIfPresent(String.self, forKey: key) {
-      // Simple single string component
-      switch singleComponent.lowercased() {
-      case "date":
-        datePickerComponents = .date
-      case "time":
-        datePickerComponents = .hourAndMinute
-      case "datetime":
-        datePickerComponents = [.date, .hourAndMinute]
-//      case "era", "epoch":
-//        if #available(iOS 16.0, *) {
-//          datePickerComponents = .era
-//        }
-      default:
-        datePickerComponents = .date
-      }
-    }
-    return datePickerComponents
+// MARK: - Node
+
+extension DatePickerProps {
+  static let nodeType = "DatePicker"
+
+  static func makeView(props: DatePickerProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(DatePickerView(props: props))
+  }
+
+  func bindEvents(emit: @escaping (_ name: String, _ value: String?) -> Void) {
+    onChange = { emit("change", ISO8601.string(from: $0)) }
+    onFocus = { emit("focus", nil) }
+    onBlur = { emit("blur", nil) }
   }
 }

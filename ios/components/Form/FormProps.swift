@@ -8,11 +8,14 @@ public struct ContentMargins: Decodable, Equatable {
     public var trailing: CGFloat?
 }
 
-public final class FormProps: ObservableObject, Decodable {
+public final class FormProps: NodeProps {
     @Published public var style: StyleProps?
     @Published var disabled: Bool = false
     @Published var scrollDisabled: Bool = false
     @Published var contentMargins: ContentMargins?
+
+    /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+    private(set) var presentKeys: Set<String> = []
 
     enum CodingKeys: String, CodingKey {
         case style
@@ -23,16 +26,27 @@ public final class FormProps: ObservableObject, Decodable {
 
     public required init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        presentKeys = container.presentKeys
         style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
         disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
         scrollDisabled = try container.decodeIfPresent(Bool.self, forKey: .scrollDisabled) ?? false
         contentMargins = try container.decodeIfPresent(ContentMargins.self, forKey: .contentMargins)
     }
 
-    public func merge(from other: FormProps, presentKeys: Set<String>) {
-        assign(\.style, from: other, key: "style", presentKeys: presentKeys)
-        assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
-        assign(\.scrollDisabled, from: other, key: "scrollDisabled", presentKeys: presentKeys)
-        assign(\.contentMargins, from: other, key: "contentMargins", presentKeys: presentKeys)
+    public func merge(from other: FormProps) {
+        assign(\.style, .style, from: other)
+        assign(\.disabled, .disabled, from: other)
+        assign(\.scrollDisabled, .scrollDisabled, from: other)
+        assign(\.contentMargins, .contentMargins, from: other)
     }
+}
+
+// MARK: - Node
+
+extension FormProps {
+  static let nodeType = "Form"
+
+  static func makeView(props: FormProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(FormView(props: props) { childrenView(children) })
+  }
 }

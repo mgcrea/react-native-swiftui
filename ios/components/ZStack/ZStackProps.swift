@@ -1,8 +1,11 @@
 import SwiftUI
 
-public final class ZStackProps: ObservableObject, Decodable {
+public final class ZStackProps: NodeProps {
   @Published public var alignment: Alignment = .center
   @Published public var style: StyleProps?
+
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
 
   enum CodingKeys: String, CodingKey {
     case alignment, style
@@ -10,23 +13,23 @@ public final class ZStackProps: ObservableObject, Decodable {
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    let alignmentString = try container.decodeIfPresent(String.self, forKey: .alignment) ?? "center"
-    switch alignmentString {
-    case "topLeading": alignment = .topLeading
-    case "top": alignment = .top
-    case "topTrailing": alignment = .topTrailing
-    case "leading": alignment = .leading
-    case "trailing": alignment = .trailing
-    case "bottomLeading": alignment = .bottomLeading
-    case "bottom": alignment = .bottom
-    case "bottomTrailing": alignment = .bottomTrailing
-    default: alignment = .center
-    }
+    presentKeys = container.presentKeys
+    alignment = try container.decodeIfPresent(String.self, forKey: .alignment).flatMap(Alignment.init(name:)) ?? .center
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: ZStackProps, presentKeys: Set<String>) {
-    assign(\.alignment, from: other, key: "alignment", presentKeys: presentKeys)
-    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
+  public func merge(from other: ZStackProps) {
+    assign(\.alignment, .alignment, from: other)
+    assign(\.style, .style, from: other)
+  }
+}
+
+// MARK: - Node
+
+extension ZStackProps {
+  static let nodeType = "ZStack"
+
+  static func makeView(props: ZStackProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(ZStackView(props: props) { childrenView(children) })
   }
 }

@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Props
 
-public final class MultiPickerProps: ObservableObject, Decodable {
+public final class MultiPickerProps: NodeProps {
   @Published var components: [MultiPickerComponent] = []
   @Published var selections: [String] = []
   @Published var label: String = ""
@@ -19,12 +19,21 @@ public final class MultiPickerProps: ObservableObject, Decodable {
     let options: [MultiPickerOption]
     let width: CGFloat?
     let config: MultiPickerComponentConfig?
+    /// Resolved once at decode time. It was a computed property read twice per
+    /// wheel per body evaluation, regenerating up to 10,000 options each time.
+    let computedOptions: [MultiPickerOption]
 
-    var computedOptions: [MultiPickerOption] {
-      if config != nil {
-        return config!.generateOptions()
-      }
-      return options
+    private enum CodingKeys: String, CodingKey {
+      case label, options, width, config
+    }
+
+    init(from decoder: Decoder) throws {
+      let container = try decoder.container(keyedBy: CodingKeys.self)
+      label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
+      options = try container.decodeIfPresent([MultiPickerOption].self, forKey: .options) ?? []
+      width = try container.decodeIfPresent(CGFloat.self, forKey: .width)
+      config = try container.decodeIfPresent(MultiPickerComponentConfig.self, forKey: .config)
+      computedOptions = config?.generateOptions() ?? options
     }
   }
 
@@ -59,6 +68,9 @@ public final class MultiPickerProps: ObservableObject, Decodable {
   }
 
   // Coding keys for decoding
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
+
   enum CodingKeys: String, CodingKey, CaseIterable {
     case components, selections, label, labelStyle, disabled, style
   }
@@ -66,6 +78,7 @@ public final class MultiPickerProps: ObservableObject, Decodable {
   // Decodable initializer
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    presentKeys = container.presentKeys
     selections = try container.decodeIfPresent([String].self, forKey: .selections) ?? []
     components = try container.decodeIfPresent([MultiPickerComponent].self, forKey: .components) ?? []
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
@@ -91,15 +104,31 @@ public final class MultiPickerProps: ObservableObject, Decodable {
 
   public init() {}
 
-  public func merge(from other: MultiPickerProps, presentKeys: Set<String>) {
-    assign(\.selections, from: other, key: "selections", presentKeys: presentKeys)
-    assign(\.components, from: other, key: "components", presentKeys: presentKeys)
-    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
-    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
-    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
-    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
-    if presentKeys.contains("selections") || presentKeys.contains("components") {
+  public func merge(from other: MultiPickerProps) {
+    assign(\.selections, .selections, from: other)
+    assign(\.components, .components, from: other)
+    assign(\.label, .label, from: other)
+    assign(\.labelStyle, .labelStyle, from: other)
+    assign(\.disabled, .disabled, from: other)
+    assign(\.style, .style, from: other)
+    if other.isPresent(.selections) || other.isPresent(.components) {
       normalizeSelectionsToMatchComponents()
     }
+  }
+}
+
+// MARK: - Node
+
+extension MultiPickerProps {
+  static let nodeType = "MultiPicker"
+
+  static func makeView(props: MultiPickerProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(MultiPickerView(props: props))
+  }
+
+  func bindEvents(emit: @escaping (_ name: String, _ value: String?) -> Void) {
+    onChange = { emit("change", $0) }
+    onFocus = { emit("focus", nil) }
+    onBlur = { emit("blur", nil) }
   }
 }

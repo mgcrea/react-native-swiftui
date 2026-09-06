@@ -4,16 +4,19 @@
  *   @Published public var isOn: Bool = false                 // 1. declaration
  *   case isOn                                                // 2. CodingKeys
  *   isOn = try container.decodeIfPresent(...) ?? false       // 3. init(from:)
- *   assign(\.isOn, from: other, key: "isOn", ...)            // 4. merge
+ *   assign(\.isOn, .isOn, from: other)                       // 4. merge
  *
  * Nothing in Swift ties those together. Dropping one is silent: the prop simply
  * stops arriving, or stops updating, with no compile error. That is how
  * `ButtonProps.disabled` came to be declared, rendered and exposed in the TS
  * types while missing from both `CodingKeys` and `merge`.
  *
- * The `key:` string in `assign` is the sharpest edge — it is matched against the
- * JSON payload at runtime, so a typo makes the prop permanently un-updatable
- * with nothing to notice it. Check 4 below is the only thing that can catch it.
+ * The key in `assign` is a `CodingKeys` case, so a key that does not exist is a
+ * compile error. A key that exists but does not match the key path still
+ * compiles — `assign(\.isOn, .label, …)` — and check 4 below catches that.
+ *
+ * Check 5: `presentKeys` must be captured from the decoder in `init(from:)`,
+ * or `merge` sees an empty set and every update is dropped.
  *
  * Exemptions live next to the code they exempt: put `props-parity:internal` on
  * the declaration line or the line above it for a prop that is owned natively
@@ -172,7 +175,7 @@ const check = (file) => {
     initBody += src.slice(open, matchingClose(masked, depths, open));
   }
 
-  // 4. Fields written by `merge(from:presentKeys:)`, plus keyPath/key agreement.
+  // 4. Fields written by `merge(from:)`, plus keyPath/key agreement.
   const merged = new Set();
   const keyMismatches = [];
   let hasMerge = false;
@@ -183,10 +186,10 @@ const check = (file) => {
     const open = m.index + m[0].length;
     const raw = src.slice(open, matchingClose(masked, depths, open));
     mergeBody += raw;
-    // `assign(\.name, from: other, key: "name", …)`
-    for (const a of raw.matchAll(/assign\(\\\.(\w+)[\s\S]{0,160}?key:\s*"([^"]*)"/g)) {
+    // `assign(\.name, .name, …)`
+    for (const a of raw.matchAll(/assign\(\\\.(\w+),\s*\.(\w+)/g)) {
       merged.add(a[1]);
-      if (a[1] !== a[2]) keyMismatches.push(`\\.${a[1]} passes key: "${a[2]}"`);
+      if (a[1] !== a[2]) keyMismatches.push(`\\.${a[1]} passes key .${a[2]}`);
     }
   }
 
@@ -211,7 +214,15 @@ const check = (file) => {
   if (!hasMerge) {
     problems.push({
       file,
-      message: `${file} \`${body.name}\` has no merge(from:presentKeys:) — prop updates cannot land`,
+      message: `${file} \`${body.name}\` has no merge(from:) — prop updates cannot land`,
+    });
+  }
+
+  // 5. `presentKeys` captured from the decoder.
+  if (!/presentKeys\s*=\s*container\.presentKeys/.test(initBody)) {
+    problems.push({
+      file,
+      message: `${file} \`${body.name}\` init(from:) never captures presentKeys, so merge() sees an empty set`,
     });
   }
 

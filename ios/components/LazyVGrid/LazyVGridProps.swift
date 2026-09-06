@@ -1,10 +1,13 @@
 import SwiftUI
 
-public final class LazyVGridProps: ObservableObject, Decodable {
+public final class LazyVGridProps: NodeProps {
   @Published public var columns: [GridItemConfig]
   @Published public var spacing: CGFloat?
   @Published public var alignment: HorizontalAlignment?
   @Published public var style: StyleProps?
+
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
 
   enum CodingKeys: String, CodingKey {
     case columns, spacing, alignment, style
@@ -12,23 +15,27 @@ public final class LazyVGridProps: ObservableObject, Decodable {
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    presentKeys = container.presentKeys
     columns = try container.decode([GridItemConfig].self, forKey: .columns)
     spacing = try container.decodeIfPresent(CGFloat.self, forKey: .spacing)
-    // Decode alignment
-    if let alignmentString = try container.decodeIfPresent(String.self, forKey: .alignment) {
-      switch alignmentString {
-      case "leading": alignment = .leading
-      case "trailing": alignment = .trailing
-      default: alignment = .center
-      }
-    }
+    alignment = try container.decodeIfPresent(String.self, forKey: .alignment).flatMap(HorizontalAlignment.init(name:))
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: LazyVGridProps, presentKeys: Set<String>) {
-    assign(\.columns, from: other, key: "columns", presentKeys: presentKeys)
-    assign(\.spacing, from: other, key: "spacing", presentKeys: presentKeys)
-    assign(\.alignment, from: other, key: "alignment", presentKeys: presentKeys)
-    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
+  public func merge(from other: LazyVGridProps) {
+    assign(\.columns, .columns, from: other)
+    assign(\.spacing, .spacing, from: other)
+    assign(\.alignment, .alignment, from: other)
+    assign(\.style, .style, from: other)
+  }
+}
+
+// MARK: - Node
+
+extension LazyVGridProps {
+  static let nodeType = "LazyVGrid"
+
+  static func makeView(props: LazyVGridProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(LazyVGridView(props: props) { childrenView(children) })
   }
 }

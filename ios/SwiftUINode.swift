@@ -1,14 +1,28 @@
 // ios/SwiftUINode.swift
 import SwiftUI
 
-// Protocol for all SwiftUI nodes
+/// A decoded node of the view tree. The three methods are the type-erased entry
+/// points the root uses; `GenericNode<T>` implements each once by forwarding to
+/// the props type, so nothing outside this file needs to know a node's concrete
+/// props type.
 public protocol SwiftUINode: Identifiable {
   var id: String { get }
   var children: [any SwiftUINode]? { get }
+
+  /// Decodes `json` as this node's props type and merges the present keys in.
+  func merge(json: Data, using decoder: JSONDecoder) throws
+  /// Wires the props' event closures to `onEvent(name, type, id, value)`.
+  func bindEvents(onEvent: @escaping (String, String, String, String?) -> Void)
+  /// Builds this node's SwiftUI view, children included.
+  func makeView() -> AnyView
+  /// A copy of this node holding `children`. When `previous` is a node of the
+  /// same props type, the copy keeps `previous`'s props *instance* with this
+  /// node's props merged in, so the views observing it keep their identity.
+  func adopting(previous: (any SwiftUINode)?, children: [any SwiftUINode]?) -> any SwiftUINode
 }
 
-// Generic node struct
-struct GenericNode<T: Decodable>: SwiftUINode, Decodable {
+/// Generic node struct
+struct GenericNode<T: NodeProps>: SwiftUINode, Decodable {
   let id: String
   let children: [any SwiftUINode]?
   let props: T
@@ -17,12 +31,42 @@ struct GenericNode<T: Decodable>: SwiftUINode, Decodable {
     case id, props, children
   }
 
+  init(id: String, children: [any SwiftUINode]?, props: T) {
+    self.id = id
+    self.children = children
+    self.props = props
+  }
+
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     id = try container.decode(String.self, forKey: .id)
-    // Only decode children if the component supports them (determined by type or props)
     children = try container.decodeIfPresent(NodeChildren.self, forKey: .children)?.nodes
     props = try container.decode(T.self, forKey: .props)
+  }
+
+  func merge(json: Data, using decoder: JSONDecoder) throws {
+    props.merge(from: try decoder.decode(T.self, from: json))
+  }
+
+  func bindEvents(onEvent: @escaping (String, String, String, String?) -> Void) {
+    // Only the id string is captured. Capturing the node would capture `props`,
+    // and these closures are stored on `props` — a retain cycle.
+    let id = id
+    props.bindEvents { name, value in
+      onEvent(name, T.nodeType, id, value)
+    }
+  }
+
+  func makeView() -> AnyView {
+    T.makeView(props: props, children: children)
+  }
+
+  func adopting(previous: (any SwiftUINode)?, children: [any SwiftUINode]?) -> any SwiftUINode {
+    if let previous = previous as? GenericNode<T> {
+      previous.props.merge(from: props)
+      return GenericNode(id: id, children: children, props: previous.props)
+    }
+    return GenericNode(id: id, children: children, props: props)
   }
 }
 
@@ -52,53 +96,7 @@ private struct NodeWrapper: Decodable {
   init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let type = try container.decode(String.self, forKey: .type)
-
-    switch type {
-    case "Button":
-      node = try GenericNode<ButtonProps>(from: decoder)
-    case "DatePicker":
-      node = try GenericNode<DatePickerProps>(from: decoder)
-    case "Slider":
-      node = try GenericNode<SliderProps>(from: decoder)
-    case "TextField":
-      node = try GenericNode<TextFieldProps>(from: decoder)
-    case "NumberField":
-      node = try GenericNode<NumberFieldProps>(from: decoder)
-    case "Picker":
-      node = try GenericNode<PickerProps>(from: decoder)
-    case "MultiPicker":
-      node = try GenericNode<MultiPickerProps>(from: decoder)
-    case "Stepper":
-      node = try GenericNode<StepperProps>(from: decoder)
-    case "Text":
-      node = try GenericNode<TextProps>(from: decoder)
-    case "Toggle":
-      node = try GenericNode<ToggleProps>(from: decoder)
-    case "Form":
-      node = try GenericNode<FormProps>(from: decoder)
-    case "Section":
-      node = try GenericNode<SectionProps>(from: decoder)
-    case "Group":
-      node = try GenericNode<GroupProps>(from: decoder)
-    case "HStack":
-      node = try GenericNode<HStackProps>(from: decoder)
-    case "VStack":
-      node = try GenericNode<VStackProps>(from: decoder)
-    case "ZStack":
-      node = try GenericNode<ZStackProps>(from: decoder)
-    case "Sheet":
-      node = try GenericNode<SheetProps>(from: decoder)
-    case "SheetPicker":
-      node = try GenericNode<SheetPickerProps>(from: decoder)
-    case "Rectangle":
-      node = try GenericNode<RectangleProps>(from: decoder)
-    case "Spacer":
-      node = try GenericNode<SpacerProps>(from: decoder)
-    case "Image":
-      node = try GenericNode<ImageProps>(from: decoder)
-    case "LazyVGrid":
-      node = try GenericNode<LazyVGridProps>(from: decoder)
-    default:
+    guard let makeNode = NodeRegistry.decoders[type] else {
       throw DecodingError.typeMismatch(
         (any SwiftUINode).self,
         DecodingError.Context(
@@ -107,10 +105,10 @@ private struct NodeWrapper: Decodable {
         )
       )
     }
+    node = try makeNode(decoder)
   }
 }
 
-// Empty props for components like Group that have no props
 // JSON decoding utility
 enum JSONDecodingError: Error {
   case invalidJSON
@@ -127,5 +125,16 @@ func decodeSwiftUINode(from json: String) throws -> any SwiftUINode {
     return wrapper.node
   } catch {
     throw JSONDecodingError.parsingFailed(error)
+  }
+}
+
+/// Renders a node's children in order. Every container view's body used to
+/// carry this `if let` + `ForEach` inline.
+@ViewBuilder
+func childrenView(_ children: [any SwiftUINode]?) -> some View {
+  if let children {
+    ForEach(children, id: \.id) { child in
+      child.makeView()
+    }
   }
 }

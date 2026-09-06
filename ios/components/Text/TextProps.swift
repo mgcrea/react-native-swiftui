@@ -1,14 +1,18 @@
 import SwiftUI
 
-public final class TextProps: ObservableObject, Decodable {
+public final class TextProps: NodeProps {
   @Published public var text: String
-  @Published public var font: Font = .body
-  @Published public var color: Color = .primary
   @Published public var alignment: TextAlignment = .leading
   @Published public var style: StyleProps?
 
+  // No `font`/`color` here: both were decoded and merged but never rendered
+  // (`TextView` had them commented out), and neither exists in the TS props.
+  // Text styling goes through `style`.
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
+
   enum CodingKeys: String, CodingKey {
-    case text, font, color, alignment, style
+    case text, alignment, style
   }
 
   public init(text: String = "") {
@@ -17,24 +21,27 @@ public final class TextProps: ObservableObject, Decodable {
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    presentKeys = container.presentKeys
     text = try container.decode(String.self, forKey: .text)
-    if let fontString = try container.decodeIfPresent(String.self, forKey: .font) {
-      font = fontString == "headline" ? .headline : fontString == "title" ? .title : .body
-    }
-    if let colorString = try container.decodeIfPresent(String.self, forKey: .color) {
-      color = Color(colorString)
-    }
     if let alignmentString = try container.decodeIfPresent(String.self, forKey: .alignment) {
       alignment = alignmentString == "center" ? .center : alignmentString == "trailing" ? .trailing : .leading
     }
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: TextProps, presentKeys: Set<String>) {
-    assign(\.text, from: other, key: "text", presentKeys: presentKeys)
-    assign(\.font, from: other, key: "font", presentKeys: presentKeys)
-    assign(\.color, from: other, key: "color", presentKeys: presentKeys)
-    assign(\.alignment, from: other, key: "alignment", presentKeys: presentKeys)
-    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
+  public func merge(from other: TextProps) {
+    assign(\.text, .text, from: other)
+    assign(\.alignment, .alignment, from: other)
+    assign(\.style, .style, from: other)
+  }
+}
+
+// MARK: - Node
+
+extension TextProps {
+  static let nodeType = "Text"
+
+  static func makeView(props: TextProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(TextView(props: props))
   }
 }

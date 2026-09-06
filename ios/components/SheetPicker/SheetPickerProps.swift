@@ -27,7 +27,7 @@ public struct SheetPickerOption: Identifiable, Decodable, Hashable {
   }
 }
 
-public final class SheetPickerProps: ObservableObject, Decodable {
+public final class SheetPickerProps: NodeProps {
   @Published public var isPresented: Bool = false
   @Published public var title: String = ""
   @Published public var searchPlaceholder: String = "Search"
@@ -46,6 +46,9 @@ public final class SheetPickerProps: ObservableObject, Decodable {
   public var onDismiss: (() -> Void)?
   internal var isAutoDismissing: Bool = false
 
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
+
   enum CodingKeys: String, CodingKey {
     case isPresented
     case title
@@ -62,6 +65,7 @@ public final class SheetPickerProps: ObservableObject, Decodable {
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    presentKeys = container.presentKeys
     isPresented = try container.decodeIfPresent(Bool.self, forKey: .isPresented) ?? false
     title = try container.decodeIfPresent(String.self, forKey: .title) ?? ""
     searchPlaceholder = try container.decodeIfPresent(String.self, forKey: .searchPlaceholder) ?? "Search"
@@ -72,29 +76,23 @@ public final class SheetPickerProps: ObservableObject, Decodable {
     labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
     placeholder = try container.decodeIfPresent(String.self, forKey: .placeholder) ?? ""
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
-    if let displayModeString = try container.decodeIfPresent(String.self, forKey: .displayMode),
-       let parsedDisplayMode = SheetPickerDisplayMode(rawValue: displayModeString)
-    {
-      displayMode = parsedDisplayMode
-    } else {
-      displayMode = .standalone
-    }
+    displayMode = try container.decodeEnum(SheetPickerDisplayMode.self, forKey: .displayMode, default: .standalone)
   }
 
   public init() {}
 
-  public func merge(from other: SheetPickerProps, presentKeys: Set<String>) {
-    assign(\.isPresented, from: other, key: "isPresented", presentKeys: presentKeys)
-    assign(\.title, from: other, key: "title", presentKeys: presentKeys)
-    assign(\.searchPlaceholder, from: other, key: "searchPlaceholder", presentKeys: presentKeys)
-    assign(\.selectedValue, from: other, key: "selectedValue", presentKeys: presentKeys)
-    assign(\.options, from: other, key: "options", presentKeys: presentKeys)
-    assign(\.autoDismiss, from: other, key: "autoDismiss", presentKeys: presentKeys)
-    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
-    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
-    assign(\.placeholder, from: other, key: "placeholder", presentKeys: presentKeys)
-    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
-    assign(\.displayMode, from: other, key: "displayMode", presentKeys: presentKeys)
+  public func merge(from other: SheetPickerProps) {
+    assign(\.isPresented, .isPresented, from: other)
+    assign(\.title, .title, from: other)
+    assign(\.searchPlaceholder, .searchPlaceholder, from: other)
+    assign(\.selectedValue, .selectedValue, from: other)
+    assign(\.options, .options, from: other)
+    assign(\.autoDismiss, .autoDismiss, from: other)
+    assign(\.label, .label, from: other)
+    assign(\.labelStyle, .labelStyle, from: other)
+    assign(\.placeholder, .placeholder, from: other)
+    assign(\.disabled, .disabled, from: other)
+    assign(\.displayMode, .displayMode, from: other)
   }
 
   public var filteredOptions: [SheetPickerOption] {
@@ -132,5 +130,20 @@ public final class SheetPickerProps: ObservableObject, Decodable {
       isAutoDismissing = true
       isPresented = false
     }
+  }
+}
+
+// MARK: - Node
+
+extension SheetPickerProps {
+  static let nodeType = "SheetPicker"
+
+  static func makeView(props: SheetPickerProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(SheetPickerView(props: props))
+  }
+
+  func bindEvents(emit: @escaping (_ name: String, _ value: String?) -> Void) {
+    onSelect = { emit("change", $0) }
+    onDismiss = { emit("dismiss", nil) }
   }
 }

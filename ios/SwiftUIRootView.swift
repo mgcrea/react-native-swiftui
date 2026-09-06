@@ -30,132 +30,15 @@ public class SwiftUIRootView: SwiftUIContainerView {
   }
 
   private func updateSwiftUIView(with node: (any SwiftUINode)?) {
-    hostingController.rootView = AnyView(
-      node.map { AnyView(Self.buildSwiftUIView(from: $0)) } ?? AnyView(Text("Invalid view tree"))
-    )
+    // `node.makeView()` reads nothing but the node, so no `self` is captured by
+    // the view tree stored in `hostingController` — which `self` owns. Doing
+    // this through an instance method once leaked the entire root per mount.
+    hostingController.rootView = node?.makeView() ?? AnyView(Text("Invalid view tree"))
   }
 
-  // Static on purpose: this builds escaping @ViewBuilder closures that are stored
-  // in `hostingController.rootView`, and `hostingController` is owned by `self`.
-  // Capturing `self` here (as `self.buildSwiftUIView(from:)` did) closed a
-  // reference cycle that leaked the entire root, its hosting controller and the
-  // whole decoded node tree on every mount. It reads nothing but its argument.
-  private static func buildSwiftUIView(from node: any SwiftUINode) -> AnyView {
-    switch node {
-    case let group as GenericNode<GroupProps>:
-      AnyView(GroupView(props: group.props, content: {
-        if let children = group.children {
-          ForEach(children, id: \.id) { child in
-            buildSwiftUIView(from: child)
-          }
-        }
-      }))
-    case let hstack as GenericNode<HStackProps>:
-      AnyView(HStackView(props: hstack.props, content: {
-        if let children = hstack.children {
-          ForEach(children, id: \.id) { child in
-            buildSwiftUIView(from: child)
-          }
-        }
-      }))
-    case let vstack as GenericNode<VStackProps>:
-      AnyView(VStackView(props: vstack.props, content: {
-        if let children = vstack.children {
-          ForEach(children, id: \.id) { child in
-            buildSwiftUIView(from: child)
-          }
-        }
-      }))
-    case let zstack as GenericNode<ZStackProps>:
-      AnyView(ZStackView(props: zstack.props, content: {
-        if let children = zstack.children {
-          ForEach(children, id: \.id) { child in
-            buildSwiftUIView(from: child)
-          }
-        }
-      }))
-    case let form as GenericNode<FormProps>:
-      AnyView(FormView(props: form.props, content: {
-        if let children = form.children {
-          ForEach(children, id: \.id) { child in
-            buildSwiftUIView(from: child)
-          }
-        }
-      }))
-    case let section as GenericNode<SectionProps>:
-      AnyView(SectionView(props: section.props, content: {
-        if let children = section.children {
-          ForEach(children, id: \.id) { child in
-            buildSwiftUIView(from: child)
-          }
-        }
-      }))
-    case let sheet as GenericNode<SheetProps>:
-      AnyView(SheetView(props: sheet.props, content: {
-        if let children = sheet.children {
-          ForEach(children, id: \.id) { child in
-            buildSwiftUIView(from: child)
-          }
-        }
-      }))
-    case let lazyVGrid as GenericNode<LazyVGridProps>:
-      AnyView(LazyVGridView(props: lazyVGrid.props, content: {
-        if let children = lazyVGrid.children {
-          ForEach(children, id: \.id) { child in
-            buildSwiftUIView(from: child)
-          }
-        }
-      }))
-    case let button as GenericNode<ButtonProps>:
-      AnyView(ButtonView(props: button.props, content: {
-        if let children = button.children {
-          ForEach(children, id: \.id) { child in
-            buildSwiftUIView(from: child)
-          }
-        }
-      }))
-    case let stepper as GenericNode<StepperProps>:
-      AnyView(StepperView(props: stepper.props, content: {
-        if let children = stepper.children {
-          ForEach(children, id: \.id) { child in
-            buildSwiftUIView(from: child)
-          }
-        }
-      }))
-    case let slider as GenericNode<SliderProps>:
-      AnyView(SliderView(props: slider.props, content: {
-        if let children = slider.children {
-          ForEach(children, id: \.id) { child in
-            buildSwiftUIView(from: child)
-          }
-        }
-      }))
-    case let text as GenericNode<TextProps>:
-      AnyView(TextView(props: text.props))
-    case let textField as GenericNode<TextFieldProps>:
-      AnyView(TextFieldView(props: textField.props))
-    case let numberField as GenericNode<NumberFieldProps>:
-      AnyView(NumberFieldView(props: numberField.props))
-    case let picker as GenericNode<PickerProps>:
-      AnyView(PickerView(props: picker.props))
-    case let sheetPicker as GenericNode<SheetPickerProps>:
-      AnyView(SheetPickerView(props: sheetPicker.props))
-    case let multiPicker as GenericNode<MultiPickerProps>:
-      AnyView(MultiPickerView(props: multiPicker.props))
-    case let datePicker as GenericNode<DatePickerProps>:
-      AnyView(DatePickerView(props: datePicker.props))
-    case let toggle as GenericNode<ToggleProps>:
-      AnyView(ToggleView(props: toggle.props))
-    case let rectangle as GenericNode<RectangleProps>:
-      AnyView(RectangleView(props: rectangle.props))
-    case let spacer as GenericNode<SpacerProps>:
-      AnyView(SpacerView(props: spacer.props))
-    case let image as GenericNode<ImageProps>:
-      AnyView(ImageView(props: image.props))
-    default:
-      AnyView(EmptyView())
-    }
-  }
+  /// One decoder for every update: it was allocated per keystroke, alongside a
+  /// second `JSONSerialization` parse of the same bytes just to list the keys.
+  private static let decoder = JSONDecoder()
 
   @objc public func updateChildProps(_ identifier: String, props propsJson: String) {
     DispatchQueue.main.async { [weak self] in
@@ -164,111 +47,12 @@ public class SwiftUIRootView: SwiftUIContainerView {
         print("Node with id \(identifier) not found")
         return
       }
-
       guard let updatedPropsData = propsJson.data(using: .utf8) else {
         print("Failed to encode props for \(identifier)")
         return
       }
-
       do {
-        let decoder = JSONDecoder()
-        let presentKeys: Set<String>
-        if let dict = try JSONSerialization.jsonObject(with: updatedPropsData) as? [String: Any] {
-          presentKeys = Set(dict.keys)
-        } else {
-          presentKeys = []
-        }
-        switch node {
-        case let button as GenericNode<ButtonProps>:
-          let updatedProps = try decoder.decode(ButtonProps.self, from: updatedPropsData)
-          button.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let datePicker as GenericNode<DatePickerProps>:
-          let updatedProps = try decoder.decode(DatePickerProps.self, from: updatedPropsData)
-          datePicker.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let stepper as GenericNode<StepperProps>:
-          let updatedProps = try decoder.decode(StepperProps.self, from: updatedPropsData)
-          stepper.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let text as GenericNode<TextProps>:
-          let updatedProps = try decoder.decode(TextProps.self, from: updatedPropsData)
-          text.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let textField as GenericNode<TextFieldProps>:
-          let updatedProps = try decoder.decode(TextFieldProps.self, from: updatedPropsData)
-          textField.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let numberField as GenericNode<NumberFieldProps>:
-          let updatedProps = try decoder.decode(NumberFieldProps.self, from: updatedPropsData)
-          numberField.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let toggle as GenericNode<ToggleProps>:
-          let updatedProps = try decoder.decode(ToggleProps.self, from: updatedPropsData)
-          toggle.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let slider as GenericNode<SliderProps>:
-          let updatedProps = try decoder.decode(SliderProps.self, from: updatedPropsData)
-          slider.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let picker as GenericNode<PickerProps>:
-          let updatedProps = try decoder.decode(PickerProps.self, from: updatedPropsData)
-          picker.props.merge(from: updatedProps, presentKeys: presentKeys)
-        case let sheetPicker as GenericNode<SheetPickerProps>:
-          let updatedProps = try decoder.decode(SheetPickerProps.self, from: updatedPropsData)
-          sheetPicker.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let multiPicker as GenericNode<MultiPickerProps>:
-          let updatedProps = try decoder.decode(MultiPickerProps.self, from: updatedPropsData)
-          multiPicker.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let form as GenericNode<FormProps>:
-          let updatedProps = try decoder.decode(FormProps.self, from: updatedPropsData)
-          form.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let section as GenericNode<SectionProps>:
-          let updatedProps = try decoder.decode(SectionProps.self, from: updatedPropsData)
-          section.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let group as GenericNode<GroupProps>:
-          let updatedProps = try decoder.decode(GroupProps.self, from: updatedPropsData)
-          group.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let hstack as GenericNode<HStackProps>:
-          let updatedProps = try decoder.decode(HStackProps.self, from: updatedPropsData)
-          hstack.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let vstack as GenericNode<VStackProps>:
-          let updatedProps = try decoder.decode(VStackProps.self, from: updatedPropsData)
-          vstack.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let zstack as GenericNode<ZStackProps>:
-          let updatedProps = try decoder.decode(ZStackProps.self, from: updatedPropsData)
-          zstack.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let sheet as GenericNode<SheetProps>:
-          let updatedProps = try decoder.decode(SheetProps.self, from: updatedPropsData)
-          sheet.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let rectangle as GenericNode<RectangleProps>:
-          let updatedProps = try decoder.decode(RectangleProps.self, from: updatedPropsData)
-          rectangle.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let image as GenericNode<ImageProps>:
-          let updatedProps = try decoder.decode(ImageProps.self, from: updatedPropsData)
-          image.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let lazyVGrid as GenericNode<LazyVGridProps>:
-          let updatedProps = try decoder.decode(LazyVGridProps.self, from: updatedPropsData)
-          lazyVGrid.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        case let spacer as GenericNode<SpacerProps>:
-          let updatedProps = try decoder.decode(SpacerProps.self, from: updatedPropsData)
-          spacer.props.merge(from: updatedProps, presentKeys: presentKeys)
-
-        default:
-          print("Unsupported node type for updateChildProps: \(type(of: node))")
-        }
+        try node.merge(json: updatedPropsData, using: Self.decoder)
       } catch {
         print("Failed to decode props for \(identifier): \(error)")
       }

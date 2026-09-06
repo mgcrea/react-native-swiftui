@@ -2,9 +2,14 @@ import SwiftUI
 
 // MARK: - Props
 
-public final class PickerProps: ObservableObject, Decodable {
-  @Published var options: [PickerOption] = []
-  @Published var config: PickerConfig?
+public final class PickerProps: NodeProps {
+  @Published var options: [PickerOption] = [] {
+    didSet { refreshComputedOptions() }
+  }
+
+  @Published var config: PickerConfig? {
+    didSet { refreshComputedOptions() }
+  }
   @Published var selection: String = ""
   @Published var label: String = ""
   @Published var labelStyle: StyleProps?
@@ -71,11 +76,14 @@ public final class PickerProps: ObservableObject, Decodable {
     }
   }
 
-  var computedOptions: [PickerOption] {
-    if config != nil {
-      return config!.generateOptions()
-    }
-    return options
+  /// Stored, not computed: this is read inside the `ForEach` on every body
+  /// evaluation, and a numeric `config` generates up to 10,000 options.
+  private(set) var computedOptions: [PickerOption] = []
+
+  /// Property observers do not fire from within `init`, so `init(from:)` calls
+  /// this explicitly; every later write goes through `didSet`.
+  private func refreshComputedOptions() {
+    computedOptions = config?.generateOptions() ?? options
   }
 
   enum PickerStyle: String, CaseIterable {
@@ -127,6 +135,9 @@ public final class PickerProps: ObservableObject, Decodable {
   }
 
   // Coding keys for decoding
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
+
   enum CodingKeys: String, CodingKey, CaseIterable {
     case label, labelStyle, selection, options, config, pickerStyle, controlSize, disabled, style
   }
@@ -134,34 +145,46 @@ public final class PickerProps: ObservableObject, Decodable {
   // Decodable initializer
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    presentKeys = container.presentKeys
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
     labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
     selection = try container.decodeIfPresent(String.self, forKey: .selection) ?? ""
     options = try container.decodeIfPresent([PickerOption].self, forKey: .options) ?? []
     config = try container.decodeIfPresent(PickerConfig.self, forKey: .config)
-    if let styleString = try container.decodeIfPresent(String.self, forKey: .pickerStyle),
-       let style = PickerStyle(rawValue: styleString)
-    {
-      pickerStyle = style
-    } else {
-      pickerStyle = .default // Default fallback
-    }
+    pickerStyle = try container.decodeEnum(PickerStyle.self, forKey: .pickerStyle, default: .default)
     controlSize = try container.decodeIfPresent(ControlSize.self, forKey: .controlSize)
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
+    refreshComputedOptions()
   }
 
   public init() {}
 
-  public func merge(from other: PickerProps, presentKeys: Set<String>) {
-    assign(\.options, from: other, key: "options", presentKeys: presentKeys)
-    assign(\.selection, from: other, key: "selection", presentKeys: presentKeys)
-    assign(\.config, from: other, key: "config", presentKeys: presentKeys)
-    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
-    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
-    assign(\.pickerStyle, from: other, key: "pickerStyle", presentKeys: presentKeys)
-    assign(\.controlSize, from: other, key: "controlSize", presentKeys: presentKeys)
-    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
-    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
+  public func merge(from other: PickerProps) {
+    assign(\.options, .options, from: other)
+    assign(\.selection, .selection, from: other)
+    assign(\.config, .config, from: other)
+    assign(\.label, .label, from: other)
+    assign(\.labelStyle, .labelStyle, from: other)
+    assign(\.pickerStyle, .pickerStyle, from: other)
+    assign(\.controlSize, .controlSize, from: other)
+    assign(\.disabled, .disabled, from: other)
+    assign(\.style, .style, from: other)
+  }
+}
+
+// MARK: - Node
+
+extension PickerProps {
+  static let nodeType = "Picker"
+
+  static func makeView(props: PickerProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(PickerView(props: props))
+  }
+
+  func bindEvents(emit: @escaping (_ name: String, _ value: String?) -> Void) {
+    onChange = { emit("change", $0) }
+    onFocus = { emit("focus", nil) }
+    onBlur = { emit("blur", nil) }
   }
 }

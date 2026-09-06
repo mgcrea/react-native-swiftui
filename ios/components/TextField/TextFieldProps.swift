@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Props
 
-final class TextFieldProps: ObservableObject, Decodable {
+final class TextFieldProps: NodeProps {
   @Published public var text: String = ""
   @Published public var label: String = ""
   @Published public var labelStyle: StyleProps?
@@ -24,12 +24,16 @@ final class TextFieldProps: ObservableObject, Decodable {
   public var onFocus: (() -> Void)?
   public var onBlur: (() -> Void)?
 
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
+
   enum CodingKeys: String, CodingKey {
     case text, label, labelStyle, placeholder, keyboardType, textContentType, returnKeyType, submitLabel, autocapitalizationType, maxLength, secure, multiline, disabled, error, helperText, style
   }
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    presentKeys = container.presentKeys
     text = try container.decodeIfPresent(String.self, forKey: .text) ?? ""
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
     labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
@@ -92,60 +96,43 @@ final class TextFieldProps: ObservableObject, Decodable {
     return newText
   }
 
-  public func merge(from other: TextFieldProps, presentKeys: Set<String>) {
-    assign(\.text, from: other, key: "text", presentKeys: presentKeys)
-    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
-    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
-    assign(\.placeholder, from: other, key: "placeholder", presentKeys: presentKeys)
-    assign(\.keyboardType, from: other, key: "keyboardType", presentKeys: presentKeys)
-    assign(\.textContentType, from: other, key: "textContentType", presentKeys: presentKeys)
-    assign(\.returnKeyType, from: other, key: "returnKeyType", presentKeys: presentKeys)
+  public func merge(from other: TextFieldProps) {
+    assign(\.text, .text, from: other)
+    assign(\.label, .label, from: other)
+    assign(\.labelStyle, .labelStyle, from: other)
+    assign(\.placeholder, .placeholder, from: other)
+    assign(\.keyboardType, .keyboardType, from: other)
+    assign(\.textContentType, .textContentType, from: other)
+    assign(\.returnKeyType, .returnKeyType, from: other)
     // SwiftUI's `SubmitLabel` is an opaque struct with no public members and no
     // `Equatable` conformance, so this one cannot compare before assigning and
     // stays unconditional. It drives no `onChange`, so it cannot echo.
-    if presentKeys.contains("submitLabel") {
+    if other.isPresent(.submitLabel) {
       submitLabel = other.submitLabel
     }
-    assign(\.autocapitalizationType, from: other, key: "autocapitalizationType", presentKeys: presentKeys)
-    assign(\.maxLength, from: other, key: "maxLength", presentKeys: presentKeys)
-    assign(\.secure, from: other, key: "secure", presentKeys: presentKeys)
-    assign(\.multiline, from: other, key: "multiline", presentKeys: presentKeys)
-    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
-    assign(\.error, from: other, key: "error", presentKeys: presentKeys)
-    assign(\.helperText, from: other, key: "helperText", presentKeys: presentKeys)
-    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
+    assign(\.autocapitalizationType, .autocapitalizationType, from: other)
+    assign(\.maxLength, .maxLength, from: other)
+    assign(\.secure, .secure, from: other)
+    assign(\.multiline, .multiline, from: other)
+    assign(\.disabled, .disabled, from: other)
+    assign(\.error, .error, from: other)
+    assign(\.helperText, .helperText, from: other)
+    assign(\.style, .style, from: other)
   }
 }
 
+// MARK: - Node
 
-extension KeyedDecodingContainer {
-  
-  func decodeSubmitLabelIfPresent(forKey key: Key) throws -> SubmitLabel? {
-    if let submitLabelString = try decodeIfPresent(String.self, forKey: key) {
-      switch submitLabelString {
-      case "continue":
-        return .continue
-      case "done":
-        return .done
-      case "go":
-        return .go
-      case "join":
-        return .join
-      case "next":
-        return .next
-      case "return":
-        return .return
-      case "route":
-        return .route
-      case "search":
-        return .search
-      case "send":
-        return .send
-      default:
-        return nil
-      }
-    }
-    return nil
+extension TextFieldProps {
+  static let nodeType = "TextField"
+
+  static func makeView(props: TextFieldProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(TextFieldView(props: props))
   }
-  
+
+  func bindEvents(emit: @escaping (_ name: String, _ value: String?) -> Void) {
+    onChange = { emit("change", $0) }
+    onFocus = { emit("focus", nil) }
+    onBlur = { emit("blur", nil) }
+  }
 }

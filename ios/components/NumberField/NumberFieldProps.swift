@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - Props
 
-final class NumberFieldProps: ObservableObject, Decodable {
+final class NumberFieldProps: NodeProps {
   @Published public var value: Double? = nil
   @Published public var label: String = ""
   @Published public var labelStyle: StyleProps?
@@ -19,12 +19,16 @@ final class NumberFieldProps: ObservableObject, Decodable {
   public var onFocus: (() -> Void)?
   public var onBlur: (() -> Void)?
 
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
+
   enum CodingKeys: String, CodingKey {
     case value, label, labelStyle, placeholder, keyboardType, returnKeyType, min, max, disabled, formatter, style
   }
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    presentKeys = container.presentKeys
     value = try container.decodeIfPresent(Double.self, forKey: .value) ?? nil
     label = try container.decodeIfPresent(String.self, forKey: .label) ?? ""
     labelStyle = try container.decodeIfPresent(StyleProps.self, forKey: .labelStyle)
@@ -74,71 +78,39 @@ final class NumberFieldProps: ObservableObject, Decodable {
     return result
   }
 
-  public func merge(from other: NumberFieldProps, presentKeys: Set<String>) {
-    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
-    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
-    assign(\.placeholder, from: other, key: "placeholder", presentKeys: presentKeys)
-    assign(\.keyboardType, from: other, key: "keyboardType", presentKeys: presentKeys)
-    assign(\.returnKeyType, from: other, key: "returnKeyType", presentKeys: presentKeys)
-    assign(\.min, from: other, key: "min", presentKeys: presentKeys)
-    assign(\.max, from: other, key: "max", presentKeys: presentKeys)
-    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
-    assign(\.formatter, from: other, key: "formatter", presentKeys: presentKeys)
-    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
+  public func merge(from other: NumberFieldProps) {
+    assign(\.label, .label, from: other)
+    assign(\.labelStyle, .labelStyle, from: other)
+    assign(\.placeholder, .placeholder, from: other)
+    assign(\.keyboardType, .keyboardType, from: other)
+    assign(\.returnKeyType, .returnKeyType, from: other)
+    assign(\.min, .min, from: other)
+    assign(\.max, .max, from: other)
+    assign(\.disabled, .disabled, from: other)
+    // `NumberFormatter` compares by identity, so `assign` would republish on
+    // every update carrying `formatter`. Compare the one thing that is decoded.
+    if other.isPresent(.formatter), formatter.numberStyle != other.formatter.numberStyle {
+      formatter = other.formatter
+    }
+    assign(\.style, .style, from: other)
     // Clamped against the min/max set above, so a single update carrying both
     // bounds and a value applies them in the right order.
-    assign(\.value, to: clamped(other.value), key: "value", presentKeys: presentKeys)
+    assign(\.value, .value, to: clamped(other.value), from: other)
   }
 }
 
-extension KeyedDecodingContainer {
-  func decodeFormatter(forKey key: Key) throws -> NumberFormatter {
-    if let formatterString = try decodeIfPresent(String.self, forKey: key) {
-      switch formatterString.lowercased() {
-      case "currency":
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        return formatter
-      case "decimal":
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-      case "percent":
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .percent
-        return formatter
-      case "scientific":
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .scientific
-        return formatter
-      case "spellOut":
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .spellOut
-        return formatter
-      case "ordinal":
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .ordinal
-        return formatter
-      case "currencyISOCode":
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currencyISOCode
-        return formatter
-      case "currencyPlural":
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currencyPlural
-        return formatter
-      case "currencyAccounting":
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currencyAccounting
-        return formatter
-      default:
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        return formatter
-      }
-    }
-    let formatter = NumberFormatter()
-    formatter.numberStyle = .decimal
-    return formatter
+// MARK: - Node
+
+extension NumberFieldProps {
+  static let nodeType = "NumberField"
+
+  static func makeView(props: NumberFieldProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(NumberFieldView(props: props))
+  }
+
+  func bindEvents(emit: @escaping (_ name: String, _ value: String?) -> Void) {
+    onChange = { emit("change", $0.map { String($0) } ?? "") }
+    onFocus = { emit("focus", nil) }
+    onBlur = { emit("blur", nil) }
   }
 }

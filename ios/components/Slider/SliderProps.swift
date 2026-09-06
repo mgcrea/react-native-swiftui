@@ -1,6 +1,6 @@
 import SwiftUI
 
-public final class SliderProps: ObservableObject, Decodable {
+public final class SliderProps: NodeProps {
   @Published public var value: Double
   @Published public var minimum: Double
   @Published public var maximum: Double
@@ -13,12 +13,16 @@ public final class SliderProps: ObservableObject, Decodable {
   public var onFocus: (() -> Void)?
   public var onBlur: (() -> Void)?
 
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
+
   enum CodingKeys: String, CodingKey {
     case value, minimum, maximum, step, label, labelStyle, disabled
   }
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    presentKeys = container.presentKeys
     value = try container.decodeIfPresent(Double.self, forKey: .value) ?? 0.0
     minimum = try container.decodeIfPresent(Double.self, forKey: .minimum) ?? 0.0
     maximum = try container.decodeIfPresent(Double.self, forKey: .maximum) ?? 100.0
@@ -42,14 +46,30 @@ public final class SliderProps: ObservableObject, Decodable {
     ClosedRange(orderedBounds: minimum, maximum)
   }
 
-  public func merge(from other: SliderProps, presentKeys: Set<String>) {
-    assign(\.minimum, from: other, key: "minimum", presentKeys: presentKeys)
-    assign(\.maximum, from: other, key: "maximum", presentKeys: presentKeys)
-    assign(\.step, from: other, key: "step", presentKeys: presentKeys)
-    assign(\.label, from: other, key: "label", presentKeys: presentKeys)
-    assign(\.labelStyle, from: other, key: "labelStyle", presentKeys: presentKeys)
-    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
+  public func merge(from other: SliderProps) {
+    assign(\.minimum, .minimum, from: other)
+    assign(\.maximum, .maximum, from: other)
+    assign(\.step, .step, from: other)
+    assign(\.label, .label, from: other)
+    assign(\.labelStyle, .labelStyle, from: other)
+    assign(\.disabled, .disabled, from: other)
     // Clamped against the bounds set above, so one update may carry both.
-    assign(\.value, to: range.clamping(other.value), key: "value", presentKeys: presentKeys)
+    assign(\.value, .value, to: range.clamping(other.value), from: other)
+  }
+}
+
+// MARK: - Node
+
+extension SliderProps {
+  static let nodeType = "Slider"
+
+  static func makeView(props: SliderProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(SliderView(props: props) { childrenView(children) })
+  }
+
+  func bindEvents(emit: @escaping (_ name: String, _ value: String?) -> Void) {
+    onChange = { emit("change", String($0)) }
+    onFocus = { emit("focus", nil) }
+    onBlur = { emit("blur", nil) }
   }
 }

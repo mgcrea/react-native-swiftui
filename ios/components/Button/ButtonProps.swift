@@ -1,6 +1,6 @@
 import SwiftUI
 
-public final class ButtonProps: ObservableObject, Decodable {
+public final class ButtonProps: NodeProps {
   @Published var title: String? = nil
   @Published var buttonStyle: ButtonStyle = .default
   @Published var disabled: Bool = false
@@ -43,27 +43,27 @@ public final class ButtonProps: ObservableObject, Decodable {
     }
   }
 
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
+
   enum CodingKeys: String, CodingKey {
     case title, style, buttonStyle, disabled
   }
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    presentKeys = container.presentKeys
     title = try container.decodeIfPresent(String.self, forKey: .title)
-    if let buttonStyleString = try container.decodeIfPresent(String.self, forKey: .buttonStyle), let style = ButtonStyle(rawValue: buttonStyleString) {
-      buttonStyle = style
-    } else {
-      buttonStyle = .default
-    }
+    buttonStyle = try container.decodeEnum(ButtonStyle.self, forKey: .buttonStyle, default: .default)
     disabled = try container.decodeIfPresent(Bool.self, forKey: .disabled) ?? false
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: ButtonProps, presentKeys: Set<String>) {
-    assign(\.title, from: other, key: "title", presentKeys: presentKeys)
-    assign(\.buttonStyle, from: other, key: "buttonStyle", presentKeys: presentKeys)
-    assign(\.disabled, from: other, key: "disabled", presentKeys: presentKeys)
-    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
+  public func merge(from other: ButtonProps) {
+    assign(\.title, .title, from: other)
+    assign(\.buttonStyle, .buttonStyle, from: other)
+    assign(\.disabled, .disabled, from: other)
+    assign(\.style, .style, from: other)
   }
 }
 
@@ -97,5 +97,19 @@ struct ScaleButtonStyle: ButtonStyle {
     configuration.label
       .scaleEffect(configuration.isPressed ? pressedScale : normalScale)
       .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
+  }
+}
+
+// MARK: - Node
+
+extension ButtonProps {
+  static let nodeType = "Button"
+
+  static func makeView(props: ButtonProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(ButtonView(props: props) { childrenView(children) })
+  }
+
+  func bindEvents(emit: @escaping (_ name: String, _ value: String?) -> Void) {
+    onPress = { emit("press", nil) }
   }
 }

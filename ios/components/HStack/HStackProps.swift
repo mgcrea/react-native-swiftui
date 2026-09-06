@@ -1,9 +1,12 @@
 import SwiftUI
 
-public final class HStackProps: ObservableObject, Decodable {
+public final class HStackProps: NodeProps {
   @Published public var alignment: VerticalAlignment = .center
   @Published public var spacing: CGFloat?
   @Published public var style: StyleProps?
+
+  /// Keys that were in the payload this object was decoded from. See `NodeProps`.
+  private(set) var presentKeys: Set<String> = []
 
   enum CodingKeys: String, CodingKey {
     case alignment, spacing, style
@@ -11,21 +14,25 @@ public final class HStackProps: ObservableObject, Decodable {
 
   public required init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
-    let alignmentString = try container.decodeIfPresent(String.self, forKey: .alignment) ?? "center"
-    switch alignmentString {
-    case "top": alignment = .top
-    case "bottom": alignment = .bottom
-    case "firstTextBaseline": alignment = .firstTextBaseline
-    case "lastTextBaseline": alignment = .lastTextBaseline
-    default: alignment = .center
-    }
+    presentKeys = container.presentKeys
+    alignment = try container.decodeIfPresent(String.self, forKey: .alignment).flatMap(VerticalAlignment.init(name:)) ?? .center
     spacing = try container.decodeIfPresent(CGFloat.self, forKey: .spacing)
     style = try container.decodeIfPresent(StyleProps.self, forKey: .style)
   }
 
-  public func merge(from other: HStackProps, presentKeys: Set<String>) {
-    assign(\.alignment, from: other, key: "alignment", presentKeys: presentKeys)
-    assign(\.spacing, from: other, key: "spacing", presentKeys: presentKeys)
-    assign(\.style, from: other, key: "style", presentKeys: presentKeys)
+  public func merge(from other: HStackProps) {
+    assign(\.alignment, .alignment, from: other)
+    assign(\.spacing, .spacing, from: other)
+    assign(\.style, .style, from: other)
+  }
+}
+
+// MARK: - Node
+
+extension HStackProps {
+  static let nodeType = "HStack"
+
+  static func makeView(props: HStackProps, children: [any SwiftUINode]?) -> AnyView {
+    AnyView(HStackView(props: props) { childrenView(children) })
   }
 }
