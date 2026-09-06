@@ -74,4 +74,8 @@ class HybridSFSymbolView: HybridSFSymbolViewSpec {
       colors: resolvedColors
     )
   }
+
+  func onDropView() {
+    container.tearDown()
+  }
 }

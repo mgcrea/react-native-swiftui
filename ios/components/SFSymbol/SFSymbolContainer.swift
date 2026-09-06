@@ -5,6 +5,10 @@ import SwiftUI
 @objc(SFSymbolContainer)
 public class SFSymbolContainer: SwiftUIContainerView {
   private let props: SFSymbolProps
+  /// `props.calculatedSize` builds a `UIImage` to measure the symbol. Auto Layout
+  /// asks for `intrinsicContentSize` far more often than the props change, so it
+  /// is measured once per update here and served from this cache.
+  private var cachedSize: CGSize = .zero
 
   @objc
   public init(frame _: CGRect) {
@@ -32,10 +36,22 @@ public class SFSymbolContainer: SwiftUIContainerView {
     if props.renderingMode != renderingMode { props.renderingMode = renderingMode }
     if props.variableValue != variableValue { props.variableValue = variableValue }
     if props.colors != colors { props.colors = colors }
+
+    // Without this, a name/size/weight change kept the previous layout size.
+    let size = props.calculatedSize
+    if size != cachedSize {
+      cachedSize = size
+      invalidateIntrinsicContentSize()
+    }
+  }
+
+  @objc
+  public func tearDown() {
+    hostingController.rootView = AnyView(EmptyView())
   }
 
   // Expose intrinsic size to React Native layout using UIKit's UIImage sizing
   override public var intrinsicContentSize: CGSize {
-    return props.calculatedSize
+    cachedSize
   }
 }
