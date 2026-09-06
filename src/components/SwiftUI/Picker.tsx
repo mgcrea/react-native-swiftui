@@ -11,6 +11,7 @@ import type {
   PickerStyle,
   WithId,
 } from "../../types";
+import { normalizeOptions } from "../../utils";
 
 // https://developer.apple.com/documentation/swiftui/picker
 
@@ -68,6 +69,10 @@ export const Picker = <T extends string>({
     [config],
   );
 
+  // Swift decodes `label` as required, so an option written as `{ value }` alone
+  // used to fail the whole tree decode.
+  const normalizedOptions = useMemo(() => normalizeOptions(options), [options]);
+
   const normalizedStyles = useNormalizedStyles<NativeTextStyle>(style);
   const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
 
@@ -75,7 +80,7 @@ export const Picker = <T extends string>({
     "Picker",
     {
       selection: normalizedSelection,
-      options,
+      options: normalizedOptions,
       config: normalizedConfig,
       style: normalizedStyles,
       labelStyle: normalizedLabelStyle,

@@ -2,6 +2,7 @@ import { useMemo } from "react";
 
 import { useNormalizedStyles, useSwiftUINode } from "../../hooks";
 import type { NativeLabelStyleProps, NativeTextStyle, SheetPickerOption, WithId } from "../../types";
+import { normalizeOptions } from "../../utils";
 
 export type NativeSheetPickerOptionInput = SheetPickerOption | string;
 
@@ -44,20 +45,7 @@ export const SheetPicker = ({
   ...otherProps
 }: SheetPickerProps) => {
   const normalizedLabelStyle = useNormalizedStyles<NativeTextStyle>(labelStyle);
-  const normalizedOptions = useMemo(() => {
-    if (!options || options.length === 0) {
-      return [];
-    }
-    return options.map((option) => {
-      if (typeof option === "string") {
-        return { label: option, value: option };
-      }
-      return {
-        label: option.label ?? option.value,
-        value: option.value,
-      };
-    });
-  }, [options]);
+  const normalizedOptions = useMemo(() => normalizeOptions(options), [options]);
 
   useSwiftUINode(
     "SheetPicker",

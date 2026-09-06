@@ -2,7 +2,7 @@ import { type ReactNode, useMemo } from "react";
 
 import { useNormalizedStyles, useSwiftUINode, useParsedEvent, parseJsonArray } from "../../hooks";
 import type { NativeLabelStyleProps, NativeTextStyle, NativeTextStyleProps, WithId } from "../../types";
-import { fillArray } from "../../utils";
+import { fillArray, normalizeOptions } from "../../utils";
 
 // https://developer.apple.com/documentation/swiftui/picker
 
@@ -57,20 +57,19 @@ export const MultiPicker = <T extends string>({
   const onChange = useParsedEvent(parseJsonArray<T>, onChangeProp);
 
   // Ensure selections array matches components length by truncating first, then padding
-  const normalizedSelections = selections
-    ? fillArray(selections.slice(0, components.length), components.length, "" as T)
-    : undefined;
+  const normalizedSelections = useMemo(
+    () =>
+      selections ? fillArray(selections.slice(0, components.length), components.length, "" as T) : undefined,
+    [selections, components.length],
+  );
   const normalizedComponents = useMemo(
     () =>
       components.map((component) => {
         const { options, config, ...rest } = component;
         const normalizedConfig = config ? { ...DEFAULT_COMPONENT_CONFIG, ...config } : undefined;
-        const normalizedOptions = options
-          ? options.length > 0 && typeof options[0] === "string"
-            ? options.map((value) => ({ value, label: value }))
-            : options
-          : [];
-        return { ...rest, config: normalizedConfig, options: normalizedOptions };
+        // Per element: the previous check looked only at element 0, so a mixed
+        // `["a", { value: "b" }]` list passed raw strings through to native.
+        return { ...rest, config: normalizedConfig, options: normalizeOptions(options) };
       }),
     [components],
   );
