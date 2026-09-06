@@ -2083,7 +2083,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - RNSwiftUI (0.16.1):
+  - RNSwiftUI (0.18.0):
     - hermes-engine
     - NitroModules
     - RCTRequired
@@ -2511,7 +2511,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 133c5ea96f39fe3eed8cddd7048ab5522ca461c3
   RNReanimated: 8472465e358238f729aca6fea86613944b3c65a5
   RNScreens: 7118cd7715c226856125b5bece3c4d9abec90356
-  RNSwiftUI: d52cdffa526f0a247b400b651c0ff9f2e50ccd83
+  RNSwiftUI: 7ce9765dba2f81401bc4c1250ded4ecbac29b392
   RNWorklets: 9bfe41d21efb500cdc64d643938c837f890aa7b2
   Yoga: 9891cfb1c680f64de9c41b09e7453dea33454d2b
 
