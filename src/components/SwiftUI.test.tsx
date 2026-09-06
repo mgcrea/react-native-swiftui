@@ -69,6 +69,39 @@ describe("SwiftUI", () => {
     expect(propsSentFor("field")).toContainEqual(expect.objectContaining({ text: "after" }));
   });
 
+  it("sends only the keys that changed", () => {
+    const { rerender } = render(
+      <SwiftUI>
+        <SwiftUI.TextField id="field" text="before" label="Name" style={{ color: "red" }} />
+      </SwiftUI>,
+    );
+
+    rerender(
+      <SwiftUI>
+        <SwiftUI.TextField id="field" text="after" label="Name" style={{ color: "red" }} />
+      </SwiftUI>,
+    );
+
+    expect(propsSentFor("field")).toEqual([{ text: "after" }]);
+  });
+
+  it("attaches a single hybrid ref across re-renders", () => {
+    const { rerender } = render(
+      <SwiftUI>
+        <SwiftUI.Text text="a" />
+      </SwiftUI>,
+    );
+    rerender(
+      <SwiftUI>
+        <SwiftUI.Text text="b" />
+      </SwiftUI>,
+    );
+
+    // An inline `callback(...)` handed the native view a new hybridRef wrapper
+    // on every render, and the mock mirrors that with one instance per call.
+    expect(hybridInstances).toHaveLength(1);
+  });
+
   it("sends null rather than omitting a prop that becomes undefined", () => {
     const { rerender } = render(
       <SwiftUI>
