@@ -23,7 +23,6 @@ extension Color {
     "yellow": 0xFFFF00,
     "cyan": 0x00FFFF,
     "magenta": 0xFF00FF,
-    "transparent": 0x0000_0000,
 
     // Extended color set
     "aqua": 0x00FFFF,
@@ -53,9 +52,12 @@ extension Color {
     "teal": 0x008080,
   ]
 
-  // Existing hex parser (if not present, add this)
+  /// Built once: `CharacterSet.alphanumerics.inverted` allocates on every access,
+  /// and this parser runs on every body evaluation of every coloured view.
+  private static let nonAlphanumerics = CharacterSet.alphanumerics.inverted
+
   init?(fromHex hex: String) {
-    let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+    let hex = hex.trimmingCharacters(in: Self.nonAlphanumerics)
     var int: UInt64 = 0
     Scanner(string: hex).scanHexInt64(&int)
     let a, r, g, b: UInt64
@@ -81,6 +83,13 @@ extension Color {
   // Initialize from named color or hex value
   init?(fromCSSName name: String) {
     let lowerCaseName = name.lowercased()
+
+    // The table stores 24-bit RGB, so `transparent` (0x00000000) is
+    // indistinguishable from black there and used to render opaque black.
+    if lowerCaseName == "transparent" {
+      self = .clear
+      return
+    }
 
     // Check if it's a named color
     if let hexValue = Color.namedColors[lowerCaseName] {
@@ -110,10 +119,8 @@ extension Color {
       // Handle string colors (hex, named, or asset catalog)
       if let uiColor = UIColor.systemColor(name: str) {
         self = Color(uiColor)
-      } else if let namedColor = Color(fromCSSName: str) { // Named CSS color
+      } else if let namedColor = Color(fromCSSName: str) { // Named CSS colour, then hex
         self = namedColor
-      } else if let hexColor = Color(fromHex: str) { // Hex color
-        self = hexColor
       } else {
         self = .clear // Fallback
       }
@@ -183,45 +190,3 @@ extension UIColor {
     return systemColorMap[name]
   }
 }
-
- extension Color {
-   // Backgrounds
-   static let systemBackground = Color(UIColor.systemBackground)
-   static let secondarySystemBackground = Color(UIColor.secondarySystemBackground)
-   static let tertiarySystemBackground = Color(UIColor.tertiarySystemBackground)
-   static let systemGroupedBackground = Color(UIColor.systemGroupedBackground)
-   static let secondarySystemGroupedBackground = Color(UIColor.secondarySystemGroupedBackground)
-   static let tertiarySystemGroupedBackground = Color(UIColor.tertiarySystemGroupedBackground)
-
-   // Labels
-   static let label = Color(UIColor.label)
-   static let secondaryLabel = Color(UIColor.secondaryLabel)
-   static let tertiaryLabel = Color(UIColor.tertiaryLabel)
-   static let quaternaryLabel = Color(UIColor.quaternaryLabel)
-   static let placeholderText = Color(UIColor.placeholderText)
-
-   // Fill colors
-   static let systemFill = Color(UIColor.systemFill)
-   static let secondarySystemFill = Color(UIColor.secondarySystemFill)
-   static let tertiarySystemFill = Color(UIColor.tertiarySystemFill)
-   static let quaternarySystemFill = Color(UIColor.quaternarySystemFill)
-
-   // Standard colors
-   static let systemRed = Color(UIColor.systemRed)
-   static let systemBlue = Color(UIColor.systemBlue)
-   static let systemGreen = Color(UIColor.systemGreen)
-   static let systemOrange = Color(UIColor.systemOrange)
-   static let systemYellow = Color(UIColor.systemYellow)
-   static let systemPink = Color(UIColor.systemPink)
-   static let systemPurple = Color(UIColor.systemPurple)
-   static let systemTeal = Color(UIColor.systemTeal)
-   static let systemIndigo = Color(UIColor.systemIndigo)
-
-   // Grays
-   static let systemGray = Color(UIColor.systemGray)
-   static let systemGray2 = Color(UIColor.systemGray2)
-   static let systemGray3 = Color(UIColor.systemGray3)
-   static let systemGray4 = Color(UIColor.systemGray4)
-   static let systemGray5 = Color(UIColor.systemGray5)
-   static let systemGray6 = Color(UIColor.systemGray6)
- }
