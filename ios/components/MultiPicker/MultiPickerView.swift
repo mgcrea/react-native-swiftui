@@ -38,7 +38,7 @@ public struct MultiPickerView: View {
     GeometryReader { geometry in
       ZStack {
         RoundedRectangle(cornerSize: CGSizeMake(10, 10))
-          .fill(Color.quaternarySystemFill)
+          .fill(Color(UIColor.quaternarySystemFill))
           .padding(.horizontal, 8)
           .frame(width: geometry.size.width, height: 33)
 
@@ -76,6 +76,8 @@ public struct MultiPickerView: View {
       }
     }
     .applyStyles(props.style)
+    // `disabled` was decoded and merged but never applied.
+    .disabled(props.disabled)
     .onChange(of: localSelections) { newValue in
       // The props observer below assigns local first, so a JS-driven update is
       // already equal here and emits nothing. Only a wheel turn gets through.

@@ -12,8 +12,7 @@ public struct ImageView: View {
           ProgressView()
             .applyStyles(props.style)
         case let .success(image):
-          props.resizeMode.applyResizeMode(image)
-            .applyStyles(props.style)
+          styled(image)
         case .failure:
           Image(systemName: "exclamationmark.triangle")
             .applyStyles(props.style)
@@ -24,17 +23,28 @@ public struct ImageView: View {
     } else if let name = props.name {
       // Named images (system or asset) can be loaded synchronously
       if name.hasPrefix("system:") {
-        let systemName = String(name.dropFirst("system:".count))
-        props.resizeMode
-          .applyResizeMode(Image(systemName: systemName))
-          .applyStyles(props.style)
+        styled(Image(systemName: String(name.dropFirst("system:".count))))
       } else {
-        props.resizeMode
-          .applyResizeMode(Image(name))
-          .applyStyles(props.style)
+        styled(Image(name))
       }
     } else {
       Text("No image source provided")
+    }
+  }
+
+  /// `tintColor` was decoded and merged but never applied. A tint only takes
+  /// effect on a template image, so the rendering mode is switched with it.
+  @ViewBuilder
+  private func styled(_ image: Image) -> some View {
+    if let tint = props.tintColor, let color = Color(fromCSSName: tint) {
+      props.resizeMode
+        .applyResizeMode(image.renderingMode(.template))
+        .foregroundColor(color)
+        .applyStyles(props.style)
+    } else {
+      props.resizeMode
+        .applyResizeMode(image)
+        .applyStyles(props.style)
     }
   }
 }

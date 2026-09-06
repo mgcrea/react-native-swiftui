@@ -55,6 +55,8 @@ public struct PickerView: View {
       }
     )
     .modifier(ControlSizeModifier(controlSize: props.controlSize))
+    // `disabled` was decoded, merged and set by the container, but never applied.
+    .disabled(props.disabled)
     .applyStyles(props.style)
   }
 
