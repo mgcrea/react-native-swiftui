@@ -6,6 +6,29 @@ Generated from the commit history, which follows
 [Conventional Commits](https://www.conventionalcommits.org/). Chore, docs, style,
 test and CI commits are omitted; see the full log for those.
 
+## [0.19.0](https://github.com/mgcrea/react-native-swiftui/releases/tag/0.19.0) — 2026-09-07
+
+### Bug Fixes
+
+- **js:** correct useDebounce's timer type for React Native ([51aa139e](https://github.com/mgcrea/react-native-swiftui/commit/51aa139ef8837168240113c8611fed1ea66c456b))
+- **ios:** apply Image's tintColor and Picker/MultiPicker's disabled ([6759d3fb](https://github.com/mgcrea/react-native-swiftui/commit/6759d3fbf4963719abf1bb82d8012228a04a2f82))
+- **ios:** cache SF Symbol's intrinsic size and tear it down on drop ([ce785d9e](https://github.com/mgcrea/react-native-swiftui/commit/ce785d9e1375b444a9b032b7f52c8b2dee6a4da2))
+- **ios:** send typed Sheet prop updates so detents reset correctly ([60c2bdda](https://github.com/mgcrea/react-native-swiftui/commit/60c2bdda21953092fa18b7053b258f83ee283550))
+- **ios:** stop "transparent" rendering as opaque black ([c19b5878](https://github.com/mgcrea/react-native-swiftui/commit/c19b58789f9858f5ab08606fedfcb3e5dd6bb405))
+
+### Performance
+
+- **js:** send only the props that changed instead of the whole node ([1e3fe6ea](https://github.com/mgcrea/react-native-swiftui/commit/1e3fe6ead495830c2570f2cb784abf384fcfb1f2))
+- **js:** stop re-registering the hybrid ref and event handler on every render ([4a4554e8](https://github.com/mgcrea/react-native-swiftui/commit/4a4554e83b8ac3950f0b49e8aaaf57f8eb452b95))
+
+### Refactors
+
+- **js:** dedupe the standalone components' handle and callback wrapping ([563222a5](https://github.com/mgcrea/react-native-swiftui/commit/563222a5465aa6040daa22b9f186dfbbceaf504b))
+- **js:** normalize picker options in one place ([eec460a7](https://github.com/mgcrea/react-native-swiftui/commit/eec460a762f780b641203f9296ce722b6a8ee163))
+- **js:** replace hand-written leaf/container components with one factory ([56d71428](https://github.com/mgcrea/react-native-swiftui/commit/56d71428ae783293c9e74841ff68bf5cda8fe8a2))
+- **ios:** style views through one ViewModifier chain instead of nested AnyView ([2a49975c](https://github.com/mgcrea/react-native-swiftui/commit/2a49975c8c4301aaa87c493f708657367cc9b778))
+- **ios:** unify prop decoding, merging and view-building behind one contract ([76b2d8aa](https://github.com/mgcrea/react-native-swiftui/commit/76b2d8aa6d6d4fcfc3f92b2a03f6424863c984ce))
+
 ## [0.18.0](https://github.com/mgcrea/react-native-swiftui/releases/tag/0.18.0) — 2026-08-04
 
 ### ⚠ BREAKING CHANGES
